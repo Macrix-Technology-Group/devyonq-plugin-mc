@@ -1,0 +1,1659 @@
+{
+  "reader": "the client (core/client/lib/flags.js), which refuses before any call a flag the entry of its command does not list, and prints the usage under --help or -h. Written by scripts/command-flags.js from the engine's own code at the commit below: each entry of args a command, or a function it hands args to, reads, the flags the help text and the usage words of the release print for it, and the flags of the contract's tables. A form of a command inherits the flags of the command, as its contract entry does. Write it again whenever the contract copy is pinned again",
+  "source": {
+    "repository": "devyonq-saas",
+    "path": "src/devyonq/server/harness",
+    "commit": "33c46dde7ebdaa8bd8610895475c3c02170e6331"
+  },
+  "global": [
+    "--json",
+    "--print",
+    "--audit"
+  ],
+  "commands": {
+    "read": {
+      "flags": [
+        "--count",
+        "--heading",
+        "--id",
+        "--ledger",
+        "--n",
+        "--q",
+        "--version"
+      ],
+      "usage": [
+        "read <document | section | record | tail | search | collection | collections | me | versions | version> [--<field> <value> ...], the fields each kind reads: document --id; section --id --heading; record --ledger --n; tail --ledger --count; search --q; collection --id; collections; me; versions --id; version --id --version"
+      ]
+    },
+    "upload": {
+      "flags": [
+        "--authority",
+        "--collection",
+        "--description",
+        "--domains",
+        "--file",
+        "--json",
+        "--lifecycle",
+        "--scope-tags",
+        "--type",
+        "-f"
+      ],
+      "usage": [
+        "upload --collection <id> -f <file> [--json]"
+      ]
+    },
+    "collection": {
+      "flags": [],
+      "usage": []
+    },
+    "collection create": {
+      "flags": [
+        "--category",
+        "--json",
+        "--title"
+      ],
+      "usage": [
+        "collection create --title <title> [--category <category>] [--json]"
+      ]
+    },
+    "accept": {
+      "flags": [
+        "--docs",
+        "--file",
+        "--ledger",
+        "--manifest",
+        "--results",
+        "--spec",
+        "--tp",
+        "-f"
+      ],
+      "usage": [
+        "accept --spec <id|f> --tp <id|f> [--results <id|f>|-f results.json] [--manifest <id|f> --ledger <id|f> [--docs <dir>]]  the coverage a criterion PROVED, past the citation: reads each covering test's run state and fails a criterion whose covering tests have not all run green (IP-MC17-017, Profile L13); under --manifest and --ledger a case state written { state, record, reading } reads green only where the record it rests on was judged under the reading, and each row of a reading the reconciliation check does not read as reconciled fails the acceptance, named"
+      ]
+    },
+    "amend": {
+      "flags": [
+        "--class",
+        "--dry",
+        "--edits",
+        "--expect-binding",
+        "--file",
+        "--jargon",
+        "--ledger",
+        "--manifest",
+        "--out",
+        "--plain",
+        "--plan",
+        "--written-by",
+        "-f"
+      ],
+      "usage": [
+        "amend <assetId> --edits <f.json> [--class manifest|artifact] [--expect-binding unmoved|moved|any] [--jargon --plain <proof.json> | --written-by <name>] [--manifest <id>] [--ledger <id>] [--plan <id>] [--dry [--out <body.md>]]  anchored replacements, binding-guarded BEFORE the write, the writing lint over the whole composed body; a write that moves the binding brings its Change Log row, removes the approvals of the old text, and is sent on the record of the document's one rewrite, or through the door under --jargon; PATCH, prove, append the record of the write under --ledger, and end with the verification the document owes, VERIFICATION OWED NOW: {skill} or NO VERIFIER: {class}; --dry stops after the lint and sends nothing, and --dry --out writes the composed body to a file"
+      ]
+    },
+    "append": {
+      "flags": [
+        "--draft",
+        "--file",
+        "--hand",
+        "--json",
+        "--landing",
+        "--manifest",
+        "--mark",
+        "--narrow",
+        "--note",
+        "--object",
+        "--out",
+        "--record",
+        "--repo",
+        "--report",
+        "--runner-return",
+        "--stage",
+        "--stage-run",
+        "--utf8",
+        "--wave",
+        "--writer",
+        "-f"
+      ],
+      "usage": [
+        "append <ledgerAssetId> --record <file.json> [--manifest <id | file> --repo <path>] [--runner-return <file>] [--stage-run <dir>] [--writer <name>] [--mark <operation id>] | --stage <dir> [--stage <dir>] [--manifest <id | file> --repo <path> [--wave <file>]]  sends one record without a number, marks it, reads it back once by its mark and prints the number the platform gave; a write sent again after a lost answer lands once. An execution acceptance record, one opening EXECUTION ACCEPTED or EXECUTION REFUSED, or any record sent with --repo or --runner-return and no --stage, is read against its form before the send and refused by name, and its number is written into the report's status line after the read-back; --draft --manifest <id | file> --repo <path> --report <IR id> --landing <sha> [--runner-return <file>] --out <file> writes such a record's file and sends nothing; --stage composes the integration record from the stage.json of each host and, where a run left the acceptance case to it, runs the acceptance reader once with --manifest, --repo and, for a Wave Plan the stage read from a file, --wave, and on a ledger that declares version 2 writes recordedBy on the record it composes. Before the send it reads the ledger's declaration and refuses a ledger in a mixed state; on a ledger that declares version 2, and for any record carrying recordedBy, a record with no recordedBy or with authorityWords whose spokenBy holds no entry {role} {name} for each passage; repairs on a record that opens with any word other than RESOLVED or DEFECT; and a record opening CORRECTION {n} that carries less than record n lacks"
+      ]
+    },
+    "aprentry": {
+      "flags": [
+        "--aprid",
+        "--binding",
+        "--datetime",
+        "--decision",
+        "--file",
+        "--name",
+        "--record",
+        "--role",
+        "-f"
+      ],
+      "usage": [
+        "aprentry --role ... --record N   the canonical Approvals entry line, so the form cannot drift"
+      ]
+    },
+    "aprid": {
+      "flags": [
+        "--artifact",
+        "--authority",
+        "--scheme",
+        "--scope",
+        "--seq"
+      ],
+      "usage": [
+        "aprid --scheme S --scope ...     the APR id under the declared scheme; refuses a third scheme"
+      ]
+    },
+    "archeology": {
+      "flags": [
+        "--json",
+        "--root"
+      ],
+      "usage": [
+        "archeology [--root <dir>] [--json]  the comment lines of the plugin's source that carry history: a plan, review, defect, ruling or record id, a date, a numbered finding; exits 1 naming each by file and line"
+      ]
+    },
+    "binding": {
+      "flags": [
+        "--class",
+        "--file",
+        "--print",
+        "--projection",
+        "-f"
+      ],
+      "usage": [
+        "binding <assetId|-f file>       the 5b text projection; --class artifact for ARCH/IP/APR/wave plans; --projection 1 the five-part recipe"
+      ]
+    },
+    "block": {
+      "flags": [
+        "--file",
+        "--print",
+        "-f"
+      ],
+      "usage": [
+        "block [--print]                the sanctioned block to paste into a workflow script"
+      ]
+    },
+    "check": {
+      "flags": [
+        "--approvals",
+        "--apr-scheme",
+        "--convert",
+        "--doc",
+        "--documents",
+        "--file",
+        "--ledger",
+        "--open-types",
+        "--out",
+        "--scope",
+        "-f"
+      ],
+      "usage": [
+        "check <assetId|-f file>         the 24-field checklist, scope tags, naming; reports, judges nothing"
+      ]
+    },
+    "converge": {
+      "flags": [
+        "--accept",
+        "--action",
+        "--add",
+        "--adopt",
+        "--agent",
+        "--agent-prompt",
+        "--answered",
+        "--artifact",
+        "--as",
+        "--assessor",
+        "--bash",
+        "--blind",
+        "--blind-reading",
+        "--blocked-review",
+        "--both",
+        "--case",
+        "--challenge-threshold",
+        "--change-strategy",
+        "--check",
+        "--conflict",
+        "--context",
+        "--defer-improvement",
+        "--dir",
+        "--escalate-or-stop",
+        "--executor",
+        "--failed",
+        "--file",
+        "--first",
+        "--fixtures",
+        "--gather-evidence",
+        "--handed",
+        "--harm",
+        "--heavy-run",
+        "--held",
+        "--hex",
+        "--hidden",
+        "--his",
+        "--his-harm",
+        "--init",
+        "--json",
+        "--judgment",
+        "--kind",
+        "--late",
+        "--ledger",
+        "--local",
+        "--loop-before-landing",
+        "--loop-before-still-blocking",
+        "--loop-opening",
+        "--loop-rereview",
+        "--malformed",
+        "--manifest",
+        "--model",
+        "--module",
+        "--module-harm",
+        "--neither",
+        "--new",
+        "--no",
+        "--no-run",
+        "--none",
+        "--object",
+        "--open",
+        "--operation",
+        "--out",
+        "--pending",
+        "--plan",
+        "--point",
+        "--policy",
+        "--probe",
+        "--published",
+        "--recorded",
+        "--red-stage",
+        "--refused",
+        "--registry",
+        "--repo",
+        "--requests",
+        "--resume",
+        "--review",
+        "--revision",
+        "--round",
+        "--route",
+        "--ruling",
+        "--runner-facts",
+        "--runner-return",
+        "--runs",
+        "--scope",
+        "--seal",
+        "--seconds",
+        "--sending",
+        "--set",
+        "--set-aside",
+        "--shown",
+        "--speaker",
+        "--stage",
+        "--stage-dir",
+        "--string",
+        "--superseded",
+        "--targeted-correction",
+        "--unknown",
+        "--utf8",
+        "--verdict",
+        "--version",
+        "--waste",
+        "--wave",
+        "--wave-report",
+        "--words-file",
+        "--workdir",
+        "--yes",
+        "-f"
+      ],
+      "usage": [
+        "converge <probe | init | status | disposition | cancel | key | seal> [...]  the judgment module: probe makes one call on the model wave.model.converge names and writes no file; init makes the Mission's store on this host, its home host; status prints an operation's state and its two digests; disposition prints a stage's dispositions at a stage revision; cancel cancels an operation that is not final and records its cost; key --init makes the key pair of the hidden cases once; seal seals a set of cases and writes its sealing record; mc17 converge alone lists each with its flags; policy --check checks a policy and --adopt adopts a changed one over its measure runs; version writes the version record of the policy and the model; cases prints the prior cases of the Mission; run runs the cases of a sealed set and writes a run record of each; load reads the load of the host",
+        "converge probe [--wave <id|file>] [--manifest <id|file>] [--ledger <id|file>] [--model <provider/model>] [--repo <path>] [--json]  one call on the model wave.model.converge names, or --model names, with a fixed policy and a fixed packet; prints the model asked and the model that answered, the tokens, the price, the time, the request and the call state, and writes no file",
+        "converge init --scope <SCOPE>  makes the Mission's store on this host, its home host, once",
+        "converge status <operation id> [--scope <SCOPE>] [--json]  an operation's state, its two digests, its call state, its record, its stage revision and its deadline",
+        "converge cancel <operation id> --ledger <id> [--scope <SCOPE>] [--json]  cancels an operation that is not final: a note with the cost so far, the unsettled charges and the deadline, and the operation marked cancelled",
+        "converge disposition --stage <Wave Plan id>/<IP id> [--revision <n>] [--scope <SCOPE>] [--json]  a stage's dispositions, pending actions, supersessions, reopening events and status at a stage revision, read from the store alone",
+        "converge key --init [--scope <SCOPE>]  makes the key pair of the hidden cases once, on the home host, and prints its fingerprint alone",
+        "converge seal --set <published|hidden|judgment> --dir <dir> --ledger <id> --context <words> --handed <file> [--scope <SCOPE>] [--json]  checks a set of cases, seals it, writes its sealing record under an operation of its own, and deletes the plain files once the record lands",
+        "converge policy (--check | --adopt) <file> --ledger <id> [--json]  --check checks a policy: each figure names its source, its reason and its scope, no number stands outside the figure table, and no record the replay or the hidden cases keep from the module stands in it; --adopt prints the measure runs of a changed policy and passes it where each of published, replay and judgment holds one",
+        "converge version --policy <file> --model <provider/model> --ledger <id> [--set-aside <n> --ruling <m>] [--scope <SCOPE>] [--json]  writes the version record that names the policy version and the model that will act, under an operation of its own; --set-aside and --ruling set aside the ledger's one version record n under the ruling record m of both owners, once on a ledger, so the record needs no measure run",
+        "converge cases (--ledger <id> [--point <ledger>#<n>] [--scope <SCOPE>] [--out <file>] | --kind <point kind> | --add <operation id> --ledger <id> --file <cases file>) [--json]  --ledger prints the prior cases of the Mission's decision and outcome records; --kind prints the judged cases of the plugin's file that a call at that kind of point carries; --add writes the judged case of an operation into a checkout's file from the ledger records it cites; each case is an analogy and no permission, and every mode refuses a barred record and names it",
+        "converge run --set <published|hidden|judgment> --fixtures <dir> --seal <record> --version <record> --ledger <id> --plan <IP id> [--context <words>] [--case <case id>] [--scope <SCOPE>] [--resume <run id>] [--json]  runs each case of a sealed set once through the module's call, one more call where a call failed, and writes a run record per case and a miss record per miss",
+        "converge load [--seconds <n>] [--json]  reads the host's load, the mean over three seconds, one reading after another for n seconds, sixty by default; prints each reading, the highest, the lowest, the count, the host and the commit, and writes no file",
+        "converge evaluate --point <loop-opening | loop-rereview | loop-before-still-blocking | loop-before-landing | red-stage | heavy-run | blocked-review> (--runner-facts <file> | --wave-report <file> --stage <name> --round <n> | --stage-dir <dir> | --bash \"<command>\" | --agent-prompt <file> [--workdir <path>] | --review <file>) --manifest <id|file> --ledger <id> [--wave <id|file>] [--plan <IP id>] [--repo <path>] [--scope <SCOPE>] [--json]  one decision of the judgment module at one point outside the fleet runner: builds the packet from the point's own sources, asks the module once and writes the decision record; at a heavy-run start it writes one start entry per heavy run once the record stands",
+        "converge decide <operation id> --as <BO | TO | session> --action <name> [--words-file <file> --speaker \"<line>\" --shown \"<offer <operation id> | render <stop id>> <digest>\"] --ledger <id> [--repo <path>] [--scope <SCOPE>] [--json]  the deciding entry beside the module's record: the session's note, or an authority's ruling with his words, his speaker line and the digest of what he was shown; at a red stage it prints the keep or stop of each run still going; sends the records held and the deciding entries the hook wrote first",
+        "converge ended <entry> [--scope <SCOPE>] [--ledger <id>] [--stage-dir <dir> | --no-run] [--json]  records the end of a start the hook did not see end, so the next packet's running work reads true again",
+        "converge blind --open --scope <SCOPE> | blind [--scope <SCOPE>] [--ledger <id>] [--json]  --open starts the blind set of the Mission once; alone it prints the set, the number the Business Owner ruled and each stop with its place",
+        "converge render <stop id> --ledger <id> [--scope <SCOPE>] [--json]  writes the stop's facts under the program's labels with no action named, keeps the text in shown/ and sends the SHOWN record with the text's sha256",
+        "converge reveal <Wave Plan id>/<IP id | integration> --ledger <id> [--scope <SCOPE>] [--json]  once the stage has ended and his decision at each stop stands, opens each sealed proposal of the stage with the private key, checks it against its hash and sends the REVEALED record with the payload; reveal <stop id> --ledger <id> reveals a stop he took out of the set at once",
+        "converge reading <stop id> --verdict <module | his | both | neither> --module-harm <word> --his-harm <word> --words-file <file> --speaker \"<line>\" --ledger <id> [--scope <SCOPE>] [--json]  his reading of a disagreement at a revealed stop, a ruling with the verdict and the two harm lines",
+        "converge view [--stage <Wave Plan id>/<IP id>] [--operation <id>] [--scope <SCOPE>] [--json]  shows the operator each decision: its position, the action, the reason, the expected benefit with its cost as an estimate, the remaining concerns, who can decide and the module's own cost as measured; a sealed proposal is hidden until its reveal, and the read is logged",
+        "converge validate <operation id> --manifest <id|file> --ledger <id> [--repo <path>] [--runner-return <file>] [--registry <file>] [--scope <SCOPE>] [--json]  the validation of one decision under the delegations in force and the state as it stands now: authorized, denied, stale or pending, with its reasons; a denial lands the note DENIED, and a pending decision its DECISION REQUEST",
+        "converge apply <operation id> --manifest <id|file> --ledger <id> [--repo <path>] [--runner-return <file>] [--registry <file>] [--route <route>] [--scope <SCOPE>] [--json]  validates one decision and applies it once through the route its action takes at its point, and names the commands that follow",
+        "converge offer <operation id> --ledger <id> [--runner-return <file>] [--manifest <id|file>] [--repo <path>] [--scope <SCOPE>] [--json]  prints the ruling the authority would type, the reading sentence or a named decision request, with the digest of those lines last, and writes nothing",
+        "converge recover [--operation <id>] --ledger <id> --manifest <id|file> [--repo <path>] [--registry <file>] [--scope <SCOPE>] [--json]  sends the records held first, settles each operation the store holds in no final state from the store alone, and prints each landing the store holds",
+        "converge host --scope <SCOPE> [--json]  the host's reading as a call takes it: the load, the flag busy against the policy's figure, the running set and the host's part, which the heavy-run hook compares with an admitted entry's; writes nothing"
+      ]
+    },
+    "converge load": {
+      "flags": [
+        "--accept",
+        "--action",
+        "--add",
+        "--adopt",
+        "--agent",
+        "--agent-prompt",
+        "--answered",
+        "--artifact",
+        "--as",
+        "--assessor",
+        "--bash",
+        "--blind",
+        "--blind-reading",
+        "--blocked-review",
+        "--both",
+        "--case",
+        "--challenge-threshold",
+        "--change-strategy",
+        "--check",
+        "--conflict",
+        "--context",
+        "--defer-improvement",
+        "--dir",
+        "--escalate-or-stop",
+        "--executor",
+        "--failed",
+        "--file",
+        "--first",
+        "--fixtures",
+        "--gather-evidence",
+        "--handed",
+        "--harm",
+        "--heavy-run",
+        "--held",
+        "--hex",
+        "--hidden",
+        "--his",
+        "--his-harm",
+        "--init",
+        "--json",
+        "--judgment",
+        "--kind",
+        "--late",
+        "--ledger",
+        "--local",
+        "--loop-before-landing",
+        "--loop-before-still-blocking",
+        "--loop-opening",
+        "--loop-rereview",
+        "--malformed",
+        "--manifest",
+        "--model",
+        "--module",
+        "--module-harm",
+        "--neither",
+        "--new",
+        "--no",
+        "--no-run",
+        "--none",
+        "--object",
+        "--open",
+        "--operation",
+        "--out",
+        "--pending",
+        "--plan",
+        "--point",
+        "--policy",
+        "--probe",
+        "--published",
+        "--recorded",
+        "--red-stage",
+        "--refused",
+        "--registry",
+        "--repo",
+        "--requests",
+        "--resume",
+        "--review",
+        "--revision",
+        "--round",
+        "--route",
+        "--ruling",
+        "--runner-facts",
+        "--runner-return",
+        "--runs",
+        "--scope",
+        "--seal",
+        "--seconds",
+        "--sending",
+        "--set",
+        "--set-aside",
+        "--shown",
+        "--speaker",
+        "--stage",
+        "--stage-dir",
+        "--string",
+        "--superseded",
+        "--targeted-correction",
+        "--unknown",
+        "--utf8",
+        "--verdict",
+        "--version",
+        "--waste",
+        "--wave",
+        "--wave-report",
+        "--words-file",
+        "--workdir",
+        "--yes",
+        "-f"
+      ],
+      "usage": [
+        "converge <probe | init | status | disposition | cancel | key | seal> [...]  the judgment module: probe makes one call on the model wave.model.converge names and writes no file; init makes the Mission's store on this host, its home host; status prints an operation's state and its two digests; disposition prints a stage's dispositions at a stage revision; cancel cancels an operation that is not final and records its cost; key --init makes the key pair of the hidden cases once; seal seals a set of cases and writes its sealing record; mc17 converge alone lists each with its flags; policy --check checks a policy and --adopt adopts a changed one over its measure runs; version writes the version record of the policy and the model; cases prints the prior cases of the Mission; run runs the cases of a sealed set and writes a run record of each; load reads the load of the host",
+        "converge load [--seconds <n>] [--json]  reads the host's load, the mean over three seconds, one reading after another for n seconds, sixty by default; prints each reading, the highest, the lowest, the count, the host and the commit, and writes no file"
+      ]
+    },
+    "converge init": {
+      "flags": [
+        "--accept",
+        "--action",
+        "--add",
+        "--adopt",
+        "--agent",
+        "--agent-prompt",
+        "--answered",
+        "--artifact",
+        "--as",
+        "--assessor",
+        "--bash",
+        "--blind",
+        "--blind-reading",
+        "--blocked-review",
+        "--both",
+        "--case",
+        "--challenge-threshold",
+        "--change-strategy",
+        "--check",
+        "--conflict",
+        "--context",
+        "--defer-improvement",
+        "--dir",
+        "--escalate-or-stop",
+        "--executor",
+        "--failed",
+        "--file",
+        "--first",
+        "--fixtures",
+        "--gather-evidence",
+        "--handed",
+        "--harm",
+        "--heavy-run",
+        "--held",
+        "--hex",
+        "--hidden",
+        "--his",
+        "--his-harm",
+        "--init",
+        "--json",
+        "--judgment",
+        "--kind",
+        "--late",
+        "--ledger",
+        "--local",
+        "--loop-before-landing",
+        "--loop-before-still-blocking",
+        "--loop-opening",
+        "--loop-rereview",
+        "--malformed",
+        "--manifest",
+        "--model",
+        "--module",
+        "--module-harm",
+        "--neither",
+        "--new",
+        "--no",
+        "--no-run",
+        "--none",
+        "--object",
+        "--open",
+        "--operation",
+        "--out",
+        "--pending",
+        "--plan",
+        "--point",
+        "--policy",
+        "--probe",
+        "--published",
+        "--recorded",
+        "--red-stage",
+        "--refused",
+        "--registry",
+        "--repo",
+        "--requests",
+        "--resume",
+        "--review",
+        "--revision",
+        "--round",
+        "--route",
+        "--ruling",
+        "--runner-facts",
+        "--runner-return",
+        "--runs",
+        "--scope",
+        "--seal",
+        "--seconds",
+        "--sending",
+        "--set",
+        "--set-aside",
+        "--shown",
+        "--speaker",
+        "--stage",
+        "--stage-dir",
+        "--string",
+        "--superseded",
+        "--targeted-correction",
+        "--unknown",
+        "--utf8",
+        "--verdict",
+        "--version",
+        "--waste",
+        "--wave",
+        "--wave-report",
+        "--words-file",
+        "--workdir",
+        "--yes",
+        "-f"
+      ],
+      "usage": [
+        "converge <probe | init | status | disposition | cancel | key | seal> [...]  the judgment module: probe makes one call on the model wave.model.converge names and writes no file; init makes the Mission's store on this host, its home host; status prints an operation's state and its two digests; disposition prints a stage's dispositions at a stage revision; cancel cancels an operation that is not final and records its cost; key --init makes the key pair of the hidden cases once; seal seals a set of cases and writes its sealing record; mc17 converge alone lists each with its flags; policy --check checks a policy and --adopt adopts a changed one over its measure runs; version writes the version record of the policy and the model; cases prints the prior cases of the Mission; run runs the cases of a sealed set and writes a run record of each; load reads the load of the host",
+        "converge init --scope <SCOPE>  makes the Mission's store on this host, its home host, once"
+      ]
+    },
+    "create": {
+      "flags": [
+        "--answers",
+        "--authority",
+        "--collection",
+        "--domains",
+        "--draft-hash",
+        "--file",
+        "--ledger",
+        "--lifecycle",
+        "--manifest",
+        "--out",
+        "--pass",
+        "--plain",
+        "--plan",
+        "--render",
+        "--scaffold",
+        "--scope-tags",
+        "--title",
+        "--type",
+        "--written-by",
+        "-f"
+      ],
+      "usage": [
+        "create --title T --collection C (--render <kind> --answers <f> | --file <f.md>) [--plain <proof.json> | --written-by <name>] [--manifest <id>] [--ledger <id>] [--plan <id>]  render or read a body, ask its Change Log row of version 1, lint it, open the door of a governed title (a rewrite proof or an exemption proof under --plain, or a name the Manifest's Authorities section lists under --written-by), POST it with full facets, prove the hash; a document of the six classes needs --ledger, and its create appends the record of the write"
+      ]
+    },
+    "currency": {
+      "flags": [
+        "--base",
+        "--branch",
+        "--file",
+        "--remote",
+        "--repo",
+        "-f"
+      ],
+      "usage": [
+        "currency --repo <path> --base <sha-or-ref> [--branch <branch>] [--remote origin]  fetches FIRST and compares against the branch of record (--branch, else the current branch upstream, else the remote default), printing the figures; exit 0 on current or ahead, nonzero on drift, a diverged history, a wrong-base worktree, a tautological base, an unresolvable base or tip, and an unreachable remote, which fails closed (IP-MC17-016, Profile 8.15)"
+      ]
+    },
+    "dispatch": {
+      "flags": [
+        "--by",
+        "--disposition",
+        "--dry",
+        "--file",
+        "--item",
+        "--note",
+        "--recite",
+        "--record",
+        "-f"
+      ],
+      "usage": [
+        "dispatch <ledgerAssetId|-f ledger.json> --record <n> --item <id> --disposition <applied|argued|ruled-away> --by <n> [--note \"...\"] [--recite]  composes, sends and reads back the one write a ledger admits inside a record already appended, the dispatch of a work-order entry; --dry prints the patch and sends nothing (Definition, The review record, L17): it refuses an unknown item, a disposition that dispatches nothing, an argued or ruled-away with no note, and a dispatching record that does not follow the review record, and prints the RFC 6902 operation array to send through the platform's patch door (IP-MC17-021); --recite moves a dispatched entry to a later record that names the review and carries no FAIL, once, with the same disposition and note, keeps the record it named before as firstRecord, and reads it back"
+      ]
+    },
+    "doctrine": {
+      "flags": [
+        "--ahead",
+        "--current",
+        "--definition",
+        "--gate",
+        "--guide",
+        "--json",
+        "--partial",
+        "--profile",
+        "--skills",
+        "--templates",
+        "--unknown",
+        "--unreadable"
+      ],
+      "usage": [
+        "doctrine --guide <id|path> --definition <id|path> --profile <id|path> [--skills <dir>] [--templates <dir>] [--gate <lint-document.py>] [--partial]  reads what the pinned law states about the harness (the sanctioned block's digest and line count on the normalizeBlock line as `N content lines and sha256:<digest>`, the backticked -v17 skill roster, the template count as `harness/templates/` (N at version)) against this plugin, and names each figure current, old, ahead (the passage reads at a newer version than this plugin: upgrade), unrecognised or unreadable; a value with a slash or a .md ending is a file; exits non-zero while any figure is short of current (IP-MC17-020, Profile L16); the Definition's type roster is read against the classes the document gate governs, and a class the roster names and the gate does not govern reads old; where the Definition and the Profile are both read, the figure of the ruled reading reads current where the Definition carries its paragraph between Sections 12 and 13 and the Profile carries rule 1.9"
+      ]
+    },
+    "evidence": {
+      "flags": [
+        "--collection",
+        "--file",
+        "--json",
+        "--manifest",
+        "-f"
+      ],
+      "usage": [
+        "evidence <collectionId|-f fixture.json>  the evidence join: every REVIEW and VERIFICATION asset recorded, every citation resolving, every independent record naming its asset, no work-order item open; one machine verdict per Mission (--json)"
+      ]
+    },
+    "fields": {
+      "flags": [
+        "--file",
+        "-f"
+      ],
+      "usage": [
+        "fields <class> <assetId|-f f>   per-class section states (arch, ip, spec, tp, apr, ir); reports, judges nothing"
+      ]
+    },
+    "gates": {
+      "flags": [
+        "--check",
+        "--definition",
+        "--expect",
+        "--guide",
+        "--ledger",
+        "--manifest",
+        "--only",
+        "--profile",
+        "--registry",
+        "--runs",
+        "--texts",
+        "--wave"
+      ],
+      "usage": [
+        "gates [--guide <id> --definition <id> --profile <id>] [--manifest <id|f> --ledger <id|f>] [--only a,b] [--texts f1,f2]  runs every release gate the README names (the three suites, orchestration-lint, lintdoc over the plugin's texts, block-census --check, machinery --expect against the registry's newest digest, doctrine over the pinned law, selftext over the plugin's own README and GUIDE) and exits non-zero naming the first red; where the three suite gates ran green in this run, selftext reads their counts from what they printed and runs no suite again, and its row says so; the releaser reads the exit and cuts the release on green (IP-MC17-021); under --manifest and --ledger, and in the wave form from the core of the run, a reading of the drill that the Manifest admits reads the drill READ under its ruling record"
+      ]
+    },
+    "hash": {
+      "flags": [
+        "--file",
+        "-f"
+      ],
+      "usage": [
+        "hash <assetId|-f file>          fetch, unwrap the envelope, strip trailing newlines, sha256"
+      ]
+    },
+    "help": {
+      "flags": [],
+      "usage": []
+    },
+    "history": {
+      "flags": [
+        "--base",
+        "--branch",
+        "--file",
+        "--repo",
+        "-f"
+      ],
+      "usage": [
+        "history --branch <b> [--base main] [--repo p] (<ledgerId>|-f f.json)  every commit on the branch accounted for by a stage record"
+      ]
+    },
+    "identity": {
+      "flags": [
+        "--expect-title"
+      ],
+      "usage": [
+        "identity <assetId> --expect-title \"<title>\"    the corpus-identity act"
+      ]
+    },
+    "integration": {
+      "flags": [
+        "--base",
+        "--drill",
+        "--file",
+        "--ips",
+        "--out",
+        "--save-suites",
+        "--suites-base",
+        "--suites-changes",
+        "--suites-head",
+        "--tp",
+        "--work",
+        "-f"
+      ],
+      "usage": [
+        "integration (<ledgerId>|-f VF-X-001.json) --tp <id|f> --ips <id|f,...> --drill <f> (--base <sha> | --suites-base <f> --suites-head <f> --suites-changes <f>) [--save-suites <prefix>]  the integration stage readers: the head and the drill it ran at, red runs on record for the Test Plan's landed cases, added checks and changes the drill names red, pins; exits non-zero naming each failure"
+      ]
+    },
+    "landing": {
+      "flags": [
+        "--ips",
+        "--ledger",
+        "--manifest",
+        "--range",
+        "--repo",
+        "--since"
+      ],
+      "usage": [
+        "landing --repo <path> --range <a>..<b> (or --since <ref>) [--ips <dir|file|id,id>] [--manifest <id|f>] [--ledger <id|f>]  reads the trunk's own history and fails an unplanned landing (with --manifest, the merge of a plan of record no ruled Wave Plan names) or an undeclared repair (a fix whose plan declares neither Move type: Repair nor Supersedes); a commit that names no plan is a release, listed with its sha, its parent count and its committer, and fails nothing; it names each merge the hosting service made and each commit pushed outside any merge; the audit reads what reached the trunk whatever branch built it, and an administrative override that let one through is the owner's to govern over the repository configuration (IP-MC17-018, Profile L14)"
+      ]
+    },
+    "ledger": {
+      "flags": [
+        "--declare",
+        "--defect",
+        "--dry",
+        "--file",
+        "--repair",
+        "--schema",
+        "--sha",
+        "--tip",
+        "--wave",
+        "-f"
+      ],
+      "usage": [
+        "ledger <ledgerId|-f f.json> [--wave WAVE-PLAN-X --tip sha] [--repair --defect n --sha s]  the ledger's version, the defect records standing and closed, each closed one with the rule that closed it, its own verdict PASS or a later RESOLVED record, and integration records; exits 1 on a ledger in a mixed state, naming the repair; --wave fails where the tip has none; --repair is the Repair Move sweep, which counts a RESOLVED record only after the defect",
+        "ledger <ledgerId> --declare 2 --schema <asset id> [--dry]  moves the ledger to version 2 in one patch that tests the $schema and the last record it read, binds the ledger to the asset and adds version2From with the next record's number, or completes a ledger in a mixed state; reads back both fields and the record after the last, and names a record that raced in; refuses a value other than 2, a missing --schema or a path there, an asset whose $id is not canonq:ledger-hybrid-v2, a ledger bound to a schema of neither version, a full declaration, a closed ledger and a ledger read with -f; --dry prints the patch and sends nothing"
+      ]
+    },
+    "linkpass": {
+      "flags": [
+        "--file",
+        "-f"
+      ],
+      "usage": [
+        "linkpass <assetId|-f file>      the placeholder count, counted inside the tracked rows"
+      ]
+    },
+    "lint": {
+      "flags": [
+        "--file",
+        "--lock",
+        "--record-fingerprint",
+        "-f"
+      ],
+      "usage": [
+        "lint <script.js> ... [--lock <f>]  refuse a workflow script that reaches an agent outside the block, names no ruled plan, or departs from its settings line; --lock reads it against the lock committed on its branch, the launch reading, and prints a NOTE for each reading the lock carries with its ruling record"
+      ]
+    },
+    "lintdoc": {
+      "flags": [
+        "--file",
+        "-f"
+      ],
+      "usage": [
+        "lintdoc <assetId|-f file>     run the writing lint over a governed file, by id or path"
+      ]
+    },
+    "machinery": {
+      "flags": [
+        "--case",
+        "--expect",
+        "--operations",
+        "--registry"
+      ],
+      "usage": [
+        "machinery [--expect sha256:hex] [--registry f]  the sanctioned block, from the runner's own normalizer; a declared digest of a block shipped in an earlier version than the computed one reads RECOGNISED at exit 0, and the JSON's match is the MATCH answer alone"
+      ]
+    },
+    "nextnum": {
+      "flags": [
+        "--accept-mention",
+        "--collection",
+        "--repo",
+        "--scope"
+      ],
+      "usage": [
+        "nextnum <TYPE> --scope <SCOPE> [--collection <id>] [--repo <path>]  the next free number for a document class, read from the repository AND the corpus, both figures named"
+      ]
+    },
+    "orphans": {
+      "flags": [
+        "--file",
+        "--ips",
+        "--tp",
+        "--wave",
+        "-f"
+      ],
+      "usage": [
+        "orphans --tp <id|f> --ips <id|f,...> [--wave <id|f>]  every Test Plan case against its owners; exits non-zero naming each orphan"
+      ]
+    },
+    "params": {
+      "flags": [
+        "--file",
+        "--ledger",
+        "--name",
+        "-f"
+      ],
+      "usage": [
+        "params <assetId|-f file>        the operational parameters table, each row in force or absent; --ledger <id|file> judges the rows, --name <parameter> one value and its source"
+      ]
+    },
+    "plain": {
+      "flags": [
+        "--draft",
+        "--exempt",
+        "--file",
+        "--jargon",
+        "--ledger",
+        "--manifest",
+        "--out",
+        "--pass",
+        "--plain",
+        "--plan",
+        "--prior",
+        "--utf8",
+        "-f"
+      ],
+      "usage": [
+        "plain --draft <f.md> --pass <f.md> --out <proof.json> [--prior <proof.json>] [--plan <id>] [--manifest <id> --ledger <id>]  confirms that a rewrite kept everything a program reads from its draft (fences, headings in order, table rows, Test Plan entries, the Radius line, pinned directions, backticked spans, record numbers, figures), names each figure the rewrite changed as CHANGED, refuses a rewrite that hashes as its draft, and writes the proof `create` and `amend --jargon` ask of a governed title under --plain; --prior chains a pass to the one before it; --exempt --draft <body.md> --manifest <id> --ledger <id> --out <proof.json> writes the exemption proof of a body below the threshold documents.plain-pass-exempt-below sets; every run prints the two rows of the plain-language pass it read"
+      ]
+    },
+    "publish": {
+      "flags": [
+        "--collection",
+        "--file",
+        "--title",
+        "-f"
+      ],
+      "usage": [
+        "publish <file.md> --collection <id> [--title T]  post it, read it back, prove the bytes; the title is the FILENAME unless --title names it"
+      ]
+    },
+    "published": {
+      "flags": [
+        "--file",
+        "--ledger",
+        "--manifest",
+        "-f"
+      ],
+      "usage": [
+        "published <assetId> --ledger <id|f.json> [--manifest <id|f>]  proves that the version an authority reads is the version its verifier passed: the binding of the current version, the **Binding:** line of its VF Stamp and the Verified: line of its last verification record agree, and that record reads PASS; prints every record of a write that names the document, marking a proof later than its version PROOF AFTER VERSION, and last the line an approval, ruling or triage record copies, Read: {asset id} version {n}, binding {hex}, verified at record {m}; refuses a path, a file, and a version no record of a write names, an older document and one the Mission creation act made passing with a note"
+      ]
+    },
+    "radius": {
+      "flags": [
+        "--authority",
+        "--claimed",
+        "--file",
+        "-f"
+      ],
+      "usage": [
+        "radius --claimed R --authority A the blast-radius floor: refuses an authority below the claimed radius"
+      ]
+    },
+    "readings": {
+      "flags": [
+        "--by",
+        "--check",
+        "--docs",
+        "--dry",
+        "--file",
+        "--ledger",
+        "--manifest",
+        "--reconcile",
+        "--rework",
+        "--row",
+        "-f"
+      ],
+      "usage": [
+        "readings --manifest <id|f> --ledger <id|f> [--docs <dir>] [--row <n> | --reconcile <n> --by <text> | --rework <n>] [--dry] [--check]  the rows of a ruled reading in the Manifest's Operational Parameters table, each with its ruling record, its reconciled: part and every reason the readers refuse it; --row writes the row ruling record n composes under the table's last row in one live-state write, its binding unmoved, and refuses a record the reading reader refuses, a record a row already names, a Reads: value that carries a pipe and, for the write, a Manifest named by a file; --dry prints the edit and the write and sends nothing; --docs reads the documents a row rests on from {dir}/{id}.md; --reconcile rewrites the reconciled: part of the row of record n once the check reads it so; --rework writes the Rework rows a row restored to the declared value owes; --check reads the reconciliation of each row and exits 1 while a row stands open or fails a test, naming it"
+      ]
+    },
+    "render": {
+      "flags": [
+        "--answers",
+        "--audit",
+        "--out"
+      ],
+      "usage": [
+        "render <kind> --answers <f>     resolve a template of templates/ into the document it writes"
+      ]
+    },
+    "reviewed": {
+      "flags": [
+        "--artifact",
+        "--asset",
+        "--file",
+        "--json",
+        "--manifest",
+        "-f"
+      ],
+      "usage": [
+        "reviewed <ledgerId|-f f.json> --artifact <TITLE> [--asset <id>]  the review gate of an approval: unknown | none | open | prose | dispatched; exits 1 on open and unknown (Definition Section 12, IP-MC17-012 L10-B)"
+      ]
+    },
+    "reviews": {
+      "flags": [
+        "--collection",
+        "--file",
+        "--manifest",
+        "-f"
+      ],
+      "usage": [
+        "reviews <collectionId|-f fixture.json>  the same command under its older name (IP-MC17-011 settlement 4)"
+      ]
+    },
+    "rework": {
+      "flags": [
+        "--file",
+        "--ledger",
+        "--record",
+        "-f"
+      ],
+      "usage": [
+        "rework <manifestId> --ledger <id|f.json> --record <n>  record n, a verification at PASS of a SPEC change, sends each landed plan its refs name back to Rework: its Status cell in the tracked table reads Rework, record {n}, {date}, written in one live-state amend on the Manifest; a change that names no landed plan writes nothing"
+      ]
+    },
+    "rights": {
+      "flags": [],
+      "usage": [
+        "rights                          the GET /api/me probe"
+      ]
+    },
+    "rulings": {
+      "flags": [
+        "--convert",
+        "--file",
+        "--ledger",
+        "--out",
+        "--today",
+        "-f"
+      ],
+      "usage": [
+        "rulings <assetId|-f file> [--today YYYY-MM-DD] [--ledger <ledgerId|f.json>]  the Rulings register, table and sectioned forms alike: exits non-zero on an empty Implemented-in or Verified-by field, or a deferred act past its date, where a done record discharges an act only if the ledger holds that record and its words name the act; --convert [--out f.md] prints the register in the sectioned form the viewer renders, parse-equal proven (IP-MC17-013)"
+      ]
+    },
+    "scope": {
+      "flags": [
+        "--file",
+        "-f"
+      ],
+      "usage": [
+        "scope \"<mission name>\"          the SCOPE derivation"
+      ]
+    },
+    "selftext": {
+      "flags": [
+        "--absent",
+        "--current",
+        "--hooks",
+        "--skills",
+        "--suites",
+        "--templates",
+        "--texts",
+        "--unreadable",
+        "--utf8"
+      ],
+      "usage": [
+        "selftext [--texts a,b] [--suites <json>] [--skills <dir>] [--templates <dir>]  reads the figures README.md and GUIDE.html state ABOUT this plugin (skill, verb and template counts, the three suite counts, the sanctioned block's content lines and its digest) against the plugin as it stands, in doctrine's vocabulary: current, old, unreadable, absent. Exits non-zero while any is short of current, and repairs none of them, because a figure a gate rewrites is a figure nobody reads. It measures the suite counts by RUNNING the three suites, so it takes about fifteen seconds. A run narrowed by --texts, --suites, --skills or --templates measured less than everything and never answers 0"
+      ]
+    },
+    "settings": {
+      "flags": [
+        "--accept",
+        "--adopt",
+        "--by",
+        "--cell",
+        "--challenge-threshold",
+        "--change-strategy",
+        "--check",
+        "--checked",
+        "--collection",
+        "--confirm-version",
+        "--create",
+        "--date",
+        "--defer-improvement",
+        "--document",
+        "--entry",
+        "--escalate-or-stop",
+        "--export",
+        "--file",
+        "--function",
+        "--gather-evidence",
+        "--handoff",
+        "--handoff-date",
+        "--handoff-title",
+        "--hook",
+        "--input",
+        "--instance",
+        "--json",
+        "--keep",
+        "--ledger",
+        "--manifest",
+        "--measure",
+        "--name-as-given",
+        "--out",
+        "--owed",
+        "--read",
+        "--record",
+        "--retire",
+        "--review",
+        "--roles",
+        "--row",
+        "--scope",
+        "--seen",
+        "--settle",
+        "--show",
+        "--state",
+        "--targeted-correction",
+        "--text",
+        "--value",
+        "--words",
+        "--written",
+        "-f"
+      ],
+      "usage": [
+        "settings [--text T | --entry F | --retire F | --confirm-version N | --row KIND | --check | --create \"NAME\" | --show F | --keep D | --export D | --review D | --owed] [...]  a person's settings: reads, writes and checks the four documents of the one collection the account owns under DevyonQ Settings"
+      ]
+    },
+    "stage": {
+      "flags": [
+        "--base",
+        "--dry",
+        "--host",
+        "--json",
+        "--ledger",
+        "--manifest",
+        "--out",
+        "--readers",
+        "--release",
+        "--repo",
+        "--rerun",
+        "--save-suites",
+        "--spec",
+        "--stage",
+        "--tp",
+        "--wave",
+        "--work"
+      ],
+      "usage": [
+        "stage --wave <id|f> --tp <id|f> --manifest <id|f> --out <dir> [--spec <id|f>] [--repo p] [--base <sha>] [--host <name>] [--ledger <id|f>] [--dry]  the integration stage as a verb: runs exactly the cases the ruled wave plan assigns, at the tip, on this host, under the test settings of the Wave Plan rows first, then the Manifest rows in force, then the defaults; the baseline figures come from the Test Plan entry of the case, or from AC-15 of the SPEC that --spec names; the acceptance case is left to mc17 append --stage; in a repository that holds no copy of the plugin it runs the command of the Integration run: line of the plan in place of the suites and the drill; --release <sha> --repo p --manifest <id|f> --out <dir> runs the ten release checks of a release outside a wave at its commit; --rerun <run directory> --readers <name>[,<name>] --wave <id|f> --tp <id|f> --manifest <id|f> [--ledger <id|f>] [--spec <id|f>] [--repo p] [--json] runs the named readers of a finished run again over the run's own results, keeps its stage.json and its outputs, writes rerun.json beside them and the new outputs into rerun/{time}/, refuses at exit 2 a run of another plan, commit, host kind or tree and a reader it cannot run, and exits 0 where the run with its rerun applied passes; the run directory stands outside the plugin's folder, where its files read as no edit of the plugin; --base defaults to the commit the wave started from, the one before the newest commit that added the lock file, then to the commit AC-15 of the SPEC holds check names from, and to the starting commit where it states none; --dry prints the runs, needs no --out and runs nothing; a reading of the drill in force for the call of the wave runs no drill, writes its one line into drill.out and judges the drill read under its ruling record; --rerun takes the reading the core of the run records, else the row of the drill in force, and from a plugin outside the repository starts no release check"
+      ]
+    },
+    "status": {
+      "flags": [
+        "--file",
+        "-f"
+      ],
+      "usage": [
+        "status <assetId|-f file>        the Status value and the source it came from"
+      ]
+    },
+    "tptrace": {
+      "flags": [
+        "--file",
+        "--spec",
+        "--tp",
+        "-f"
+      ],
+      "usage": [
+        "tptrace --spec <id|f> --tp <id|f>  the AC traceability join, both directions, identifiers only"
+      ]
+    },
+    "unlanded": {
+      "flags": [
+        "--ips",
+        "--ledger",
+        "--manifest",
+        "--range",
+        "--repo",
+        "--since"
+      ],
+      "usage": [
+        "unlanded --repo <path> --range <a>..<b> (or --since <ref>) --ips <dir|file|id,id> [--ledger <id|f>]  names each plan of record no landing on the trunk names, net of reverts, and exits 1 on one; a plan whose Status opens with Withdrawn, Superseded or Deferred owes none; with --ledger, a plan whose accepted record lands it by an amendment record the ledger holds is landed; a landing is read as a commit naming the plan, never as what the commit changed (R-LANDING, D12)"
+      ]
+    },
+    "versions": {
+      "flags": [
+        "--file",
+        "--log",
+        "--status",
+        "-f"
+      ],
+      "usage": [
+        "versions <assetId> [--log] [--status]  the versions CanonQ holds of a document, newest first, each with its date and the current one marked, numbered as the replaced texts plus one; --status adds each version's status line; --log reads the Change Log against them and exits 1 on a row naming a version CanonQ does not hold, an older document with no Change Log passing with a note. A call with no asset id is refused, and names `version`"
+      ]
+    },
+    "wave": {
+      "flags": [
+        "--accept",
+        "--add",
+        "--arch",
+        "--artifact",
+        "--attribution",
+        "--base",
+        "--branch",
+        "--check",
+        "--clones",
+        "--commit",
+        "--config",
+        "--connector",
+        "--docs",
+        "--draft",
+        "--facts",
+        "--fix",
+        "--force",
+        "--git",
+        "--hand",
+        "--hex",
+        "--hooks",
+        "--ledger",
+        "--lens",
+        "--lenses",
+        "--lock",
+        "--ls-files",
+        "--manifest",
+        "--map",
+        "--members",
+        "--mode",
+        "--name",
+        "--no-clerk",
+        "--no-commit",
+        "--none",
+        "--object",
+        "--out",
+        "--plan",
+        "--pre-commit",
+        "--pre-merge-commit",
+        "--prompts",
+        "--record",
+        "--release",
+        "--remote",
+        "--repo",
+        "--resume",
+        "--rev-parse",
+        "--rm",
+        "--role",
+        "--ruling",
+        "--runner-return",
+        "--script",
+        "--seq",
+        "--sha256",
+        "--start",
+        "--string",
+        "--supersedes",
+        "--symbolic-ref",
+        "--template",
+        "--token",
+        "--unknown",
+        "--unlock",
+        "--utf8",
+        "--verify",
+        "--work"
+      ],
+      "usage": [
+        "wave script --plan <id|f> [--manifest <id|f> --ledger <id|f> [--docs <dir>]] [--out <file>] [--check <script>]  a fleet script written from the ruled wave plan, in the form the Workflow tool runs: the meta statement first, three declaration lines naming the plan, its ruling record, its binding, the digest of the prompt set and every setting in force, the openWave call, one runStage call per member in the ruled order carrying its prompts, its fix rounds and each role's model, and the call of main last. Prints each setting with its source. --out writes the block under the declaration lines; --check reads a script and says whether its plan, its settings and its prompts are the ones the plan rules. It refuses an unruled plan, a plan with no prompts and a plan that rules the review off where it must stay on at exit 2, writes nothing for a hand plan, and prints no wave token; under --manifest and --ledger a reading of a lens bar in force for the stage of a member writes the ruled bar, and each reading in force for that stage adds a line naming it and its ruling record at the end of each lens brief of the member; the documents a row of a reading rests on are read from {dir}/{id}.md under --docs, or from the assets the tracked table names, and a reading in force for a stage whose document neither reaches is refused by name, here, in wave lock and in both --resume forms",
+        "wave draft --manifest <id|f> --ledger <id|f> --members <id|f,...> [--mode fleet|hand] [--seq NNN] [--supersedes <plan>] --out <answers.json>  the answers of a new wave plan: every setting's value in force marked as offered, the mode, the integration run line, each member's rounds and the test-practice sentence",
+        "wave prompts --draft <answers.json> --manifest <id|f> --ledger <id|f> --members <id|f,...> --repo <path> --base <sha> --branch <b> --work <dir> --clones <dir> --release <x.y.z> --attribution \"<line>\" [--connector <name>] [--lenses <a,b>] --out <answers.json>  where wave.prompts reads template, renders every prompt of the wave from the prompt template into the draft's answers with the line Rendered:; --check --plan <id|f> --manifest <id|f> --ledger <id|f> --members <id|f,...> --repo <path> renders them again and names each that moved; --start <IP id> --role <build|review|fix|rereview> [--lens <name>] --plan <id|f> [--facts <f>] --out <f> writes the brief of one agent start and the one line that names it",
+        "wave lock --plan <id|f> --manifest <id|f> --ledger <id|f> --arch <id|f|none> [--map <f.json>] [--record n] [--name <WAVE-PLAN-X-N>] [--branch b] [--docs <dir>] [--repo p]  write and commit .mc17/wave.json on the branch the plan's wave.branch setting names, with the plan's mode, binding, settings and prompt digests and its ruling record's kind and date; refuses an unruled or superseded plan, a record that is no ruling, another branch, a review-off plan where the review must stay on, and an edge of the ARCH that waits on a plan outside the wave that has not landed; prints the token ONCE",
+        "wave lock --resume <IP id> --plan <id|f> --manifest <id|f> --ledger <id|f> --runner-return <f> [--base <sha>] [--accept <record> | --fix <record>] [--docs <dir>] [--repo p]  take the remainder of a stopped wave into the standing lock, under the token in MC17_WAVE_TOKEN: the members from <IP id> on, the base the runner's return names or --base, the acceptance or the targeted fix of a stopped stage checked against the ledger and the return, and the remainder script's digests; refuses a member the base's history does not hold, counting a member landed through a merge commit that names its plan alone",
+        "wave script --resume --plan <id|f> --manifest <id|f> --ledger <id|f> [--docs <dir>] [--repo p] [--out <f> | --check <script>]  the remainder script the lock's resume entry names, from the same ruled plan: seeded at the entry's base, carrying the acceptance or the targeted fix on its first stage and resume=<IP id> on its settings line; --check reads a script against it and runs the launch reading against the lock",
+        "wave verify [--token t] [--repo p]   the token against the lock (MC17_WAVE_TOKEN by default)",
+        "wave hooks [--repo p] [--force]     install .mc17/hooks/pre-commit and .mc17/hooks/pre-merge-commit and set core.hooksPath; an earlier copy of the plugin's own hook is replaced, and a repo that installed the hooks with an earlier release runs this again",
+        "wave unlock (--token t | --force <reason>) [--repo p] [--no-commit]   remove the lock and commit the removal in the same act, with the token or under the journaled override carrying the reason"
+      ]
+    },
+    "wave lock": {
+      "flags": [
+        "--accept",
+        "--add",
+        "--arch",
+        "--artifact",
+        "--attribution",
+        "--base",
+        "--branch",
+        "--check",
+        "--clones",
+        "--commit",
+        "--config",
+        "--connector",
+        "--docs",
+        "--draft",
+        "--facts",
+        "--fix",
+        "--force",
+        "--git",
+        "--hand",
+        "--hex",
+        "--hooks",
+        "--ledger",
+        "--lens",
+        "--lenses",
+        "--lock",
+        "--ls-files",
+        "--manifest",
+        "--map",
+        "--members",
+        "--mode",
+        "--name",
+        "--no-clerk",
+        "--no-commit",
+        "--none",
+        "--object",
+        "--out",
+        "--plan",
+        "--pre-commit",
+        "--pre-merge-commit",
+        "--prompts",
+        "--record",
+        "--release",
+        "--remote",
+        "--repo",
+        "--resume",
+        "--rev-parse",
+        "--rm",
+        "--role",
+        "--ruling",
+        "--runner-return",
+        "--script",
+        "--seq",
+        "--sha256",
+        "--start",
+        "--string",
+        "--supersedes",
+        "--symbolic-ref",
+        "--template",
+        "--token",
+        "--unknown",
+        "--unlock",
+        "--utf8",
+        "--verify",
+        "--work"
+      ],
+      "usage": [
+        "wave lock --plan <id|f> --manifest <id|f> --ledger <id|f> --arch <id|f|none> [--map <f.json>] [--record n] [--name <WAVE-PLAN-X-N>] [--branch b] [--docs <dir>] [--repo p]  write and commit .mc17/wave.json on the branch the plan's wave.branch setting names, with the plan's mode, binding, settings and prompt digests and its ruling record's kind and date; refuses an unruled or superseded plan, a record that is no ruling, another branch, a review-off plan where the review must stay on, and an edge of the ARCH that waits on a plan outside the wave that has not landed; prints the token ONCE",
+        "wave lock --resume <IP id> --plan <id|f> --manifest <id|f> --ledger <id|f> --runner-return <f> [--base <sha>] [--accept <record> | --fix <record>] [--docs <dir>] [--repo p]  take the remainder of a stopped wave into the standing lock, under the token in MC17_WAVE_TOKEN: the members from <IP id> on, the base the runner's return names or --base, the acceptance or the targeted fix of a stopped stage checked against the ledger and the return, and the remainder script's digests; refuses a member the base's history does not hold, counting a member landed through a merge commit that names its plan alone"
+      ]
+    },
+    "wave unlock": {
+      "flags": [
+        "--accept",
+        "--add",
+        "--arch",
+        "--artifact",
+        "--attribution",
+        "--base",
+        "--branch",
+        "--check",
+        "--clones",
+        "--commit",
+        "--config",
+        "--connector",
+        "--docs",
+        "--draft",
+        "--facts",
+        "--fix",
+        "--force",
+        "--git",
+        "--hand",
+        "--hex",
+        "--hooks",
+        "--ledger",
+        "--lens",
+        "--lenses",
+        "--lock",
+        "--ls-files",
+        "--manifest",
+        "--map",
+        "--members",
+        "--mode",
+        "--name",
+        "--no-clerk",
+        "--no-commit",
+        "--none",
+        "--object",
+        "--out",
+        "--plan",
+        "--pre-commit",
+        "--pre-merge-commit",
+        "--prompts",
+        "--record",
+        "--release",
+        "--remote",
+        "--repo",
+        "--resume",
+        "--rev-parse",
+        "--rm",
+        "--role",
+        "--ruling",
+        "--runner-return",
+        "--script",
+        "--seq",
+        "--sha256",
+        "--start",
+        "--string",
+        "--supersedes",
+        "--symbolic-ref",
+        "--template",
+        "--token",
+        "--unknown",
+        "--unlock",
+        "--utf8",
+        "--verify",
+        "--work"
+      ],
+      "usage": [
+        "wave unlock (--token t | --force <reason>) [--repo p] [--no-commit]   remove the lock and commit the removal in the same act, with the token or under the journaled override carrying the reason"
+      ]
+    },
+    "wave script": {
+      "flags": [
+        "--accept",
+        "--add",
+        "--arch",
+        "--artifact",
+        "--attribution",
+        "--base",
+        "--branch",
+        "--check",
+        "--clones",
+        "--commit",
+        "--config",
+        "--connector",
+        "--docs",
+        "--draft",
+        "--facts",
+        "--fix",
+        "--force",
+        "--git",
+        "--hand",
+        "--hex",
+        "--hooks",
+        "--ledger",
+        "--lens",
+        "--lenses",
+        "--lock",
+        "--ls-files",
+        "--manifest",
+        "--map",
+        "--members",
+        "--mode",
+        "--name",
+        "--no-clerk",
+        "--no-commit",
+        "--none",
+        "--object",
+        "--out",
+        "--plan",
+        "--pre-commit",
+        "--pre-merge-commit",
+        "--prompts",
+        "--record",
+        "--release",
+        "--remote",
+        "--repo",
+        "--resume",
+        "--rev-parse",
+        "--rm",
+        "--role",
+        "--ruling",
+        "--runner-return",
+        "--script",
+        "--seq",
+        "--sha256",
+        "--start",
+        "--string",
+        "--supersedes",
+        "--symbolic-ref",
+        "--template",
+        "--token",
+        "--unknown",
+        "--unlock",
+        "--utf8",
+        "--verify",
+        "--work"
+      ],
+      "usage": [
+        "wave script --plan <id|f> [--manifest <id|f> --ledger <id|f> [--docs <dir>]] [--out <file>] [--check <script>]  a fleet script written from the ruled wave plan, in the form the Workflow tool runs: the meta statement first, three declaration lines naming the plan, its ruling record, its binding, the digest of the prompt set and every setting in force, the openWave call, one runStage call per member in the ruled order carrying its prompts, its fix rounds and each role's model, and the call of main last. Prints each setting with its source. --out writes the block under the declaration lines; --check reads a script and says whether its plan, its settings and its prompts are the ones the plan rules. It refuses an unruled plan, a plan with no prompts and a plan that rules the review off where it must stay on at exit 2, writes nothing for a hand plan, and prints no wave token; under --manifest and --ledger a reading of a lens bar in force for the stage of a member writes the ruled bar, and each reading in force for that stage adds a line naming it and its ruling record at the end of each lens brief of the member; the documents a row of a reading rests on are read from {dir}/{id}.md under --docs, or from the assets the tracked table names, and a reading in force for a stage whose document neither reaches is refused by name, here, in wave lock and in both --resume forms",
+        "wave script --resume --plan <id|f> --manifest <id|f> --ledger <id|f> [--docs <dir>] [--repo p] [--out <f> | --check <script>]  the remainder script the lock's resume entry names, from the same ruled plan: seeded at the entry's base, carrying the acceptance or the targeted fix on its first stage and resume=<IP id> on its settings line; --check reads a script against it and runs the launch reading against the lock"
+      ]
+    },
+    "wave prompts": {
+      "flags": [
+        "--accept",
+        "--add",
+        "--arch",
+        "--artifact",
+        "--attribution",
+        "--base",
+        "--branch",
+        "--check",
+        "--clones",
+        "--commit",
+        "--config",
+        "--connector",
+        "--docs",
+        "--draft",
+        "--facts",
+        "--fix",
+        "--force",
+        "--git",
+        "--hand",
+        "--hex",
+        "--hooks",
+        "--ledger",
+        "--lens",
+        "--lenses",
+        "--lock",
+        "--ls-files",
+        "--manifest",
+        "--map",
+        "--members",
+        "--mode",
+        "--name",
+        "--no-clerk",
+        "--no-commit",
+        "--none",
+        "--object",
+        "--out",
+        "--plan",
+        "--pre-commit",
+        "--pre-merge-commit",
+        "--prompts",
+        "--record",
+        "--release",
+        "--remote",
+        "--repo",
+        "--resume",
+        "--rev-parse",
+        "--rm",
+        "--role",
+        "--ruling",
+        "--runner-return",
+        "--script",
+        "--seq",
+        "--sha256",
+        "--start",
+        "--string",
+        "--supersedes",
+        "--symbolic-ref",
+        "--template",
+        "--token",
+        "--unknown",
+        "--unlock",
+        "--utf8",
+        "--verify",
+        "--work"
+      ],
+      "usage": [
+        "wave prompts --draft <answers.json> --manifest <id|f> --ledger <id|f> --members <id|f,...> --repo <path> --base <sha> --branch <b> --work <dir> --clones <dir> --release <x.y.z> --attribution \"<line>\" [--connector <name>] [--lenses <a,b>] --out <answers.json>  where wave.prompts reads template, renders every prompt of the wave from the prompt template into the draft's answers with the line Rendered:; --check --plan <id|f> --manifest <id|f> --ledger <id|f> --members <id|f,...> --repo <path> renders them again and names each that moved; --start <IP id> --role <build|review|fix|rereview> [--lens <name>] --plan <id|f> [--facts <f>] --out <f> writes the brief of one agent start and the one line that names it"
+      ]
+    },
+    "wave verify": {
+      "flags": [
+        "--accept",
+        "--add",
+        "--arch",
+        "--artifact",
+        "--attribution",
+        "--base",
+        "--branch",
+        "--check",
+        "--clones",
+        "--commit",
+        "--config",
+        "--connector",
+        "--docs",
+        "--draft",
+        "--facts",
+        "--fix",
+        "--force",
+        "--git",
+        "--hand",
+        "--hex",
+        "--hooks",
+        "--ledger",
+        "--lens",
+        "--lenses",
+        "--lock",
+        "--ls-files",
+        "--manifest",
+        "--map",
+        "--members",
+        "--mode",
+        "--name",
+        "--no-clerk",
+        "--no-commit",
+        "--none",
+        "--object",
+        "--out",
+        "--plan",
+        "--pre-commit",
+        "--pre-merge-commit",
+        "--prompts",
+        "--record",
+        "--release",
+        "--remote",
+        "--repo",
+        "--resume",
+        "--rev-parse",
+        "--rm",
+        "--role",
+        "--ruling",
+        "--runner-return",
+        "--script",
+        "--seq",
+        "--sha256",
+        "--start",
+        "--string",
+        "--supersedes",
+        "--symbolic-ref",
+        "--template",
+        "--token",
+        "--unknown",
+        "--unlock",
+        "--utf8",
+        "--verify",
+        "--work"
+      ],
+      "usage": [
+        "wave verify [--token t] [--repo p]   the token against the lock (MC17_WAVE_TOKEN by default)"
+      ]
+    },
+    "wave hooks": {
+      "flags": [
+        "--accept",
+        "--add",
+        "--arch",
+        "--artifact",
+        "--attribution",
+        "--base",
+        "--branch",
+        "--check",
+        "--clones",
+        "--commit",
+        "--config",
+        "--connector",
+        "--docs",
+        "--draft",
+        "--facts",
+        "--fix",
+        "--force",
+        "--git",
+        "--hand",
+        "--hex",
+        "--hooks",
+        "--ledger",
+        "--lens",
+        "--lenses",
+        "--lock",
+        "--ls-files",
+        "--manifest",
+        "--map",
+        "--members",
+        "--mode",
+        "--name",
+        "--no-clerk",
+        "--no-commit",
+        "--none",
+        "--object",
+        "--out",
+        "--plan",
+        "--pre-commit",
+        "--pre-merge-commit",
+        "--prompts",
+        "--record",
+        "--release",
+        "--remote",
+        "--repo",
+        "--resume",
+        "--rev-parse",
+        "--rm",
+        "--role",
+        "--ruling",
+        "--runner-return",
+        "--script",
+        "--seq",
+        "--sha256",
+        "--start",
+        "--string",
+        "--supersedes",
+        "--symbolic-ref",
+        "--template",
+        "--token",
+        "--unknown",
+        "--unlock",
+        "--utf8",
+        "--verify",
+        "--work"
+      ],
+      "usage": [
+        "wave hooks [--repo p] [--force]     install .mc17/hooks/pre-commit and .mc17/hooks/pre-merge-commit and set core.hooksPath; an earlier copy of the plugin's own hook is replaced, and a repo that installed the hooks with an earlier release runs this again"
+      ]
+    },
+    "wavecheck": {
+      "flags": [
+        "--arch",
+        "--file",
+        "--ledger",
+        "--manifest",
+        "--map",
+        "-f"
+      ],
+      "usage": [
+        "wavecheck <planId> --arch <id> --map <f.json> [--manifest <id|f>] [--ledger <id|f>]  members, declared edges, and the ruled order against them; each setting in force; the Wave Settings section, the integration run line and the ruling sections of a plan that carries the section, an older plan passing as it stands; --ledger reads the ruling record, --manifest the collapse and the state of each plan an edge waits on outside the wave"
+      ]
+    },
+    "test-wait": {
+      "flags": [
+        "--json",
+        "--ms"
+      ],
+      "usage": [
+        "test-wait [--ms <n>]"
+      ]
+    }
+  }
+}

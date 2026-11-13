@@ -1,0 +1,43 @@
+{
+  "about": "The dialect of the GitHub Copilot CLI, which hooks/dialect.py reads to map the CLI's hook payload onto the payload the gates read. The package's hooks.json names this file in the keys the CLI runs, bash and powershell. Under the PascalCase event names the CLI writes snake_case fields and reports Claude Code's tool names: its bash and powershell tools as Bash, its task tool, which starts a subagent, as Agent. The runtime's own names stand here too, and Claude Code's PowerShell, so a payload that sends one is gated as Bash or Agent. A CanonQ write tool is matched by the end of its name under any MCP server name, in the form mcp__<server>__<tool>, in VS Code's form mcp_<server>_<tool> and in the runtime's form <server>-<tool>. The PostToolUse payload carries the tool's outcome as tool_result. The reply at the end of a turn is read from the transcript at transcript_path, the last row of type assistant.message, its text at data.content. A denial carries the CLI's top-level permissionDecision and the hook-specific form VS Code reads, on standard output with exit 0; a note on an allowed call is a systemMessage.",
+  "fields": {
+    "event": "hook_event_name",
+    "tool": "tool_name",
+    "input": "tool_input",
+    "command": "tool_input.command",
+    "prompt": "tool_input.prompt",
+    "cwd": "cwd",
+    "session": "session_id",
+    "call": "tool_use_id",
+    "response": "tool_result",
+    "agent": "agent_id",
+    "stopActive": "stop_hook_active"
+  },
+  "events": {
+    "PreToolUse": "PreToolUse",
+    "PostToolUse": "PostToolUse",
+    "SubagentStop": "SubagentStop",
+    "Stop": "Stop"
+  },
+  "tools": [
+    {"name": "Bash", "kinds": ["document", "branch", "heavy", "secret"]},
+    {"name": "bash", "as": "Bash", "kinds": ["document", "branch", "heavy", "secret"]},
+    {"name": "powershell", "as": "Bash", "kinds": ["document", "branch", "heavy", "secret"]},
+    {"name": "PowerShell", "as": "Bash", "kinds": ["document", "branch", "heavy", "secret"]},
+    {"name": "Agent", "kinds": ["branch", "heavy"]},
+    {"name": "Task", "as": "Agent", "kinds": ["branch", "heavy"]},
+    {"name": "task", "as": "Agent", "kinds": ["branch", "heavy"]},
+    {"name": "view", "as": "Read", "kinds": ["secret"]},
+    {"name": "create", "as": "Write", "kinds": ["secret"]},
+    {"name": "edit", "as": "Edit", "kinds": ["secret"]},
+    {"name": "str_replace_editor", "as": "Edit", "kinds": ["secret"]},
+    {"pattern": "(?:mcp__.+__|mcp_.+_|.+-).+", "kinds": ["document"]}
+  ],
+  "reply": {"transcript": "transcript_path", "row": {"type": "assistant.message"}, "text": "data.content"},
+  "deny": {
+    "template": {"permissionDecision": "deny", "permissionDecisionReason": "<reason>", "hookSpecificOutput": {"hookEventName": "PreToolUse", "permissionDecision": "deny", "permissionDecisionReason": "<reason>"}},
+    "exit": 0,
+    "stream": "stdout"
+  },
+  "note": "systemMessage"
+}

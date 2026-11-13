@@ -1,0 +1,145 @@
+#!/bin/sh
+# The POSIX launcher of the mc17 client, for macOS, Linux and Git Bash on Windows (ARCH D19; record 117). Skills and hooks
+# call it at its fixed place in the plugin, client/mc17, never through the PATH.
+#
+# It starts node with --use-system-ca on client/mc17.js in an environment built from nothing: the home folder, the
+# temporary folder, a PATH of the system folders and the locale, with the values the operating system sets for the
+# session bus and the ssh agent, each read from the system and never from the caller's shell. The node is the one the
+# record of mc17 login names, ~/.mc17/client/node.json with its path and the sha256 of its bytes, run only while the file
+# at that path still carries that sha256; no program path comes from the credential store (the review of
+# IP-MC-SERVER-002). Where no record stands, or the node at its path changed, it starts only mc17 login, with the node
+# and the PATH of the terminal it runs in, and refuses every other command, naming mc17 login.
+#
+# Under Git Bash, where uname reads MINGW, MSYS or CYGWIN, it hands on to lib/launch.ps1 in Windows PowerShell, the
+# script client/mc17.cmd runs, so both forms read the same record alike. The programs it runs are found by the system's
+# own search path (command -p). The command Windows PowerShell runs sets PSModulePath to PowerShell's own modules before
+# anything else and calls no command to run lib/launch.ps1, so a module planted in a folder of the caller's PSModulePath
+# stands in for nothing (the second review of IP-MC-SERVER-002, N1).
+
+service=devyonq-mc
+# The store root of the client's test build alone (tests/ci/test-client.js writes it there): where it names a folder, the
+# launcher gives the client the home folder home/ in it, and reads the record of node there. The shipped launcher holds
+# the empty value and reads no variable for it. Under Git Bash, lib/launch.ps1 holds its own.
+store_root=
+case "$0" in */*) here=${0%/*} ;; *) here=. ;; esac
+os=$(command -p uname -s 2>/dev/null)
+
+case "$os" in
+  MINGW*|MSYS*|CYGWIN*)
+    windows=$(/usr/bin/cygpath -W 2>/dev/null)
+    if [ -z "$windows" ]; then echo "mc17: the Windows folder cannot be read with cygpath -W" >&2; exit 1; fi
+    ps="$windows/System32/WindowsPowerShell/v1.0/powershell.exe"
+    mc_script=$(/usr/bin/cygpath -w "$here/lib/launch.ps1")
+    mc_argc=$#
+    export mc_script mc_argc
+    unset mc_args
+    i=1
+    for a in "$@"; do
+      eval "mc_arg_$i=\$a"
+      export "mc_arg_$i"
+      i=$((i + 1))
+    done
+    MSYS_NO_PATHCONV=1 MSYS2_ARG_CONV_EXCL='*' exec "$ps" -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command '$env:PSModulePath = $PSHOME + '"'"'\Modules'"'"'; & ([ScriptBlock]::Create([IO.File]::ReadAllText($env:mc_script)))'
+    ;;
+esac
+
+uid=$(command -p id -u)
+user=$(command -p id -un)
+case "$user" in *[!A-Za-z0-9._-]*|'') echo "mc17: the user name cannot be read as one word" >&2; exit 1 ;; esac
+eval "home=~$user"
+case "$home" in /*) ;; *) echo "mc17: the home folder of $user cannot be read from the system" >&2; exit 1 ;; esac
+[ -n "$store_root" ] && home=$store_root/home
+tmp=/tmp
+syspath=/usr/bin:/bin:/usr/sbin:/sbin
+extra=
+if [ "$os" = Darwin ]; then
+  t=$(command -p getconf DARWIN_USER_TEMP_DIR 2>/dev/null)
+  [ -n "$t" ] && tmp=${t%/}
+  sock=$(/bin/launchctl getenv SSH_AUTH_SOCK 2>/dev/null)
+  [ -n "$sock" ] && extra="SSH_AUTH_SOCK=$sock"
+else
+  run="/run/user/$uid"
+  bus=
+  if [ -d "$run" ]; then
+    extra="XDG_RUNTIME_DIR=$run"
+    if [ -S "$run/bus" ]; then bus="unix:path=$run/bus"; extra="$extra DBUS_SESSION_BUS_ADDRESS=$bus"; fi
+    sock=$(command -p env -i HOME="$home" XDG_RUNTIME_DIR="$run" DBUS_SESSION_BUS_ADDRESS="$bus" PATH="$syspath" systemctl --user show-environment 2>/dev/null | command -p sed -n 's/^SSH_AUTH_SOCK=//p')
+    [ -n "$sock" ] && extra="$extra SSH_AUTH_SOCK=$sock"
+  fi
+fi
+# The node the client runs on: the file the record of mc17 login names, run only while its bytes carry the sha256 the
+# record holds. The record stands in the client's own folder, which the secret gate keeps from every AI tool.
+node=
+why="the client keeps no path of node yet"
+record="$home/.mc17/client/node.json"
+if [ -f "$record" ]; then
+  why="the record of node at $record does not read"
+  p64=$(command -p sed -n 's/.*"path64":"\([A-Za-z0-9+\/=]*\)".*/\1/p' "$record" 2>/dev/null | command -p head -n 1)
+  want=$(command -p sed -n 's/.*"sha256":"\([0-9a-f]\{64\}\)".*/\1/p' "$record" 2>/dev/null | command -p head -n 1)
+  if [ "$os" = Darwin ]; then p=$(printf '%s' "$p64" | /usr/bin/base64 -D 2>/dev/null); else p=$(printf '%s' "$p64" | command -p base64 -d 2>/dev/null); fi
+  case "$p" in
+    /*)
+      if [ -f "$p" ] && [ -n "$want" ]; then
+        if [ "$os" = Darwin ]; then have=$(/usr/bin/shasum -a 256 "$p" 2>/dev/null | command -p cut -d' ' -f1)
+        else have=$(command -p sha256sum "$p" 2>/dev/null | command -p cut -d' ' -f1); fi
+        if [ "$have" = "$want" ]; then node=$p; else why="the node at $p no longer carries the sha256 mc17 login recorded for it"; fi
+      fi
+      ;;
+  esac
+fi
+lang=
+case "$LANG" in ''|*[!A-Za-z0-9_.@-]*) ;; *) lang="LANG=$LANG" ;; esac
+case "$LC_ALL" in ''|*[!A-Za-z0-9_.@-]*) ;; *) lang="$lang LC_ALL=$LC_ALL" ;; esac
+
+path=$syspath
+if [ -z "$node" ]; then
+  # The command that signs this computer in, as a person types it into a terminal.
+  case "$here" in /*) self="$here/mc17" ;; *) self="$(cd "$here" 2>/dev/null && pwd -P)/mc17" ;; esac
+  login_command="\"$self\" login"
+  # The session-start hook's forms, settings --hook <value> [--as additional-context], on a computer with no sign-in: the
+  # head tells the person and the AI, and on macOS opens one Terminal window that runs mc17 login; every other value
+  # prints nothing, so a session start shows one notice and no error per hook.
+  if [ "$1" = settings ] && [ "$2" = --hook ] && [ -n "$3" ]; then
+    [ "$3" = head ] || exit 0
+    own="$home/.mc17/client"
+    mark="$own/sign-in-window.txt"
+    opened=
+    if [ "$os" = Darwin ] && [ ! -e "$own/no-sign-in-window" ] && [ -z "$(command -p find "$mark" -mmin -10 2>/dev/null)" ]; then
+      quoted=$(printf '%s' "$self" | command -p sed 's/\\/\\\\/g; s/"/\\"/g')
+      if /usr/bin/osascript -e "tell application \"Terminal\" to do script \"'$quoted' login\"" -e 'tell application "Terminal" to activate' >/dev/null 2>&1; then
+        opened=1
+        command -p mkdir -p "$own" 2>/dev/null && : > "$mark"
+      fi
+    fi
+    if [ -n "$opened" ]; then
+      text="[devyonq-mc] This computer is not signed in to DevyonQ.
+A new window has opened to sign you in: your browser opens, pick your tenant and approve.
+If no window opened, or the sign-in failed, run this in your own terminal:
+  $login_command
+Mission skills and mc17 commands wait until you are signed in. The AI runs no mc17 command and no Mission skill before then, and tells the person to sign in."
+    else
+      text="[devyonq-mc] This computer is not signed in to DevyonQ.
+Run this in your own terminal to sign in:
+  $login_command
+Mission skills and mc17 commands wait until you are signed in. The AI runs no mc17 command and no Mission skill before then, and tells the person to sign in."
+    fi
+    if [ "$4" = --as ] && [ "$5" = additional-context ]; then
+      esc=$(printf '%s' "$text" | command -p sed 's/\\/\\\\/g; s/"/\\"/g' | command -p awk 'BEGIN{ORS="\\n"} {print}')
+      printf '{"additionalContext":"%s","hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"%s"}}\n' "$esc" "$esc"
+    else
+      printf '%s\n' "$text"
+    fi
+    exit 0
+  fi
+  if [ "$1" != login ] && [ "$1" != logout ]; then
+    echo "mc17: $why. Run mc17 login in your own terminal first: $login_command" >&2
+    exit 1
+  fi
+  node=$(command -v node)
+  if [ -z "$node" ]; then echo "mc17 login: no node stands on the PATH of this terminal." >&2; exit 1; fi
+fi
+{ [ "$1" = login ] || [ "$1" = logout ]; } && path=$PATH
+envbin=$(command -p -v env)
+# The values above are single words built here, so they split as intended; the PATH of a login run is passed whole.
+# shellcheck disable=SC2086
+exec "$envbin" -i HOME="$home" TMPDIR="$tmp" PATH="$path" $lang $extra "$node" --use-system-ca "$here/mc17.js" "$@"

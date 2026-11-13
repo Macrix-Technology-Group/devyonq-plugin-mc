@@ -1,0 +1,2071 @@
+{
+  "form": "mc-harness-contract/1",
+  "version": 1,
+  "base": "/api/v1/tenants/{tenantId}/devyonq/harness",
+  "header": "MC-Harness-Contract",
+  "refusalForm": "each refusal answers in the platform's problem form: its status, type about:blank, and a detail that opens with the refusal's type and a colon, '<type>: <sentence>'; the client reads the type from the detail",
+  "routes": [
+    {
+      "id": "session",
+      "method": "POST",
+      "path": "/session",
+      "bodyLimitBytes": 65536,
+      "kind": "read",
+      "request": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      },
+      "answer": {
+        "type": "object",
+        "required": [
+          "person",
+          "writer",
+          "tenant",
+          "instance",
+          "contractVersion",
+          "checkingKeys"
+        ],
+        "properties": {
+          "person": {
+            "type": "string"
+          },
+          "writer": {
+            "type": "string"
+          },
+          "tenant": {
+            "type": "string"
+          },
+          "instance": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "contractVersion": {
+            "type": "integer"
+          },
+          "checkingKeys": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "keyId",
+                "publicKey"
+              ],
+              "properties": {
+                "keyId": {
+                  "type": "string"
+                },
+                "publicKey": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "reads",
+      "method": "GET",
+      "path": "/reads/{kind}",
+      "bodyLimitBytes": 0,
+      "kind": "read",
+      "answer": {
+        "type": "object",
+        "required": [
+          "kind",
+          "content"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string"
+          },
+          "content": {},
+          "etag": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "commands",
+      "method": "POST",
+      "path": "/commands",
+      "bodyLimitBytes": 4194304,
+      "kind": "by command",
+      "request": {
+        "type": "object",
+        "required": [
+          "command",
+          "args",
+          "instance",
+          "files",
+          "facts"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "requestKey": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "command": {
+            "type": "string"
+          },
+          "args": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "instance": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "files": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "required": [
+                "sha256",
+                "base64"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "base64": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "facts": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "git": {
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "root": {
+                    "type": "string",
+                    "maxLength": 4096
+                  },
+                  "remote": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "maxLength": 4096,
+                    "description": "the checkout's remote URL, with the user-info of a scheme://user[:password]@host/... form stripped by the client; the form [user@]host:path is sent as it stands. The engine strips it again, and the checkout digest of a decision reads the remote so stripped"
+                  },
+                  "branch": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "maxLength": 4096
+                  },
+                  "head": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "maxLength": 4096
+                  },
+                  "cwd": {
+                    "type": "string",
+                    "maxLength": 4096
+                  }
+                }
+              },
+              "locks": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "maxLength": 1048576
+                },
+                "maxProperties": 4
+              },
+              "store": {
+                "type": "array",
+                "maxItems": 256
+              },
+              "processes": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "pid",
+                    "startedAt",
+                    "pattern"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "pid": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "startedAt": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "maxLength": 64
+                    },
+                    "pattern": {
+                      "type": "string",
+                      "maxLength": 1024
+                    }
+                  }
+                },
+                "maxItems": 1024
+              },
+              "host": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "cores": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 4096
+                  },
+                  "load": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100
+                  },
+                  "os": {
+                    "type": "string",
+                    "enum": [
+                      "linux",
+                      "macos",
+                      "windows"
+                    ]
+                  },
+                  "samples": {
+                    "type": "array",
+                    "maxItems": 1200,
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "at": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "maxLength": 64
+                        },
+                        "load": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 100
+                        },
+                        "cores": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 4096
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "plugin": {
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "additionalProperties": false,
+                "properties": {
+                  "folder": {
+                    "type": "string",
+                    "maxLength": 4096
+                  },
+                  "before": {
+                    "type": "string",
+                    "maxLength": 4096
+                  },
+                  "commit": {
+                    "type": "string",
+                    "maxLength": 4096
+                  }
+                }
+              },
+              "runnerBlockHash": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              }
+            }
+          }
+        }
+      },
+      "answer": {
+        "$ref": "#/answers/job"
+      }
+    },
+    {
+      "id": "uploads",
+      "method": "POST",
+      "path": "/uploads",
+      "bodyLimitBytes": 42008576,
+      "kind": "write",
+      "request": {
+        "$ref": "#/routes/2/request"
+      },
+      "answer": {
+        "$ref": "#/answers/job"
+      }
+    },
+    {
+      "id": "jobs",
+      "method": "POST",
+      "path": "/jobs/{jobId}",
+      "bodyLimitBytes": 4194304,
+      "kind": "by command",
+      "request": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "answers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "answer": {
+        "$ref": "#/answers/job"
+      },
+      "pollWithinSeconds": 30,
+      "note": "a job no poll or answer reached for the abandonment window (120 s) ends abandoned; the window counts from the client's last contact, so while it carries out a long ask, such as a run-test, the client polls the job with no answers at least every pollWithinSeconds seconds. Whatever the polls, a job still running commandWallSeconds after it started, or whose ask the client has not answered askWallSeconds after it was made, ends abandoned. A command that finds no place waits in a queue of 16, of which 4 are one person's and 8 one tenant's at most; one more is refused with harness-request-refused (all interim figures, to be measured on production)",
+      "commandWallSeconds": 900,
+      "askWallSeconds": 600
+    },
+    {
+      "id": "decision-start",
+      "method": "POST",
+      "path": "/decisions/{decisionId}/start",
+      "bodyLimitBytes": 65536,
+      "kind": "decision",
+      "request": {
+        "type": "object",
+        "required": [
+          "entry",
+          "command"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "entry": {
+            "type": "string"
+          },
+          "command": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        }
+      },
+      "answer": {
+        "type": "object"
+      }
+    }
+  ],
+  "decision": {
+    "form": "mc-harness-decision/1",
+    "signed": [
+      "form",
+      "decisionId",
+      "keyId",
+      "issuedAt",
+      "point",
+      "action",
+      "command",
+      "wave",
+      "scope",
+      "plan",
+      "checkout",
+      "facts"
+    ],
+    "signature": "Ed25519 over the canonical JSON of the signed fields (each absent field as null), as base64url of its 64 bytes; a signed decision travels as {decision, signature}",
+    "digests": {
+      "command": "the sha256 in hex of the exact command line or agent prompt",
+      "checkout": "the sha256 in hex of the JSON array [remote, root, branch], root the sha256 in hex of the top's path with /",
+      "wave": "the sha256 in hex of the JSON array [the lock's wavePlan, the lock's rulingRecord]",
+      "scope": "the Mission's scope as text, {SCOPE} of the Wave Plan's name WAVE-PLAN-{SCOPE}-{NNN}: for a test command the scope of the ruled plan it comes from, which the lock's wavePlanName names too; for any other point the scope of the lock's wavePlanName; null where none is read",
+      "plan": "the lock's planBinding",
+      "facts": "the start entry's inputDigest, or the inputDigest of its operation's saved line in ops.jsonl"
+    },
+    "entryFields": [
+      "decision",
+      "signature",
+      "inputDigest"
+    ],
+    "keysFiles": {
+      "production": "client/keys/production.json, for the gateway https://app.devyonq.ai alone"
+    }
+  },
+  "trust": {
+    "item": "trust.{SCOPE}.{sha256 hex of the command}",
+    "service": "devyonq-mc",
+    "value": "{yes: true, mission, digest, at}",
+    "note": "a person's yes to a test command is kept and read under the scope its signed decision carries (decision.digests.scope), never under a scope read from the working tree alone"
+  },
+  "answers": {
+    "job": {
+      "type": "object",
+      "required": [
+        "job",
+        "state"
+      ],
+      "properties": {
+        "job": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "running",
+            "asks",
+            "done",
+            "failed",
+            "interrupted",
+            "abandoned"
+          ]
+        },
+        "asks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "kind"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "kind": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "output": {
+          "type": "object",
+          "properties": {
+            "stdout": {
+              "type": "string"
+            },
+            "stderr": {
+              "type": "string"
+            },
+            "exit": {
+              "type": "integer"
+            }
+          }
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "kind"
+            ],
+            "properties": {
+              "kind": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "pathForms": {
+    "checkout": "a path relative to the top of the checkout, with / between its parts, '.' for the top itself",
+    "work": "/~work",
+    "store": "/~/.mc17/converge",
+    "temp": "/~tmp",
+    "engine": "a path of the engine's own copy prints as its package path, relative to the copy's root, such as harness/orchestration-harness.js",
+    "scratch": "a path of the engine's scratch folder for the call prints under /~tmp, the client's temporary folder"
+  },
+  "readKinds": {
+    "document": [
+      "id"
+    ],
+    "section": [
+      "id",
+      "heading"
+    ],
+    "record": [
+      "ledger",
+      "n"
+    ],
+    "tail": [
+      "ledger",
+      "count"
+    ],
+    "search": [
+      "q"
+    ],
+    "collection": [
+      "id"
+    ],
+    "collections": [],
+    "me": [],
+    "versions": [
+      "id"
+    ],
+    "version": [
+      "id",
+      "version"
+    ]
+  },
+  "fileArguments": {
+    "derivedFrom": "the release's own code under engine/core/harness/: each argument a command, or a function it hands its arguments to, gives the file seam (gateway/file-flags.testkit.ts)",
+    "files": "a flag whose word names a file: the file is sent, and the word rewritten to the path it was sent at",
+    "either": "a flag whose word names a file where one stands at that path: the file is sent and the word rewritten; any other word, such as an asset id, is sent as given",
+    "lists": "a flag whose word is a comma-separated list: each part is read as an either flag's word",
+    "dirs": "a flag whose word names a folder where one stands: every file under it is sent and the word rewritten; a file there is read as an either flag's word, and any other word is sent as given",
+    "positional": "either: each word after the command's own words that the release's parsing leaves positional is read as an either flag's word; the parsing takes the word after a --flag as that flag's value, unless it opens with --",
+    "paths": "a flag whose word is a path the command writes: the word is rewritten to its sent form, and nothing is sent"
+  },
+  "commands": {
+    "version": {
+      "kind": "local"
+    },
+    "login": {
+      "kind": "local"
+    },
+    "trust": {
+      "kind": "local",
+      "usage": "trust <sha256 hex> [--mission <SCOPE>]",
+      "terminal": true
+    },
+    "decision": {
+      "kind": "local",
+      "forms": {
+        "admit": {
+          "kind": "local",
+          "usage": "decision admit --store <dir> --entry <id> --command-digest <hex> [--prompt-digest <hex>]",
+          "route": "decision-start",
+          "exits": {
+            "admitted": 0,
+            "refused": 2,
+            "unreached": 1
+          }
+        }
+      }
+    },
+    "read": {
+      "kind": "read",
+      "route": "reads"
+    },
+    "upload": {
+      "kind": "write",
+      "route": "uploads",
+      "files": [
+        "-f",
+        "--file"
+      ],
+      "facts": [
+        "git"
+      ]
+    },
+    "collection": {
+      "kind": "write",
+      "forms": {
+        "create": {
+          "kind": "write",
+          "facts": [
+            "git"
+          ]
+        }
+      }
+    },
+    "accept": {
+      "kind": "read",
+      "files": [
+        "-f",
+        "--file"
+      ],
+      "facts": [
+        "git",
+        "locks"
+      ],
+      "dirs": [
+        "--docs"
+      ],
+      "either": [
+        "--ledger",
+        "--manifest",
+        "--results",
+        "--spec",
+        "--tp"
+      ]
+    },
+    "amend": {
+      "kind": "write",
+      "files": [
+        "-f",
+        "--file",
+        "--edits"
+      ],
+      "paths": [
+        "--out"
+      ],
+      "facts": [
+        "git",
+        "locks"
+      ],
+      "either": [
+        "--ledger",
+        "--manifest",
+        "--plain",
+        "--plan"
+      ]
+    },
+    "append": {
+      "kind": "write",
+      "files": [
+        "-f",
+        "--file",
+        "--record"
+      ],
+      "paths": [
+        "--stage",
+        "--out"
+      ],
+      "facts": [
+        "git",
+        "locks"
+      ],
+      "flagFacts": {
+        "--stage": [
+          "host.os"
+        ]
+      },
+      "either": [
+        "--manifest",
+        "--runner-return",
+        "--wave"
+      ],
+      "dirs": [
+        "--stage",
+        "--stage-run"
+      ]
+    },
+    "aprentry": {
+      "kind": "read",
+      "files": [
+        "-f",
+        "--file"
+      ],
+      "facts": [
+        "git"
+      ]
+    },
+    "aprid": {
+      "kind": "read",
+      "facts": [
+        "git"
+      ]
+    },
+    "archeology": {
+      "kind": "read",
+      "facts": [
+        "git"
+      ],
+      "dirs": [
+        "--root"
+      ]
+    },
+    "binding": {
+      "kind": "read",
+      "files": [
+        "-f",
+        "--file"
+      ],
+      "facts": [
+        "git"
+      ]
+    },
+    "block": {
+      "kind": "read",
+      "files": [
+        "-f",
+        "--file"
+      ],
+      "facts": [
+        "git"
+      ]
+    },
+    "check": {
+      "kind": "read",
+      "files": [
+        "-f",
+        "--file"
+      ],
+      "facts": [
+        "git",
+        "locks"
+      ],
+      "either": [
+        "--ledger"
+      ]
+    },
+    "converge": {
+      "kind": "decision",
+      "files": [
+        "-f",
+        "--file"
+      ],
+      "facts": [
+        "git",
+        "locks",
+        "host.cores",
+        "host.load",
+        "host.os"
+      ],
+      "forms": {
+        "host": {
+          "kind": "local"
+        },
+        "load": {
+          "kind": "decision",
+          "facts": [
+            "git",
+            "host.samples",
+            "host.os"
+          ]
+        },
+        "init": {
+          "kind": "write",
+          "facts": [
+            "git"
+          ]
+        }
+      },
+      "either": [
+        "--add",
+        "--adopt",
+        "--agent-prompt",
+        "--check",
+        "--handed",
+        "--manifest",
+        "--model",
+        "--out",
+        "--policy",
+        "--registry",
+        "--review",
+        "--wave",
+        "--words-file"
+      ],
+      "dirs": [
+        "--dir",
+        "--fixtures",
+        "--plan",
+        "--point",
+        "--round",
+        "--runner-facts",
+        "--scope",
+        "--stage",
+        "--stage-dir",
+        "--wave-report"
+      ],
+      "lists": [
+        "--ledger"
+      ],
+      "paths": [
+        "--repo"
+      ]
+    },
+    "create": {
+      "kind": "write",
+      "files": [
+        "-f",
+        "--file",
+        "--answers"
+      ],
+      "paths": [
+        "--out"
+      ],
+      "facts": [
+        "git",
+        "locks"
+      ],
+      "either": [
+        "--ledger",
+        "--manifest",
+        "--pass",
+        "--plain",
+        "--plan"
+      ]
+    },
+    "currency": {
+      "kind": "read",
+      "files": [
+        "-f",
+        "--file"
+      ],
+      "facts": [
+        "git"
+      ]
+    },
+    "dispatch": {
+      "kind": "write",
+      "files": [
+        "-f",
+        "--file"
+      ],
+      "facts": [
+        "git",
+        "locks"
+      ]
+    },
+    "doctrine": {
+      "kind": "read",
+      "facts": [
+        "git",
+        "plugin"
+      ],
+      "either": [
+        "--gate"
+      ],
+      "dirs": [
+        "--skills",
+        "--templates"
+      ]
+    },
+    "evidence": {
+      "kind": "read",
+      "files": [
+        "-f",
+        "--file"
+      ],
+      "facts": [
+        "git"
+      ],
+      "either": [
+        "--manifest"
+      ]
+    },
+    "fields": {
+      "kind": "read",
+      "files": [
+        "-f",
+        "--file"
+      ],
+      "facts": [
+        "git"
+      ]
+    },
+    "gates": {
+      "kind": "read",
+      "facts": [
+        "git",
+        "plugin"
+      ],
+      "either": [
+        "--ledger",
+        "--manifest",
+        "--wave"
+      ],
+      "dirs": [
+        "--runs"
+      ]
+    },
+    "hash": {
+      "kind": "read",
+      "files": [
+        "-f",
+        "--file"
+      ],
+      "facts": [
+        "git"
+      ]
+    },
+    "help": {
+      "kind": "read",
+      "facts": []
+    },
+    "history": {
+      "kind": "read",
+      "facts": [
+        "git",
+        "plugin"
+      ],
+      "files": [
+        "-f",
+        "--file"
+      ]
+    },
+    "identity": {
+      "kind": "read",
+      "facts": [
+        "git"
+      ]
+    },
+    "integration": {
+      "kind": "write",
+      "paths": [
+        "--out",
+        "--work",
+        "--save-suites"
+      ],
+      "work": [
+        "--work"
+      ],
+      "facts": [
+        "git",
+        "locks",
+        "plugin",
+        "host.os"
+      ],
+      "either": [
+        "--drill",
+        "--suites-base",
+        "--suites-changes",
+        "--suites-head",
+        "--tp"
+      ],
+      "lists": [
+        "--ips"
+      ],
+      "files": [
+        "-f",
+        "--file"
+      ]
+    },
+    "landing": {
+      "kind": "read",
+      "facts": [
+        "git",
+        "locks"
+      ],
+      "dirs": [
+        "--ips"
+      ],
+      "either": [
+        "--ledger",
+        "--manifest"
+      ]
+    },
+    "ledger": {
+      "kind": "read",
+      "writeFlags": [
+        "--declare"
+      ],
+      "files": [
+        "-f",
+        "--file"
+      ],
+      "facts": [
+        "git"
+      ]
+    },
+    "linkpass": {
+      "kind": "read",
+      "files": [
+        "-f",
+        "--file"
+      ],
+      "facts": [
+        "git"
+      ]
+    },
+    "lint": {
+      "kind": "read",
+      "files": [
+        "-f",
+        "--file",
+        "--lock"
+      ],
+      "paths": [
+        "--record-fingerprint"
+      ],
+      "facts": [
+        "git"
+      ],
+      "positional": "either"
+    },
+    "lintdoc": {
+      "kind": "read",
+      "files": [
+        "-f",
+        "--file"
+      ],
+      "facts": [],
+      "unreachedExit": 3
+    },
+    "machinery": {
+      "kind": "read",
+      "facts": [
+        "git",
+        "plugin",
+        "runnerBlockHash"
+      ],
+      "either": [
+        "--registry"
+      ]
+    },
+    "nextnum": {
+      "kind": "read",
+      "facts": [
+        "git"
+      ],
+      "paths": [
+        "--repo"
+      ]
+    },
+    "orphans": {
+      "kind": "read",
+      "files": [
+        "-f",
+        "--file"
+      ],
+      "facts": [
+        "git"
+      ],
+      "lists": [
+        "--ips"
+      ],
+      "either": [
+        "--tp",
+        "--wave"
+      ]
+    },
+    "params": {
+      "kind": "read",
+      "files": [
+        "-f",
+        "--file"
+      ],
+      "facts": [
+        "git"
+      ],
+      "either": [
+        "--ledger"
+      ]
+    },
+    "plain": {
+      "kind": "read",
+      "files": [
+        "-f",
+        "--file",
+        "--draft"
+      ],
+      "paths": [
+        "--out"
+      ],
+      "facts": [
+        "git"
+      ],
+      "either": [
+        "--ledger",
+        "--manifest",
+        "--pass",
+        "--plan",
+        "--prior"
+      ]
+    },
+    "publish": {
+      "kind": "write",
+      "files": [
+        "-f",
+        "--file"
+      ],
+      "facts": [
+        "git",
+        "locks"
+      ],
+      "positional": "either"
+    },
+    "published": {
+      "kind": "read",
+      "facts": [
+        "git"
+      ],
+      "either": [
+        "--ledger",
+        "--manifest"
+      ]
+    },
+    "radius": {
+      "kind": "read",
+      "files": [
+        "-f",
+        "--file"
+      ],
+      "facts": [
+        "git"
+      ]
+    },
+    "readings": {
+      "kind": "write",
+      "files": [
+        "-f",
+        "--file"
+      ],
+      "facts": [
+        "git",
+        "locks",
+        "plugin"
+      ],
+      "dirs": [
+        "--docs"
+      ],
+      "either": [
+        "--ledger",
+        "--manifest"
+      ]
+    },
+    "render": {
+      "kind": "read",
+      "files": [
+        "--answers"
+      ],
+      "paths": [
+        "--out"
+      ],
+      "facts": [
+        "git"
+      ]
+    },
+    "reviewed": {
+      "kind": "read",
+      "facts": [
+        "git"
+      ],
+      "either": [
+        "--manifest"
+      ],
+      "files": [
+        "-f",
+        "--file"
+      ]
+    },
+    "reviews": {
+      "kind": "read",
+      "facts": [
+        "git"
+      ],
+      "either": [
+        "--manifest"
+      ],
+      "files": [
+        "-f",
+        "--file"
+      ]
+    },
+    "rework": {
+      "kind": "write",
+      "files": [
+        "-f",
+        "--file"
+      ],
+      "facts": [
+        "git",
+        "locks"
+      ],
+      "either": [
+        "--ledger"
+      ]
+    },
+    "rights": {
+      "kind": "read",
+      "facts": [
+        "git"
+      ]
+    },
+    "rulings": {
+      "kind": "read",
+      "files": [
+        "-f",
+        "--file"
+      ],
+      "facts": [
+        "git"
+      ],
+      "either": [
+        "--ledger"
+      ]
+    },
+    "scope": {
+      "kind": "read",
+      "files": [
+        "-f",
+        "--file"
+      ],
+      "facts": [
+        "git"
+      ]
+    },
+    "selftext": {
+      "kind": "read",
+      "facts": [
+        "git",
+        "plugin"
+      ],
+      "dirs": [
+        "--skills",
+        "--templates"
+      ],
+      "lists": [
+        "--texts"
+      ]
+    },
+    "settings": {
+      "kind": "write",
+      "localFlags": [
+        "--hook",
+        "--measure"
+      ],
+      "files": [
+        "-f",
+        "--file"
+      ],
+      "facts": [],
+      "either": [
+        "--entry",
+        "--retire",
+        "--show",
+        "--text",
+        "--words"
+      ],
+      "dirs": [
+        "--export",
+        "--keep",
+        "--out",
+        "--review"
+      ]
+    },
+    "stage": {
+      "kind": "write",
+      "paths": [
+        "--out",
+        "--save-suites",
+        "--work"
+      ],
+      "work": [
+        "--work"
+      ],
+      "facts": [
+        "git",
+        "locks",
+        "plugin",
+        "host.os"
+      ],
+      "either": [
+        "--ledger",
+        "--manifest",
+        "--spec",
+        "--tp",
+        "--wave"
+      ],
+      "dirs": [
+        "--rerun"
+      ]
+    },
+    "status": {
+      "kind": "read",
+      "facts": [
+        "git",
+        "locks"
+      ],
+      "files": [
+        "-f",
+        "--file"
+      ]
+    },
+    "tptrace": {
+      "kind": "read",
+      "files": [
+        "-f",
+        "--file"
+      ],
+      "facts": [
+        "git"
+      ],
+      "either": [
+        "--spec",
+        "--tp"
+      ]
+    },
+    "unlanded": {
+      "kind": "read",
+      "facts": [
+        "git"
+      ],
+      "dirs": [
+        "--ips"
+      ],
+      "either": [
+        "--ledger",
+        "--manifest"
+      ]
+    },
+    "versions": {
+      "kind": "read",
+      "facts": [
+        "git"
+      ]
+    },
+    "wave": {
+      "kind": "read",
+      "facts": [
+        "git",
+        "locks"
+      ],
+      "forms": {
+        "lock": {
+          "kind": "write",
+          "paths": [
+            "--out",
+            "--repo"
+          ],
+          "facts": [
+            "git",
+            "locks"
+          ]
+        },
+        "unlock": {
+          "kind": "write",
+          "facts": [
+            "git",
+            "locks"
+          ]
+        },
+        "script": {
+          "kind": "write",
+          "paths": [
+            "--out",
+            "--repo"
+          ],
+          "facts": [
+            "git",
+            "locks"
+          ]
+        },
+        "prompts": {
+          "kind": "write",
+          "files": [
+            "--draft"
+          ],
+          "paths": [
+            "--out",
+            "--work",
+            "--repo"
+          ],
+          "work": [
+            "--work"
+          ],
+          "facts": [
+            "git",
+            "locks"
+          ]
+        },
+        "verify": {
+          "kind": "read",
+          "facts": [
+            "git",
+            "locks"
+          ]
+        },
+        "hooks": {
+          "kind": "write",
+          "facts": [
+            "git"
+          ]
+        }
+      },
+      "either": [
+        "--arch",
+        "--check",
+        "--draft",
+        "--facts",
+        "--ledger",
+        "--manifest",
+        "--map",
+        "--plan",
+        "--runner-return"
+      ],
+      "dirs": [
+        "--docs"
+      ],
+      "lists": [
+        "--members"
+      ],
+      "paths": [
+        "--repo"
+      ],
+      "positional": "either"
+    },
+    "wavecheck": {
+      "kind": "read",
+      "files": [
+        "-f",
+        "--file"
+      ],
+      "facts": [
+        "git"
+      ],
+      "either": [
+        "--ledger",
+        "--manifest",
+        "--map"
+      ]
+    },
+    "test-wait": {
+      "kind": "read",
+      "testBuild": true,
+      "usage": "test-wait [--ms <n>]",
+      "facts": []
+    }
+  },
+  "writingKinds": [
+    "write",
+    "approval",
+    "decision"
+  ],
+  "steps": {
+    "write-lock": {
+      "fields": [
+        "path",
+        "base64"
+      ]
+    },
+    "commit-wave": {
+      "fields": [
+        "paths",
+        "message",
+        "token"
+      ],
+      "mid-run": true,
+      "pathFields": [
+        "path",
+        "change",
+        "base64"
+      ],
+      "note": "each path reads as write-file's places"
+    },
+    "write-file": {
+      "fields": [
+        "path",
+        "base64",
+        "remove"
+      ],
+      "note": "in the checkout the engine writes, removes or clears only under .mc17/; at a path that a --out, --save-suites (its prefix and a dot) or --record-fingerprint of the command's own words names, as the client sent them, or under it; at the record {title}.written.json in the command's folder; where the command's words name --title, at {title}.md and {title}.written.json of that title in the command's folder or in the folder of a --out path the words name (mc17 create --render with no --out writes {title}.md in the command's folder, and with --out sub/x.md writes its record at sub/{title}.written.json); the work folder /~work, the converge store and the temporary folder /~tmp stand open by their places. A command that would write elsewhere meets harness-path-refused in the engine, and no step names such a path. The drill's proofs file harness/BREAK-PROOFS.json never goes as write-file: the engine sends it as restore-file, or puts it back as git-write checkout-file"
+    },
+    "git-write": {
+      "fields": [
+        "form",
+        "path",
+        "commit"
+      ],
+      "forms": [
+        "worktree-add",
+        "worktree-remove",
+        "checkout-file"
+      ],
+      "mid-run": true,
+      "note": "worktree-add and worktree-remove name a folder of the temporary folder /~tmp alone; checkout-file names a path of write-file's places or the drill's proofs file harness/BREAK-PROOFS.json"
+    },
+    "restore-file": {
+      "fields": [
+        "path",
+        "base64"
+      ],
+      "note": "the drill's proofs file harness/BREAK-PROOFS.json, at any folder of the checkout, written by the drill and written back after it, always as this step and never as write-file; any other path reads as write-file's places"
+    },
+    "set-hooks-path": {
+      "fields": [],
+      "hooks": {
+        "pre-commit": "sha256:c3cb20ffad7b80f3293b53a01a466d8b0f8aefac2269c1be9e125140444b40bf",
+        "pre-merge-commit": "sha256:b5e9e2a7dcab80ca890322d17ef4893f2269ec99a9a35ee6d0a9f0dbe12e7e1d"
+      },
+      "note": "mc17 wave hooks sends this step alone, with no write-file step of the hooks: the client writes its own copy of each hook under .mc17/hooks, which carries the sha256 named here, and points core.hooksPath there; the engine sends no other write under .mc17/hooks, and a core.hooksPath that names another folder has no client form"
+    },
+    "store-decision": {
+      "fields": [
+        "lines",
+        "decision",
+        "signature",
+        "keyId"
+      ]
+    },
+    "write-brief": {
+      "fields": [
+        "path",
+        "base64"
+      ]
+    },
+    "clear": {
+      "fields": [
+        "what",
+        "path",
+        "base64"
+      ],
+      "what": [
+        "registry",
+        "hand",
+        "clone-lock"
+      ]
+    }
+  },
+  "asks": {
+    "facts": {
+      "fields": [
+        "git",
+        "files",
+        "locks",
+        "store",
+        "processes",
+        "host"
+      ],
+      "storeItems": {
+        "file": "a file of the store, answered {base64} or {base64: null}",
+        "list": "a folder of the store, answered {names} or {names: null}"
+      }
+    },
+    "model-key": {
+      "fields": [],
+      "answer": [
+        "ready",
+        "fault"
+      ]
+    },
+    "model": {
+      "fields": [
+        "model",
+        "user",
+        "more",
+        "tokenCap",
+        "sha256"
+      ],
+      "answer": [
+        "status",
+        "text",
+        "late",
+        "error",
+        "sha256"
+      ],
+      "system": "harness/converge/policy.md of the plugin",
+      "tokenCap": {
+        "minimum": 1,
+        "maximum": 8000
+      },
+      "more": {
+        "maxItems": 2,
+        "maxBytes": 65536,
+        "roles": [
+          "assistant",
+          "user"
+        ]
+      },
+      "note": "the engine asks a model call only within these bounds: a token cap within tokenCap, at most more.maxItems correction messages of more.maxBytes in all, a packet (the user message) of packet.maxBytes bytes at most, and asksPerCommand model asks of one command, its nested commands among them, a refused one counted. The ask names the model the Wave Plan's wave.model.converge names, or the --model of the command line; the client calls only where that model equals the person's own setting, mc17 config model on the computer, or the --model of the command line, and refuses any other, so a model the lock, a plan file or the engine names alone spends nothing",
+      "packet": {
+        "maxBytes": 262144
+      },
+      "asksPerCommand": 8
+    },
+    "run-test": {
+      "fields": [
+        "command",
+        "decision"
+      ],
+      "answer": [
+        "exit",
+        "output",
+        "stageOutput"
+      ]
+    },
+    "step": {
+      "fields": [
+        "step"
+      ]
+    },
+    "suite-changes": {
+      "fields": [
+        "base",
+        "head",
+        "suites",
+        "folder",
+        "before"
+      ]
+    },
+    "reading": {
+      "fields": [
+        "reader",
+        "args"
+      ],
+      "readers": [
+        "layout",
+        "narrow-kinds",
+        "base-figures"
+      ],
+      "baseFigures": {
+        "figures": {
+          "maxItems": 64,
+          "maxChars": 1000,
+          "timeMs": 1000
+        },
+        "counts": "`{file}:{line}` and the digits of each matched count apart by a space, ` on {Windows|macOS|Linux}` after a count by host, the counts of one line apart by ' and ' and by ', ', the lines apart by '; '; no other word of a text",
+        "note": "the engine sends at most figures.maxItems count figures, each { in, line, re } with line and re as [source, flags] of figures.maxChars characters at most; the client runs them within figures.timeMs milliseconds and answers a problem past it. The answer's blockHash and blockLines read null: the engine reads the block's figures from its own copy's sanctioned block"
+      }
+    }
+  },
+  "factKinds": [
+    "git",
+    "files",
+    "locks",
+    "store",
+    "processes",
+    "host",
+    "plugin",
+    "runnerBlockHash"
+  ],
+  "hostFacts": [
+    "cores",
+    "load",
+    "os",
+    "samples"
+  ],
+  "gitForms": [
+    {
+      "form": "rev-parse-toplevel",
+      "argv": [
+        "rev-parse",
+        "--show-toplevel"
+      ]
+    },
+    {
+      "form": "rev-parse-head",
+      "argv": [
+        "rev-parse",
+        "HEAD"
+      ]
+    },
+    {
+      "form": "rev-parse-verify",
+      "argv": [
+        "rev-parse",
+        "--verify",
+        "--quiet",
+        "{rev}"
+      ]
+    },
+    {
+      "form": "rev-parse",
+      "argv": [
+        "rev-parse",
+        "{rev}"
+      ]
+    },
+    {
+      "form": "rev-parse-short-head",
+      "argv": [
+        "rev-parse",
+        "--short",
+        "HEAD"
+      ]
+    },
+    {
+      "form": "rev-parse-inside",
+      "argv": [
+        "rev-parse",
+        "--is-inside-work-tree"
+      ]
+    },
+    {
+      "form": "rev-parse-tree",
+      "argv": [
+        "rev-parse",
+        "{rev}^{tree}"
+      ]
+    },
+    {
+      "form": "rev-parse-upstream",
+      "argv": [
+        "rev-parse",
+        "--abbrev-ref",
+        "--symbolic-full-name",
+        "@{upstream}"
+      ]
+    },
+    {
+      "form": "symbolic-ref-short",
+      "argv": [
+        "symbolic-ref",
+        "--short",
+        "HEAD"
+      ]
+    },
+    {
+      "form": "log-merges",
+      "argv": [
+        "log",
+        "--first-parent",
+        "--merges",
+        "--format=%H%x1f%P%x1f%s%x1f%b%x1e",
+        "{range}"
+      ]
+    },
+    {
+      "form": "log-subjects",
+      "argv": [
+        "log",
+        "--format=%s%x1f%b%x1e",
+        "{range}"
+      ]
+    },
+    {
+      "form": "log-first-parent",
+      "argv": [
+        "log",
+        "--first-parent",
+        "--format=%H%x1f%P%x1f%cn%x1f%ce%x1f%s%x1f%b%x1e",
+        "{range}"
+      ]
+    },
+    {
+      "form": "log-subjects-lead",
+      "argv": [
+        "log",
+        "--format=%x1f%s%x1f%b%x1e",
+        "{range}"
+      ]
+    },
+    {
+      "form": "log-added",
+      "argv": [
+        "log",
+        "--diff-filter=A",
+        "--format=%H",
+        "--",
+        "{path}"
+      ]
+    },
+    {
+      "form": "log-added-at",
+      "argv": [
+        "log",
+        "--diff-filter=A",
+        "--format=%H",
+        "{rev}",
+        "--",
+        "{path}"
+      ]
+    },
+    {
+      "form": "rev-list",
+      "argv": [
+        "rev-list",
+        "{range}"
+      ]
+    },
+    {
+      "form": "rev-list-parents",
+      "argv": [
+        "rev-list",
+        "--parents",
+        "HEAD"
+      ]
+    },
+    {
+      "form": "merge-base-is-ancestor",
+      "argv": [
+        "merge-base",
+        "--is-ancestor",
+        "{rev}",
+        "{rev2}"
+      ]
+    },
+    {
+      "form": "cat-file-exists",
+      "argv": [
+        "cat-file",
+        "-e",
+        "{rev}^{commit}"
+      ]
+    },
+    {
+      "form": "config-hooks-path",
+      "argv": [
+        "config",
+        "--get",
+        "core.hooksPath"
+      ]
+    },
+    {
+      "form": "show-names",
+      "argv": [
+        "show",
+        "-s",
+        "--format=%cn%x1f%ce%x1f%an",
+        "{rev}"
+      ]
+    },
+    {
+      "form": "ls-files",
+      "argv": [
+        "ls-files"
+      ]
+    },
+    {
+      "form": "ls-files-path",
+      "argv": [
+        "ls-files",
+        "--",
+        "{path}"
+      ]
+    },
+    {
+      "form": "ls-tree-names",
+      "argv": [
+        "ls-tree",
+        "--name-only",
+        "{rev}",
+        "--",
+        "{path}"
+      ]
+    },
+    {
+      "form": "ls-tree-recursive",
+      "argv": [
+        "ls-tree",
+        "-r",
+        "--name-only",
+        "{rev}"
+      ]
+    },
+    {
+      "form": "ls-tree-recursive-under",
+      "argv": [
+        "ls-tree",
+        "-r",
+        "--name-only",
+        "-z",
+        "{rev}",
+        "--",
+        "{paths...}"
+      ]
+    },
+    {
+      "form": "diff-names",
+      "argv": [
+        "diff",
+        "--name-only",
+        "{rev}",
+        "{rev2}"
+      ]
+    },
+    {
+      "form": "status-porcelain",
+      "argv": [
+        "status",
+        "--porcelain",
+        "--",
+        "{paths...}"
+      ]
+    },
+    {
+      "form": "worktree-list",
+      "argv": [
+        "worktree",
+        "list",
+        "--porcelain"
+      ]
+    },
+    {
+      "form": "fetch",
+      "argv": [
+        "fetch",
+        "--quiet",
+        "{remote}"
+      ],
+      "answer": "fetched"
+    },
+    {
+      "form": "show-lock",
+      "argv": [
+        "show",
+        "{rev}:.mc17/wave.json"
+      ]
+    },
+    {
+      "form": "remote-top-branch",
+      "program": "ssh",
+      "argv": [
+        "{host}",
+        "git",
+        "-C",
+        "{remotePath}",
+        "rev-parse",
+        "--show-toplevel",
+        "--abbrev-ref",
+        "HEAD"
+      ],
+      "note": "the engine asks this form only for a host the checkout's remote (facts.git.remote) names in an ssh form, ssh://[user@]host[:port]/... or [user@]host:path, as host or user@host; the client runs ssh -o BatchMode=yes before the host, refuses a host none of its checkout's remotes name (remote.*.url and remote.*.pushurl) and quotes remotePath in single quotes for the remote shell"
+    }
+  ],
+  "argumentTypes": {
+    "rev": "^(?!-)[A-Za-z0-9._/@{}^~+-]{1,200}$",
+    "rev2": "^(?!-)[A-Za-z0-9._/@{}^~+-]{1,200}$",
+    "range": "^(?!-)[A-Za-z0-9._/@{}^~+-]{1,200}(?:\\.\\.(?!-)[A-Za-z0-9._/@{}^~+-]{1,200})?$",
+    "remote": "^(?!-)[A-Za-z0-9._-]{1,100}$",
+    "host": "^(?!-)[A-Za-z0-9._@-]{1,200}$",
+    "remotePath": "^(?!.*/\\.{1,2}(?:/|$))/[A-Za-z0-9._/-]{1,1000}$",
+    "path": "checkout",
+    "paths...": "checkout"
+  },
+  "patterns": [
+    "suite-mc17",
+    "suite-harness",
+    "suite-hooks",
+    "drill",
+    "gates",
+    "selftext",
+    "stage",
+    "stage-rerun"
+  ],
+  "testBuild": {
+    "setting": "HARNESS_TEST_BUILD",
+    "versions": {
+      "older": 0,
+      "newer": 2
+    },
+    "command": "test-wait",
+    "waitMs": 35000,
+    "maxWaitMs": 120000,
+    "header": "MC-Harness-Test",
+    "drop": "drop-after-write"
+  },
+  "errors": [
+    {
+      "type": "harness-caller-refused",
+      "status": 403,
+      "check": "caller"
+    },
+    {
+      "type": "uniform-401",
+      "status": 401,
+      "check": "caller"
+    },
+    {
+      "type": "harness-tenant-mismatch",
+      "status": null,
+      "check": "tenant"
+    },
+    {
+      "type": "harness-contract-unserved",
+      "status": 409,
+      "check": "contract"
+    },
+    {
+      "type": "impersonation-read-only",
+      "status": 403
+    },
+    {
+      "type": "harness-command-unread",
+      "status": 403
+    },
+    {
+      "type": "harness-command-unserved",
+      "status": 409
+    },
+    {
+      "type": "harness-connection-unresolved",
+      "status": 409
+    },
+    {
+      "type": "harness-instance-refused",
+      "status": 409
+    },
+    {
+      "type": "harness-corpus-route",
+      "status": 500
+    },
+    {
+      "type": "harness-process-refused",
+      "status": 500
+    },
+    {
+      "type": "harness-module-refused",
+      "status": 500
+    },
+    {
+      "type": "harness-signing-key-absent",
+      "status": 503
+    },
+    {
+      "type": "harness-decision-used",
+      "status": 409
+    },
+    {
+      "type": "harness-decision-unknown",
+      "status": 404
+    },
+    {
+      "type": "harness-decision-key-retired",
+      "status": 409
+    },
+    {
+      "type": "harness-job-unknown",
+      "status": 404
+    },
+    {
+      "type": "harness-request-refused",
+      "status": 400
+    },
+    {
+      "type": "harness-host-unbound",
+      "status": 500
+    },
+    {
+      "type": "harness-path-refused",
+      "status": 500
+    },
+    {
+      "type": "harness-thread-failed",
+      "status": 500
+    },
+    {
+      "type": "harness-job-abandoned",
+      "status": 500
+    },
+    {
+      "type": "harness-plan-unruled",
+      "status": 409
+    },
+    {
+      "type": "body-too-large",
+      "status": 413
+    }
+  ]
+}

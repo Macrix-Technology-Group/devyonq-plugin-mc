@@ -1,0 +1,15 @@
+{
+  "form": "mc17-heavy-runs/1",
+  "about": "The heavy runs: the runs the heavy-run hook refuses in a wave run by hand until a decision of the judgment module names them, and the runs the command mc17 converge evaluate keys with the hook's own reader. Each entry carries one matcher. A matcher of kind program names the file a program word, or the script word after an interpreter, ends with, compared by its last path part with a closing .exe taken off; where lightWithName is true, a word after the file that names checks makes the run a run of one check by name, which is light. A matcher of kind subcommand names the word after a program word whose last path part is one of its programs, with a word the command must hold or must not hold. A matcher of kind tool names a tool whose every call is heavy.",
+  "entries": [
+    { "id": "suite-mc17", "matcher": { "kind": "program", "file": "mc17.test.js", "lightWithName": true }, "what": "the whole mc17 test suite" },
+    { "id": "suite-harness", "matcher": { "kind": "program", "file": "harness.test.js", "lightWithName": true }, "what": "the whole harness test suite" },
+    { "id": "suite-hooks", "matcher": { "kind": "program", "file": "hooks.test.py", "lightWithName": true }, "what": "the whole hook suite" },
+    { "id": "drill", "matcher": { "kind": "program", "file": "mc17.mutations.js", "lightWithName": false }, "what": "the drill, with --only and --workers or without them" },
+    { "id": "gates", "matcher": { "kind": "subcommand", "programs": ["mc17", "mc17.js"], "word": "gates" }, "what": "the release checks" },
+    { "id": "selftext", "matcher": { "kind": "subcommand", "programs": ["mc17", "mc17.js"], "word": "selftext" }, "what": "the self-text check, which runs the three suites whole" },
+    { "id": "stage", "matcher": { "kind": "subcommand", "programs": ["mc17", "mc17.js"], "word": "stage", "without": "--rerun" }, "what": "an integration stage" },
+    { "id": "stage-rerun", "matcher": { "kind": "subcommand", "programs": ["mc17", "mc17.js"], "word": "stage", "with": "--rerun" }, "what": "a reader rerun over a finished stage run" },
+    { "id": "agent", "matcher": { "kind": "tool", "tool": "Agent" }, "what": "an agent start" }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "canonq:review-result-v1",
+  "title": "The adversarial review's structured result (IP-MC17-007 AC-5)",
+  "description": "The contract a review's ledger record carries beside its prose, so a gate reads states and never parses sentences. The ledger schema's workOrder entries mirror this shape one to one; mc17.test.js holds the two equal. The seam: in, the target asset ids; out, the review asset id, the ledger record number and this work order. mc-adv-review-v17 is the first caller; the DevyonQ adversarial-review gate and button are the second.",
+  "type": "object",
+  "required": ["review", "record", "workOrder"],
+  "properties": {
+    "review": {
+      "type": "string",
+      "description": "The published review asset id, the only ground for a claim of publication (Profile 4.6)"
+    },
+    "record": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "The ledger record number the platform assigned on append"
+    },
+    "workOrder": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "severity", "owner", "disposition"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "severity": { "enum": ["critical", "high", "medium", "low"] },
+          "owner": { "type": "string", "minLength": 1, "description": "The authority's word, or the pen" },
+          "disposition": { "enum": ["open", "applied", "argued", "ruled-away"] },
+          "record": { "type": "integer", "minimum": 1, "description": "The record that dispatched the item" },
+          "note": { "type": "string" }
+        }
+      }
+    }
+  }
+}

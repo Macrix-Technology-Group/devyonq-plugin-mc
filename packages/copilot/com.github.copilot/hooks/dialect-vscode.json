@@ -1,0 +1,42 @@
+{
+  "about": "The dialect of VS Code's Local agent, which hooks/dialect.py reads to map VS Code's hook payload onto the payload the gates read. The package's hooks.json names this file in the keys VS Code runs, command, windows, linux and osx. VS Code sends snake_case fields and its own tool names: run_in_terminal for its shell tool, and send_to_terminal, whose input carries the command it sends to a terminal it started, runSubagent for the tool that starts a subagent, and mcp_<server>_<tool> for an MCP tool, so the CanonQ write tools are matched by the end of their name under any server name; a call named Bash or Agent is gated as that name too. The PostToolUse payload carries the tool's outcome as tool_response. The reply at the end of a turn is read from the transcript at transcript_path, the last row of type assistant.message, its text at data.content. A denial carries the hook-specific form VS Code reads and the CLI's top-level permissionDecision, on standard output with exit 0; a note on an allowed call is a systemMessage.",
+  "fields": {
+    "event": "hook_event_name",
+    "tool": "tool_name",
+    "input": "tool_input",
+    "command": "tool_input.command",
+    "prompt": "tool_input.prompt",
+    "cwd": "cwd",
+    "session": "session_id",
+    "call": "tool_use_id",
+    "response": "tool_response",
+    "agent": "agent_id",
+    "stopActive": "stop_hook_active"
+  },
+  "events": {
+    "PreToolUse": "PreToolUse",
+    "PostToolUse": "PostToolUse",
+    "SubagentStop": "SubagentStop",
+    "Stop": "Stop"
+  },
+  "tools": [
+    {"name": "run_in_terminal", "as": "Bash", "kinds": ["document", "branch", "heavy", "secret"]},
+    {"name": "send_to_terminal", "as": "Bash", "kinds": ["document", "branch", "heavy", "secret"]},
+    {"name": "Bash", "kinds": ["document", "branch", "heavy", "secret"]},
+    {"name": "runSubagent", "as": "Agent", "kinds": ["branch", "heavy"]},
+    {"name": "Agent", "kinds": ["branch", "heavy"]},
+    {"name": "read_file", "as": "Read", "kinds": ["secret"]},
+    {"name": "create_file", "as": "Write", "kinds": ["secret"]},
+    {"name": "replace_string_in_file", "as": "Edit", "kinds": ["secret"]},
+    {"name": "insert_edit_into_file", "as": "Edit", "kinds": ["secret"]},
+    {"name": "apply_patch", "as": "Edit", "kinds": ["secret"]},
+    {"pattern": "mcp_.+_.+", "kinds": ["document"]}
+  ],
+  "reply": {"transcript": "transcript_path", "row": {"type": "assistant.message"}, "text": "data.content"},
+  "deny": {
+    "template": {"permissionDecision": "deny", "permissionDecisionReason": "<reason>", "hookSpecificOutput": {"hookEventName": "PreToolUse", "permissionDecision": "deny", "permissionDecisionReason": "<reason>"}},
+    "exit": 0,
+    "stream": "stdout"
+  },
+  "note": "systemMessage"
+}

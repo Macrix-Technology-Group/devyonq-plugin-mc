@@ -1,0 +1,108 @@
+{
+  "version": 1,
+  "hooks": {
+    "PreToolUse": [
+      {
+        "type": "command",
+        "matcher": "Bash|bash|powershell|PowerShell|run_in_terminal|send_to_terminal|view|create|edit|str_replace_editor|read_file|create_file|replace_string_in_file|insert_edit_into_file|apply_patch",
+        "bash": "\"${PLUGIN_ROOT}/hooks/mc17-gate\" dialect --dialect \"${PLUGIN_ROOT}/com.github.copilot/hooks/dialect-cli.json\" lint-secret",
+        "powershell": "cmd.exe /d /s /c 'if 1==1 \"%PLUGIN_ROOT%\\hooks\\mc17-gate.cmd\" dialect --dialect \"%PLUGIN_ROOT%\\com.github.copilot\\hooks\\dialect-cli.json\" lint-secret'; exit $LASTEXITCODE",
+        "timeoutSec": 30,
+        "command": "\"${PLUGIN_ROOT}/hooks/mc17-gate\" dialect --dialect \"${PLUGIN_ROOT}/com.github.copilot/hooks/dialect-vscode.json\" lint-secret",
+        "windows": "cmd.exe /d /s /c 'if 1==1 \"%PLUGIN_ROOT%\\hooks\\mc17-gate.cmd\" dialect --dialect \"%PLUGIN_ROOT%\\com.github.copilot\\hooks\\dialect-vscode.json\" lint-secret'; exit $LASTEXITCODE",
+        "linux": "\"${PLUGIN_ROOT}/hooks/mc17-gate\" dialect --dialect \"${PLUGIN_ROOT}/com.github.copilot/hooks/dialect-vscode.json\" lint-secret",
+        "osx": "\"${PLUGIN_ROOT}/hooks/mc17-gate\" dialect --dialect \"${PLUGIN_ROOT}/com.github.copilot/hooks/dialect-vscode.json\" lint-secret",
+        "timeout": 30
+      },
+      {
+        "type": "command",
+        "matcher": "Bash|bash|powershell|PowerShell|run_in_terminal|send_to_terminal|(?:mcp__.+__|mcp_.+_|.+-).+",
+        "bash": "\"${PLUGIN_ROOT}/hooks/mc17-gate\" dialect --dialect \"${PLUGIN_ROOT}/com.github.copilot/hooks/dialect-cli.json\" lint-document",
+        "powershell": "cmd.exe /d /s /c 'if 1==1 \"%PLUGIN_ROOT%\\hooks\\mc17-gate.cmd\" dialect --dialect \"%PLUGIN_ROOT%\\com.github.copilot\\hooks\\dialect-cli.json\" lint-document'; exit $LASTEXITCODE",
+        "timeoutSec": 30,
+        "command": "\"${PLUGIN_ROOT}/hooks/mc17-gate\" dialect --dialect \"${PLUGIN_ROOT}/com.github.copilot/hooks/dialect-vscode.json\" lint-document",
+        "windows": "cmd.exe /d /s /c 'if 1==1 \"%PLUGIN_ROOT%\\hooks\\mc17-gate.cmd\" dialect --dialect \"%PLUGIN_ROOT%\\com.github.copilot\\hooks\\dialect-vscode.json\" lint-document'; exit $LASTEXITCODE",
+        "linux": "\"${PLUGIN_ROOT}/hooks/mc17-gate\" dialect --dialect \"${PLUGIN_ROOT}/com.github.copilot/hooks/dialect-vscode.json\" lint-document",
+        "osx": "\"${PLUGIN_ROOT}/hooks/mc17-gate\" dialect --dialect \"${PLUGIN_ROOT}/com.github.copilot/hooks/dialect-vscode.json\" lint-document",
+        "timeout": 30
+      },
+      {
+        "type": "command",
+        "matcher": "Agent|Task|task|runSubagent|Bash|bash|powershell|PowerShell|run_in_terminal|send_to_terminal",
+        "bash": "\"${PLUGIN_ROOT}/hooks/mc17-gate\" dialect --dialect \"${PLUGIN_ROOT}/com.github.copilot/hooks/dialect-cli.json\" lint-branch",
+        "powershell": "cmd.exe /d /s /c 'if 1==1 \"%PLUGIN_ROOT%\\hooks\\mc17-gate.cmd\" dialect --dialect \"%PLUGIN_ROOT%\\com.github.copilot\\hooks\\dialect-cli.json\" lint-branch'; exit $LASTEXITCODE",
+        "timeoutSec": 30,
+        "command": "\"${PLUGIN_ROOT}/hooks/mc17-gate\" dialect --dialect \"${PLUGIN_ROOT}/com.github.copilot/hooks/dialect-vscode.json\" lint-branch",
+        "windows": "cmd.exe /d /s /c 'if 1==1 \"%PLUGIN_ROOT%\\hooks\\mc17-gate.cmd\" dialect --dialect \"%PLUGIN_ROOT%\\com.github.copilot\\hooks\\dialect-vscode.json\" lint-branch'; exit $LASTEXITCODE",
+        "linux": "\"${PLUGIN_ROOT}/hooks/mc17-gate\" dialect --dialect \"${PLUGIN_ROOT}/com.github.copilot/hooks/dialect-vscode.json\" lint-branch",
+        "osx": "\"${PLUGIN_ROOT}/hooks/mc17-gate\" dialect --dialect \"${PLUGIN_ROOT}/com.github.copilot/hooks/dialect-vscode.json\" lint-branch",
+        "timeout": 30
+      },
+      {
+        "type": "command",
+        "matcher": "Agent|Task|task|runSubagent|Bash|bash|powershell|PowerShell|run_in_terminal|send_to_terminal",
+        "bash": "\"${PLUGIN_ROOT}/hooks/mc17-gate\" dialect --dialect \"${PLUGIN_ROOT}/com.github.copilot/hooks/dialect-cli.json\" lint-heavy",
+        "powershell": "cmd.exe /d /s /c 'if 1==1 \"%PLUGIN_ROOT%\\hooks\\mc17-gate.cmd\" dialect --dialect \"%PLUGIN_ROOT%\\com.github.copilot\\hooks\\dialect-cli.json\" lint-heavy'; exit $LASTEXITCODE",
+        "timeoutSec": 30,
+        "command": "\"${PLUGIN_ROOT}/hooks/mc17-gate\" dialect --dialect \"${PLUGIN_ROOT}/com.github.copilot/hooks/dialect-vscode.json\" lint-heavy",
+        "windows": "cmd.exe /d /s /c 'if 1==1 \"%PLUGIN_ROOT%\\hooks\\mc17-gate.cmd\" dialect --dialect \"%PLUGIN_ROOT%\\com.github.copilot\\hooks\\dialect-vscode.json\" lint-heavy'; exit $LASTEXITCODE",
+        "linux": "\"${PLUGIN_ROOT}/hooks/mc17-gate\" dialect --dialect \"${PLUGIN_ROOT}/com.github.copilot/hooks/dialect-vscode.json\" lint-heavy",
+        "osx": "\"${PLUGIN_ROOT}/hooks/mc17-gate\" dialect --dialect \"${PLUGIN_ROOT}/com.github.copilot/hooks/dialect-vscode.json\" lint-heavy",
+        "timeout": 30
+      }
+    ],
+    "Stop": [
+      {
+        "type": "command",
+        "bash": "\"${PLUGIN_ROOT}/hooks/mc17-gate\" dialect --dialect \"${PLUGIN_ROOT}/com.github.copilot/hooks/dialect-cli.json\" lint-chat",
+        "powershell": "cmd.exe /d /s /c 'if 1==1 \"%PLUGIN_ROOT%\\hooks\\mc17-gate.cmd\" dialect --dialect \"%PLUGIN_ROOT%\\com.github.copilot\\hooks\\dialect-cli.json\" lint-chat'; exit $LASTEXITCODE",
+        "timeoutSec": 15,
+        "command": "\"${PLUGIN_ROOT}/hooks/mc17-gate\" dialect --dialect \"${PLUGIN_ROOT}/com.github.copilot/hooks/dialect-vscode.json\" lint-chat",
+        "windows": "cmd.exe /d /s /c 'if 1==1 \"%PLUGIN_ROOT%\\hooks\\mc17-gate.cmd\" dialect --dialect \"%PLUGIN_ROOT%\\com.github.copilot\\hooks\\dialect-vscode.json\" lint-chat'; exit $LASTEXITCODE",
+        "linux": "\"${PLUGIN_ROOT}/hooks/mc17-gate\" dialect --dialect \"${PLUGIN_ROOT}/com.github.copilot/hooks/dialect-vscode.json\" lint-chat",
+        "osx": "\"${PLUGIN_ROOT}/hooks/mc17-gate\" dialect --dialect \"${PLUGIN_ROOT}/com.github.copilot/hooks/dialect-vscode.json\" lint-chat",
+        "timeout": 15
+      }
+    ],
+    "PostToolUse": [
+      {
+        "type": "command",
+        "matcher": "Agent|Task|task|runSubagent|Bash|bash|powershell|PowerShell|run_in_terminal|send_to_terminal",
+        "bash": "\"${PLUGIN_ROOT}/hooks/mc17-gate\" dialect --dialect \"${PLUGIN_ROOT}/com.github.copilot/hooks/dialect-cli.json\" lint-heavy",
+        "powershell": "cmd.exe /d /s /c 'if 1==1 \"%PLUGIN_ROOT%\\hooks\\mc17-gate.cmd\" dialect --dialect \"%PLUGIN_ROOT%\\com.github.copilot\\hooks\\dialect-cli.json\" lint-heavy'; exit $LASTEXITCODE",
+        "timeoutSec": 30,
+        "command": "\"${PLUGIN_ROOT}/hooks/mc17-gate\" dialect --dialect \"${PLUGIN_ROOT}/com.github.copilot/hooks/dialect-vscode.json\" lint-heavy",
+        "windows": "cmd.exe /d /s /c 'if 1==1 \"%PLUGIN_ROOT%\\hooks\\mc17-gate.cmd\" dialect --dialect \"%PLUGIN_ROOT%\\com.github.copilot\\hooks\\dialect-vscode.json\" lint-heavy'; exit $LASTEXITCODE",
+        "linux": "\"${PLUGIN_ROOT}/hooks/mc17-gate\" dialect --dialect \"${PLUGIN_ROOT}/com.github.copilot/hooks/dialect-vscode.json\" lint-heavy",
+        "osx": "\"${PLUGIN_ROOT}/hooks/mc17-gate\" dialect --dialect \"${PLUGIN_ROOT}/com.github.copilot/hooks/dialect-vscode.json\" lint-heavy",
+        "timeout": 30
+      }
+    ],
+    "SubagentStop": [
+      {
+        "type": "command",
+        "bash": "\"${PLUGIN_ROOT}/hooks/mc17-gate\" dialect --dialect \"${PLUGIN_ROOT}/com.github.copilot/hooks/dialect-cli.json\" lint-heavy",
+        "powershell": "cmd.exe /d /s /c 'if 1==1 \"%PLUGIN_ROOT%\\hooks\\mc17-gate.cmd\" dialect --dialect \"%PLUGIN_ROOT%\\com.github.copilot\\hooks\\dialect-cli.json\" lint-heavy'; exit $LASTEXITCODE",
+        "timeoutSec": 30,
+        "command": "\"${PLUGIN_ROOT}/hooks/mc17-gate\" dialect --dialect \"${PLUGIN_ROOT}/com.github.copilot/hooks/dialect-vscode.json\" lint-heavy",
+        "windows": "cmd.exe /d /s /c 'if 1==1 \"%PLUGIN_ROOT%\\hooks\\mc17-gate.cmd\" dialect --dialect \"%PLUGIN_ROOT%\\com.github.copilot\\hooks\\dialect-vscode.json\" lint-heavy'; exit $LASTEXITCODE",
+        "linux": "\"${PLUGIN_ROOT}/hooks/mc17-gate\" dialect --dialect \"${PLUGIN_ROOT}/com.github.copilot/hooks/dialect-vscode.json\" lint-heavy",
+        "osx": "\"${PLUGIN_ROOT}/hooks/mc17-gate\" dialect --dialect \"${PLUGIN_ROOT}/com.github.copilot/hooks/dialect-vscode.json\" lint-heavy",
+        "timeout": 30
+      }
+    ],
+    "SessionStart": [
+      {
+        "type": "command",
+        "bash": "\"${PLUGIN_ROOT}/client/mc17\" settings --hook all --as additional-context",
+        "powershell": "cmd.exe /d /s /c 'if 1==1 \"%PLUGIN_ROOT%\\client\\mc17.cmd\" settings --hook all --as additional-context'; exit $LASTEXITCODE",
+        "timeoutSec": 15,
+        "command": "\"${PLUGIN_ROOT}/client/mc17\" settings --hook all --as additional-context",
+        "windows": "cmd.exe /d /s /c 'if 1==1 \"%PLUGIN_ROOT%\\client\\mc17.cmd\" settings --hook all --as additional-context'; exit $LASTEXITCODE",
+        "linux": "\"${PLUGIN_ROOT}/client/mc17\" settings --hook all --as additional-context",
+        "osx": "\"${PLUGIN_ROOT}/client/mc17\" settings --hook all --as additional-context",
+        "timeout": 15
+      }
+    ]
+  }
+}

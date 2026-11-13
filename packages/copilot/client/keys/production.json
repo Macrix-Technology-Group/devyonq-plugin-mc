@@ -1,0 +1,5 @@
+{
+  "reader": "core/client/lib/keys.js, which checks each decision of the production gateway https://app.devyonq.ai against the keys below and against no other (ARCH D15). Each key is {keyId, publicKey}, the public half of an Ed25519 signing key of the production setting HARNESS_SIGNING_KEYS, as base64url of its 32 raw bytes. The list stands empty until production holds that setting: an empty list refuses every production decision, so the plugin fails closed (record 117). The keys land in their own commit after the production deploy (IP-MC-SERVER-002 Step 14).",
+  "gateway": "https://app.devyonq.ai",
+  "keys": []
+}

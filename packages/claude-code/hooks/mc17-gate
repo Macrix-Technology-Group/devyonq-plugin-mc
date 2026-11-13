@@ -1,0 +1,46 @@
+#!/bin/sh
+# Runs one gate script under a Python 3: the first argument names the gate, the file <gate>.py beside this
+# script is the gate, and the remaining arguments are passed through to it. Finds the interpreter by running
+# each candidate with a version probe, $MC17_PYTHON first, then `py -3`, `python3` and `python`; the first
+# that runs as Python 3 replaces this shell and owns stdin, stdout, stderr and the exit status. Candidates
+# are run because on a Windows host `python3` can be a Store alias that a lookup finds but that starts nothing.
+# Exits 2 with a message on stderr when no gate is named, when the gate file is missing, or when no candidate
+# runs; the lint-chat gate exits 1 in the last two cases, because exit 2 blocks under Claude Code's hook
+# contract and a Stop hook that blocks keeps the turn from ending. The gate `dialect` runs dialect.py, whose last
+# argument names the gate it reaches, and takes that gate's code: 1 where the last argument is lint-chat. Only
+# shell builtins are used, so the message still prints on a PATH that carries nothing.
+# Every candidate, the probe among them, runs isolated, -I -S, as mc-run runs a gate: no user site, no .pth file, no
+# PYTHON variable and not the script's folder reaches the gate's
+# path, so a file a person's or an AI's Python folders hold runs nothing; -B writes no bytecode beside the gates, since
+# -I reads no PYTHONDONTWRITEBYTECODE; -X utf8 reads and writes UTF-8. The gates
+# import the standard library alone.
+case "$0" in */*) here=${0%/*} ;; *) here=. ;; esac
+gate=$1
+last=
+for a in "$@"; do last=$a; done
+case "$gate" in lint-chat) refused=1 ;; dialect) case "$last" in lint-chat) refused=1 ;; *) refused=2 ;; esac ;; *) refused=2 ;; esac
+if [ -z "$gate" ]; then
+  echo "mc17-gate: no gate named" >&2
+  exit 2
+fi
+shift
+if [ ! -f "$here/$gate.py" ]; then
+  echo "mc17-gate: no such gate: $gate" >&2
+  exit $refused
+fi
+probe='import sys; sys.exit(sys.version_info[0] != 3)'
+tried=""
+if [ -n "$MC17_PYTHON" ]; then
+  tried="MC17_PYTHON=$MC17_PYTHON"
+  if "$MC17_PYTHON" -I -S -c "$probe" >/dev/null 2>&1; then
+    exec "$MC17_PYTHON" -I -S -B -X utf8 "$here/$gate.py" "$@"
+  fi
+fi
+for c in "py -3" python3 python; do
+  tried="${tried:+$tried, }$c"
+  if $c -I -S -c "$probe" >/dev/null 2>&1; then
+    exec $c -I -S -B -X utf8 "$here/$gate.py" "$@"
+  fi
+done
+echo "mc17-gate: $gate: no python 3 runs on this host; tried $tried" >&2
+exit $refused

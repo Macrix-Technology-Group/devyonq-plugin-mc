@@ -1,0 +1,116 @@
+{
+  "description": "Mission Control v1.7: refuse a workflow script that reaches an agent outside a verified sanctioned block, refuse a corpus write whose body breaks the writing rules, and refuse wave work reaching a locked mission branch outside the sanctioned runner (the Agent and Bash doors, IP-MC17-003 Part 2), and report the writing rules over what the assistant just said, which is the only reader those rules have outside the corpus (IP-MC17-023 AC-4), and refuse the start of a heavy run in a wave run by hand that no decision of the judgment module names, and mark the ends it sees (the heavy-run hook, IP-MC173-006), and deliver the person's settings at every session start (the session-start hook).",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/mc17-gate\" lint-secret",
+            "timeout": 30
+          }
+        ]
+      },
+      {
+        "matcher": "Workflow",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/mc17-gate\" lint-workflow",
+            "timeout": 30
+          }
+        ]
+      },
+      {
+        "matcher": "mcp__.*|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/mc17-gate\" lint-document",
+            "timeout": 30
+          }
+        ]
+      },
+      {
+        "matcher": "Agent|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/mc17-gate\" lint-branch",
+            "timeout": 30
+          }
+        ]
+      },
+      {
+        "matcher": "Agent|Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/mc17-gate\" lint-heavy",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/mc17-gate\" lint-chat",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Agent|Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/mc17-gate\" lint-heavy",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/mc17-gate\" lint-heavy",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/client/mc17\" settings --hook head", "timeout": 15 },
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/client/mc17\" settings --hook ORDERS:1/5", "timeout": 15 },
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/client/mc17\" settings --hook ORDERS:2/5", "timeout": 15 },
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/client/mc17\" settings --hook ORDERS:3/5", "timeout": 15 },
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/client/mc17\" settings --hook ORDERS:4/5", "timeout": 15 },
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/client/mc17\" settings --hook ORDERS:5/5", "timeout": 15 },
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/client/mc17\" settings --hook MANDATE:1/3", "timeout": 15 },
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/client/mc17\" settings --hook MANDATE:2/3", "timeout": 15 },
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/client/mc17\" settings --hook MANDATE:3/3", "timeout": 15 },
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/client/mc17\" settings --hook SETUP:1/3", "timeout": 15 },
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/client/mc17\" settings --hook SETUP:2/3", "timeout": 15 },
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/client/mc17\" settings --hook SETUP:3/3", "timeout": 15 },
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/client/mc17\" settings --hook MISSIONS:1/7", "timeout": 15 },
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/client/mc17\" settings --hook MISSIONS:2/7", "timeout": 15 },
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/client/mc17\" settings --hook MISSIONS:3/7", "timeout": 15 },
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/client/mc17\" settings --hook MISSIONS:4/7", "timeout": 15 },
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/client/mc17\" settings --hook MISSIONS:5/7", "timeout": 15 },
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/client/mc17\" settings --hook MISSIONS:6/7", "timeout": 15 },
+          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/client/mc17\" settings --hook MISSIONS:7/7", "timeout": 15 }
+        ]
+      }
+    ]
+  }
+}

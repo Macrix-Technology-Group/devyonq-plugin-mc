@@ -1,0 +1,911 @@
+<title>Mission Control v1.7</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{
+  --paper:#E9EBE9; --card:#F3F4F2; --sunk:#DEE2DF;
+  --ink:#161A19; --ink-2:#3D4644; --ink-3:#69736F;
+  --rule:#C7CFCB; --rule-soft:#D9DFDB;
+  --verdigris:#2E6F5E; --verdigris-soft:#D6E5DF;
+  --oxide:#9A4529; --oxide-soft:#F0DCD4;
+  --amber:#8A6A1F; --amber-soft:#EDE3CA;
+  --measure:68ch;
+  --serif:ui-serif,"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#121615; --card:#1A201E; --sunk:#0D110F;
+    --ink:#DFE5E2; --ink-2:#AEB8B4; --ink-3:#7C8783;
+    --rule:#2C3532; --rule-soft:#222A27;
+    --verdigris:#6FBFA5; --verdigris-soft:#16302A;
+    --oxide:#D98A6C; --oxide-soft:#341C14;
+    --amber:#C6A252; --amber-soft:#2C2413;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#121615; --card:#1A201E; --sunk:#0D110F;
+  --ink:#DFE5E2; --ink-2:#AEB8B4; --ink-3:#7C8783;
+  --rule:#2C3532; --rule-soft:#222A27;
+  --verdigris:#6FBFA5; --verdigris-soft:#16302A;
+  --oxide:#D98A6C; --oxide-soft:#341C14;
+  --amber:#C6A252; --amber-soft:#2C2413;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--serif); font-size:17px; line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:var(--measure); margin:0 auto; padding:0 24px}
+.wide{max-width:1040px; margin:0 auto; padding:0 24px}
+
+/* ── masthead ─────────────────────────────────────────── */
+header.mast{border-bottom:1px solid var(--rule); padding:64px 0 40px; margin-bottom:8px}
+.eyebrow{
+  font-family:var(--mono); font-size:11.5px; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--ink-3); margin:0 0 20px;
+}
+h1{
+  font-size:clamp(38px,6.5vw,60px); line-height:1.04; margin:0 0 20px; font-weight:600;
+  letter-spacing:-.018em; text-wrap:balance;
+}
+.standfirst{font-size:20px; line-height:1.5; color:var(--ink-2); margin:0; text-wrap:pretty}
+.mast-meta{
+  display:flex; flex-wrap:wrap; gap:8px 26px; margin-top:28px;
+  font-family:var(--mono); font-size:12px; color:var(--ink-3);
+}
+.mast-meta b{color:var(--ink-2); font-weight:500}
+
+/* ── structure ────────────────────────────────────────── */
+section{padding:52px 0; border-bottom:1px solid var(--rule-soft)}
+section:last-of-type{border-bottom:0}
+h2{
+  font-size:29px; line-height:1.18; margin:0 0 6px; font-weight:600;
+  letter-spacing:-.012em; text-wrap:balance;
+}
+h2 .num{
+  font-family:var(--mono); font-size:12px; letter-spacing:.12em; color:var(--verdigris);
+  display:block; margin-bottom:10px; font-weight:500;
+}
+h3{font-size:19px; margin:34px 0 8px; font-weight:600; letter-spacing:-.006em; text-wrap:balance}
+h4{font-family:var(--mono); font-size:12.5px; letter-spacing:.08em; text-transform:uppercase;
+   color:var(--ink-3); margin:26px 0 8px; font-weight:500}
+p{margin:0 0 16px; text-wrap:pretty}
+.lede{font-size:18.5px; color:var(--ink-2); margin-bottom:22px}
+strong{font-weight:600}
+a{color:var(--verdigris); text-underline-offset:2px}
+a:focus-visible,button:focus-visible{outline:2px solid var(--verdigris); outline-offset:3px; border-radius:2px}
+code{
+  font-family:var(--mono); font-size:.855em; background:var(--sunk);
+  padding:.1em .35em; border-radius:3px; color:var(--ink);
+}
+ul,ol{margin:0 0 16px; padding-left:22px}
+li{margin-bottom:7px}
+li::marker{color:var(--ink-3)}
+
+/* ── command blocks ───────────────────────────────────── */
+.cmd{
+  background:var(--sunk); border:1px solid var(--rule); border-left:3px solid var(--verdigris);
+  border-radius:3px; margin:0 0 18px; overflow:hidden;
+}
+.cmd-head{
+  font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-3); padding:9px 14px 0;
+}
+.cmd pre{
+  font-family:var(--mono); font-size:13.5px; line-height:1.65; margin:0;
+  padding:10px 14px 14px; overflow-x:auto; color:var(--ink);
+}
+.cmd pre .c{color:var(--ink-3)}
+.cmd pre .k{color:var(--verdigris)}
+.cmd pre .s{color:var(--oxide)}
+
+/* ── callouts ─────────────────────────────────────────── */
+.note{
+  border:1px solid var(--rule); background:var(--card); border-radius:3px;
+  padding:18px 20px; margin:0 0 20px;
+}
+.note.why{border-left:3px solid var(--amber)}
+.note.stop{border-left:3px solid var(--oxide)}
+.note.ok{border-left:3px solid var(--verdigris)}
+.note h4{margin-top:0}
+.note p:last-child{margin-bottom:0}
+
+/* ── tables ───────────────────────────────────────────── */
+.tbl{overflow-x:auto; margin:0 0 20px; border:1px solid var(--rule); border-radius:3px}
+table{border-collapse:collapse; width:100%; font-size:14.5px}
+th,td{text-align:left; padding:10px 14px; border-bottom:1px solid var(--rule-soft); vertical-align:top}
+th{
+  font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-3); font-weight:500; background:var(--card);
+}
+tr:last-child td{border-bottom:0}
+td.m,th.m{font-family:var(--mono); font-size:12.5px; white-space:nowrap}
+.verd{font-family:var(--mono); font-size:11px; letter-spacing:.06em; padding:2px 7px; border-radius:2px; white-space:nowrap}
+.verd.pass{background:var(--verdigris-soft); color:var(--verdigris)}
+.verd.fail{background:var(--oxide-soft); color:var(--oxide)}
+.verd.warn{background:var(--amber-soft); color:var(--amber)}
+
+/* ── figures ──────────────────────────────────────────── */
+figure{margin:30px 0; }
+figure svg{display:block; width:100%; height:auto}
+figcaption{
+  font-family:var(--mono); font-size:11.5px; color:var(--ink-3); margin-top:12px;
+  line-height:1.5; letter-spacing:.02em;
+}
+.fig-frame{border:1px solid var(--rule); background:var(--card); border-radius:3px; padding:22px; overflow-x:auto}
+
+/* svg tokens */
+.s-fill-card{fill:var(--card)} .s-fill-sunk{fill:var(--sunk)} .s-fill-paper{fill:var(--paper)}
+.s-stroke{stroke:var(--rule); fill:none} .s-stroke-2{stroke:var(--ink-3); fill:none}
+.s-txt{fill:var(--ink); font-family:var(--serif); font-size:14px}
+.s-txt-s{fill:var(--ink-2); font-family:var(--mono); font-size:11px}
+.s-txt-xs{fill:var(--ink-3); font-family:var(--mono); font-size:10px}
+.s-accent{fill:var(--verdigris)} .s-accent-stroke{stroke:var(--verdigris); fill:none}
+.s-oxide{fill:var(--oxide)} .s-oxide-stroke{stroke:var(--oxide); fill:none}
+.s-label{fill:var(--verdigris); font-family:var(--mono); font-size:10px; letter-spacing:.08em}
+
+/* ── nav ──────────────────────────────────────────────── */
+nav.toc{
+  position:sticky; top:0; z-index:5; background:var(--paper);
+  border-bottom:1px solid var(--rule); padding:11px 0; margin-bottom:0;
+}
+nav.toc ol{
+  display:flex; gap:22px; list-style:none; margin:0; padding:0 24px; max-width:1040px;
+  margin-inline:auto; overflow-x:auto; font-family:var(--mono); font-size:11.5px;
+  letter-spacing:.04em;
+}
+nav.toc a{color:var(--ink-3); text-decoration:none; white-space:nowrap}
+nav.toc a:hover{color:var(--verdigris)}
+
+footer{padding:44px 0 72px; color:var(--ink-3); font-family:var(--mono); font-size:12px; line-height:1.7}
+@media (max-width:640px){ body{font-size:16px} section{padding:40px 0} .fig-frame{padding:12px} }
+@media (prefers-reduced-motion:reduce){ *{animation:none!important; transition:none!important} }
+</style>
+
+<header class="mast">
+  <div class="wrap">
+    <p class="eyebrow">Developer guide · plugin devyonq-mc@devyonq-mc</p>
+    <h1>Mission Control v1.7</h1>
+    <p class="standfirst">Install it, sign it in to DevyonQ, create your first Mission, and run an agent fleet. A methodology whose rules are enforced by a program, so a claim a Mission makes about itself can be recomputed by someone who was not there.</p>
+    <div class="mast-meta">
+      <span><b>Audience</b> developers with a Claude subscription</span>
+      <span><b>Needs</b> Node, Python 3, git, a DevyonQ seat</span>
+      <span><b>Time</b> about 30 minutes to a verified Mission</span>
+    </div>
+  </div>
+</header>
+
+<nav class="toc">
+  <ol>
+    <li><a href="#what">What this is</a></li>
+    <li><a href="#shape">The shape</a></li>
+    <li><a href="#install">Install</a></li>
+    <li><a href="#connect">Sign in to DevyonQ</a></li>
+    <li><a href="#mission">Your first Mission</a></li>
+    <li><a href="#verify">Verification</a></li>
+    <li><a href="#fleet">Agent fleets</a></li>
+    <li><a href="#where">Where everything lives</a></li>
+    <li><a href="#trouble">When it refuses</a></li>
+    <li><a href="#settings">Your own settings</a></li>
+  </ol>
+</nav>
+
+<main>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<section id="what"><div class="wrap">
+  <h2><span class="num">01</span>What you are installing</h2>
+  <p class="lede">Mission Control is a way of running software projects where people and AI agents work together. <strong>A Mission is one project.</strong> It writes down three things up front: what it will deliver, who is accountable, and how you will know it is done.</p>
+  <p>The unusual part is that a Mission has to prove what it says about itself. Every number in it can be re-checked later by someone who was not in the room.</p>
+
+  <p>Version 1.6 was just text files. You gave someone the instructions and they followed them. <strong>Version 1.7 also ships code.</strong> That is the big change, and it happened for one reason. It is worth two minutes, because everything else in this guide follows from it.</p>
+
+  <div class="note why">
+    <h4>The bug that made us write a program</h4>
+    <p>Every Mission that uses agent fleets has to write down a fingerprint of the code those fleets run. It is a checksum, like a file hash. If the code changes, the fingerprint changes.</p>
+    <p>How to work out that fingerprint was written down as instructions, in a document. Someone turned those instructions into a shell command. The command had a bug. It deleted comment lines starting with <code>#</code>, which is how shell scripts write comments. But the file was JavaScript, where comments start with <code>//</code>. So it deleted nothing, and 325 lines stayed in that should have come out.</p>
+    <p>Now the part that matters. <strong>The Mission used that command to work out its fingerprint. The checker used the same command to check it.</strong> Both got the same wrong answer, so they matched, and the check passed.</p>
+    <p>Nobody would ever have caught it. The code itself would not have recognised the number written in its own Mission file.</p>
+    <p><strong>The lesson: if a check uses its own copy of a rule, and that copy is wrong, the check agrees with itself and proves nothing.</strong></p>
+    <p>So in v1.7, anything a computer can work out lives in a program, the harness, and the document points at it. And when something needs that fingerprint, it asks the code to work it out.</p>
+  </div>
+
+  <p>So three things work together. You install the first two; the third runs in DevyonQ.</p>
+  <ul>
+    <li><strong>Skills</strong> are step-by-step instructions an AI agent follows. They hold the parts that need judgement: asking you questions, weighing an answer, deciding whether something is good enough.</li>
+    <li><strong>The client <code>mc17</code></strong> is a small program that ships beside the skills, in <code>client/</code>. Every skill and every hook calls it. You sign it in to DevyonQ once per computer, with <code>mc17 login</code>, and it sends each command to the harness of your DevyonQ tenant.</li>
+    <li><strong>The harness</strong> is code that runs in DevyonQ. It does the parts a computer can do exactly: work out checksums, check that required fields are filled, fill in templates, read and write the Mission's documents in CanonQ. When something is wrong it says no and tells you which line.</li>
+  </ul>
+</div></section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<section id="shape"><div class="wide">
+  <h2><span class="num">02</span>The shape of the system</h2>
+</div>
+<div class="wrap">
+  <p class="lede">Five layers. The law is text you pin. The skills are procedures an agent runs. The program computes. The runner guards fleet execution. The store holds everything a Mission produces.</p>
+</div>
+<div class="wide">
+  <figure>
+    <div class="fig-frame">
+      <svg viewBox="0 0 900 470" role="img" aria-label="Five layers: law, skills, program, runner, store, and how they call each other">
+        <!-- LAW -->
+        <rect x="20" y="14" width="860" height="70" rx="3" class="s-fill-card"/>
+        <rect x="20" y="14" width="860" height="70" rx="3" class="s-stroke"/>
+        <text x="34" y="34" class="s-label">THE LAW · TEXT A MISSION PINS BY FINGERPRINT</text>
+        <text x="34" y="60" class="s-txt">Mission Control Guide v1.7</text>
+        <text x="272" y="60" class="s-txt">Mission - Definition v1.7</text>
+        <text x="540" y="60" class="s-txt">Agent-Fleet Execution Profile v1.7</text>
+        <text x="34" y="76" class="s-txt-xs">why it exists</text>
+        <text x="272" y="76" class="s-txt-xs">what an artifact must contain</text>
+        <text x="540" y="76" class="s-txt-xs">how fleet-run work behaves</text>
+
+        <!-- SKILLS -->
+        <rect x="20" y="112" width="418" height="86" rx="3" class="s-fill-card"/>
+        <rect x="20" y="112" width="418" height="86" rx="3" class="s-stroke"/>
+        <text x="34" y="132" class="s-label">SKILLS · PROCEDURES AN AGENT FOLLOWS</text>
+        <text x="34" y="156" class="s-txt">mc-cre-mission-v17</text>
+        <text x="34" y="174" class="s-txt-s">creates a Mission and its artifacts</text>
+        <text x="240" y="156" class="s-txt">mc-vf-manifest-v17</text>
+        <text x="240" y="174" class="s-txt-s">verifies, owns the ledger</text>
+
+        <!-- PROGRAM -->
+        <rect x="462" y="112" width="418" height="86" rx="3" class="s-fill-sunk"/>
+        <rect x="462" y="112" width="418" height="86" rx="3" class="s-accent-stroke"/>
+        <text x="476" y="132" class="s-label">THE HARNESS · IN DEVYONQ, CALLED THROUGH mc17</text>
+        <text x="476" y="154" class="s-txt-s">hash · binding · scope · check · status</text>
+        <text x="476" y="170" class="s-txt-s">identity · rights · machinery · linkpass</text>
+        <text x="476" y="186" class="s-txt-s">render · publish · block · lint · lintdoc</text>
+
+        <!-- arrow skills -> program -->
+        <path d="M438 155 L456 155" class="s-accent-stroke" stroke-width="1.5"/>
+        <path d="M456 155 l-6 -3.5 v7 z" class="s-accent"/>
+        <text x="408" y="148" class="s-txt-xs">calls</text>
+
+        <!-- RUNNER -->
+        <rect x="462" y="226" width="418" height="94" rx="3" class="s-fill-sunk"/>
+        <rect x="462" y="226" width="418" height="94" rx="3" class="s-accent-stroke"/>
+        <text x="476" y="246" class="s-label">THE RUNNER · orchestration-harness.js</text>
+        <text x="476" y="268" class="s-txt-s">the sanctioned block, pasted into every</text>
+        <text x="476" y="284" class="s-txt-s">workflow script that launches a fleet</text>
+        <text x="476" y="306" class="s-txt-xs">gate predicate · bounded fix loop · fresh re-reviewer · lander</text>
+
+        <!-- program requires runner -->
+        <path d="M600 198 L600 222" class="s-accent-stroke" stroke-width="1.5" stroke-dasharray="3 3"/>
+        <path d="M600 222 l-3.5 -6 h7 z" class="s-accent"/>
+        <text x="612" y="215" class="s-txt-xs">requires its own normalizer</text>
+
+        <!-- LINT -->
+        <rect x="20" y="226" width="418" height="94" rx="3" class="s-fill-card"/>
+        <rect x="20" y="226" width="418" height="94" rx="3" class="s-oxide-stroke"/>
+        <text x="34" y="246" class="s-label" style="fill:var(--oxide)">THE GATE · orchestration-lint.js</text>
+        <text x="34" y="268" class="s-txt-s">every reach for an agent outside a</text>
+        <text x="34" y="284" class="s-txt-s">verified sanctioned block is a violation</text>
+        <text x="34" y="306" class="s-txt-xs">two PreToolUse hooks: one before a script runs, one before a document is saved</text>
+        <path d="M438 273 L456 273" class="s-oxide-stroke" stroke-width="1.5"/>
+        <path d="M456 273 l-6 -3.5 v7 z" class="s-oxide"/>
+        <text x="386" y="266" class="s-txt-xs">hashes</text>
+
+        <!-- STORE -->
+        <rect x="20" y="348" width="860" height="104" rx="3" class="s-fill-card"/>
+        <rect x="20" y="348" width="860" height="104" rx="3" class="s-stroke"/>
+        <text x="34" y="368" class="s-label">THE STORE · CANONQ</text>
+        <g>
+          <rect x="34" y="382" width="188" height="54" rx="2" class="s-fill-paper"/><rect x="34" y="382" width="188" height="54" rx="2" class="s-stroke"/>
+          <text x="46" y="402" class="s-txt">MANIFEST</text><text x="46" y="422" class="s-txt-xs">what the Mission commits to</text>
+          <rect x="238" y="382" width="188" height="54" rx="2" class="s-fill-paper"/><rect x="238" y="382" width="188" height="54" rx="2" class="s-stroke"/>
+          <text x="250" y="402" class="s-txt">SPEC</text><text x="250" y="422" class="s-txt-xs">what counts as delivered</text>
+          <rect x="442" y="382" width="188" height="54" rx="2" class="s-fill-paper"/><rect x="442" y="382" width="188" height="54" rx="2" class="s-stroke"/>
+          <text x="454" y="402" class="s-txt">TP</text><text x="454" y="422" class="s-txt-xs">how it will be proven</text>
+          <rect x="646" y="382" width="220" height="54" rx="2" class="s-fill-sunk"/><rect x="646" y="382" width="220" height="54" rx="2" class="s-accent-stroke"/>
+          <text x="658" y="402" class="s-txt">VF ledger</text><text x="658" y="422" class="s-txt-xs">append-only, typed, schema-refused</text>
+        </g>
+        <path d="M229 198 L229 344" class="s-stroke-2" stroke-width="1.2" stroke-dasharray="3 3"/>
+        <path d="M229 344 l-3.5 -6 h7 z" style="fill:var(--ink-3)"/>
+        <text x="240" y="338" class="s-txt-xs">writes</text>
+      </svg>
+    </div>
+    <figcaption>Two arrows matter most. The program calls the runner's own code to work out the checksum, instead of copying how it works. And the gate compares the block pasted into your script against the real one, so an edited copy is caught and named.</figcaption>
+  </figure>
+</div>
+<div class="wrap">
+  <div class="note ok">
+    <h4>The one idea to keep</h4>
+    <p><strong>When you need to check a number, ask the code that produced it. Never follow a written-down copy of how it works.</strong> That is the whole idea. Everything above is built to make it true.</p>
+  </div>
+</div></section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<section id="install"><div class="wrap">
+  <h2><span class="num">03</span>Install</h2>
+  <p class="lede">Two commands inside Claude Code, three runtimes, and a sign-in. The plugin of the old repository, <code>Macrix-Technology-Group/devyonq</code>, stays installable beside this one; switch one of the two on at a time.</p>
+
+  <h3>Check the runtimes first</h3>
+  <p>The plugin needs <strong>Node</strong> for the client <code>mc17</code>, <strong>Python 3</strong> for the gate hooks, and <strong>git</strong>.</p>
+  <div class="cmd">
+    <div class="cmd-head">terminal</div>
+<pre>node --version   <span class="c"># v22 or newer</span>
+python3 --version
+git --version</pre>
+  </div>
+
+  <h3>Add the marketplace and install</h3>
+  <p>Run these inside Claude Code. The marketplace is a GitHub repository; the plugin is one entry in it.</p>
+  <div class="cmd">
+    <div class="cmd-head">claude code</div>
+<pre><span class="k">/plugin marketplace add</span> Macrix-Technology-Group/devyonq-mc
+<span class="k">/plugin install</span> devyonq-mc@devyonq-mc</pre>
+  </div>
+
+  <p>Confirm it landed. The skills announce themselves when you ask for their parameters, which runs nothing:</p>
+  <div class="cmd">
+    <div class="cmd-head">claude code</div>
+<pre><span class="k">/mc-cre-mission-v17</span> ?</pre>
+  </div>
+
+  <h3>Check the client runs</h3>
+  <p>The plugin ships the client beside its skills. This asks it which plugin and which copy of the harness contract it carries, and which DevyonQ it is signed in to. It answers on its own and sends nothing:</p>
+  <div class="cmd">
+    <div class="cmd-head">terminal · from the installed plugin directory</div>
+<pre>client/mc17 version
+
+<span class="c">Plugin   : devyonq-mc &lt;version&gt;</span>
+<span class="c">Contract : version 1, sha256:…, copied from devyonq-saas …</span>
+<span class="c">Gateway  : none; run mc17 login in a terminal of your own</span>
+<span class="c">Tenant   : none</span></pre>
+  </div>
+  <p>On Windows, from PowerShell or cmd, run <code>client\mc17.cmd</code> in place of <code>client/mc17</code>, here and in every command of this guide.</p>
+  <div class="note why">
+    <h4>Why the tests matter more than their count</h4>
+    <p>The plugin's own suites run in its repository, and every check in them was deliberately broken first, to watch it go red, then restored to watch it go green. That sounds like overkill until you know that this project once shipped a checker that could not fail at all: it printed problems and then reported success, every single time, for weeks. <strong>A check you have never seen fail tells you nothing.</strong></p>
+  </div>
+</div></section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<section id="connect"><div class="wrap">
+  <h2><span class="num">04</span>Sign in to DevyonQ</h2>
+  <p class="lede">CanonQ is where a Mission lives, and the harness in DevyonQ reads and writes it for you. You sign the client in to DevyonQ once per computer, and every skill and every hook uses that sign-in.</p>
+
+  <h3>Sign in, in a terminal of your own</h3>
+  <p>Run the sign-in yourself, in a terminal outside the AI tool, from the folder Claude Code installed the plugin into. Your browser opens: sign in to DevyonQ, pick your tenant and approve. To skip the pick, add <code>--tenant &lt;tenant&gt;</code>, your tenant's id or your DevyonQ MCP address; <code>https://app.devyonq.ai/choose-tenant</code> lists your tenants with their ids to copy.</p>
+  <div class="cmd">
+    <div class="cmd-head">terminal · from the installed plugin directory</div>
+<pre>client/mc17 login
+client/mc17 version        <span class="c"># Gateway and Tenant now name your DevyonQ</span></pre>
+  </div>
+  <p>The client keeps what the sign-in answers in the credential store of your operating system, and refuses where none stands. No token goes into an environment variable or into a file a tool may read back, and no AI session can run the sign-in for you: the secret gate refuses a call that reaches it.</p>
+  <p>A session started on a computer that is not signed in yet says so at its start, with the exact command for that computer, and on Windows and macOS opens a window that runs the sign-in for you; Mission skills and <code>mc17</code> commands wait until you are signed in. To keep that window from opening, create the empty file <code>~/.mc17/client/no-sign-in-window</code>.</p>
+  <p>To sign this computer out, run <code>mc17 logout</code> the same way, in your own terminal. It removes the sign-in the client keeps; the key DevyonQ issued stays valid until it expires, or until you revoke "mc17, the client of devyonq-mc" under Connect AI agent in DevyonQ.</p>
+
+  <h3>Who can run Missions</h3>
+  <p>Any active person of the tenant who holds a DevyonQ seat may run Missions with this plugin. The tenant's reach covers a Mission collection only where the collection was made through the harness. A Mission made under a person's own CanonQ token stays on the old plugin.</p>
+
+  <h3>The model of a decision point</h3>
+  <p>A decision point's call spends your own OpenRouter key on the model you set on this computer, in a terminal of your own: <code>client/mc17 config model &lt;provider/model&gt;</code>. <code>mc17 config model</code> alone prints it, and <code>--clear</code> clears it. With no model set, the client spends nothing.</p>
+</div></section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<section id="mission"><div class="wide">
+  <h2><span class="num">05</span>Your first Mission</h2>
+</div>
+<div class="wrap">
+  <p class="lede">One command starts an interview. You answer as the person accountable for the work, and the skill writes a collection with four artifacts in it.</p>
+  <div class="cmd">
+    <div class="cmd-head">claude code</div>
+<pre><span class="k">/mc-cre-mission-v17</span> Kaufland ERP</pre>
+  </div>
+</div>
+<div class="wide">
+  <figure>
+    <div class="fig-frame">
+      <svg viewBox="0 0 900 300" role="img" aria-label="The creation sequence from pinning the law to the link pass">
+        <line x1="60" y1="150" x2="850" y2="150" class="s-stroke" stroke-width="1"/>
+        <g>
+          <circle cx="90" cy="150" r="7" class="s-accent"/>
+          <text x="90" y="128" class="s-label" text-anchor="middle">STEP 0</text>
+          <text x="90" y="182" class="s-txt-s" text-anchor="middle">pin the law</text>
+          <text x="90" y="198" class="s-txt-xs" text-anchor="middle">resolve 3 docs</text>
+          <text x="90" y="212" class="s-txt-xs" text-anchor="middle">fingerprint each</text>
+        </g>
+        <g>
+          <circle cx="248" cy="150" r="7" class="s-fill-card"/><circle cx="248" cy="150" r="7" class="s-stroke"/>
+          <text x="248" y="128" class="s-label" text-anchor="middle">STEP 3</text>
+          <text x="248" y="182" class="s-txt-s" text-anchor="middle">collision check</text>
+          <text x="248" y="198" class="s-txt-xs" text-anchor="middle">before any question</text>
+        </g>
+        <g>
+          <circle cx="406" cy="150" r="7" class="s-fill-card"/><circle cx="406" cy="150" r="7" class="s-stroke"/>
+          <text x="406" y="128" class="s-label" text-anchor="middle">STEP 4</text>
+          <text x="406" y="182" class="s-txt-s" text-anchor="middle">the interview</text>
+          <text x="406" y="198" class="s-txt-xs" text-anchor="middle">shape · authorities</text>
+          <text x="406" y="212" class="s-txt-xs" text-anchor="middle">work modes · machinery</text>
+        </g>
+        <g>
+          <circle cx="564" cy="150" r="7" class="s-fill-card"/><circle cx="564" cy="150" r="7" class="s-stroke"/>
+          <text x="564" y="128" class="s-label" text-anchor="middle">STEPS 5-9</text>
+          <text x="564" y="182" class="s-txt-s" text-anchor="middle">render and write</text>
+          <text x="564" y="198" class="s-txt-xs" text-anchor="middle">collection + 3 artifacts</text>
+        </g>
+        <g>
+          <circle cx="722" cy="150" r="7" class="s-fill-card"/><circle cx="722" cy="150" r="7" class="s-stroke"/>
+          <text x="722" y="128" class="s-label" text-anchor="middle">STEP 10</text>
+          <text x="722" y="182" class="s-txt-s" text-anchor="middle">link pass</text>
+          <text x="722" y="198" class="s-txt-xs" text-anchor="middle">real ids, diffed</text>
+        </g>
+        <g>
+          <circle cx="840" cy="150" r="5" class="s-oxide"/>
+          <text x="840" y="182" class="s-txt-xs" text-anchor="middle">not verified</text>
+          <text x="840" y="196" class="s-txt-xs" text-anchor="middle">yet</text>
+        </g>
+        <rect x="330" y="34" width="330" height="52" rx="3" class="s-fill-sunk"/>
+        <rect x="330" y="34" width="330" height="52" rx="3" class="s-stroke"/>
+        <text x="344" y="54" class="s-txt-xs">the interview is the only part that needs you.</text>
+        <text x="344" y="72" class="s-txt-xs">everything else is computed and shown back.</text>
+        <path d="M420 88 L410 142" class="s-stroke" stroke-width="1" stroke-dasharray="3 3"/>
+      </svg>
+    </div>
+    <figcaption>The collision check runs before the interview on purpose: a Mission that already exists aborts before it costs you a single answer.</figcaption>
+  </figure>
+</div>
+<div class="wrap">
+  <h3>What the interview asks, and why</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Question</th><th>What it decides</th></tr></thead>
+    <tbody>
+      <tr><td>Mission shape</td><td>Standard, Interface, Revision or Platform. Interface Missions have no architecture and no implementation plans.</td></tr>
+      <tr><td>Authorities</td><td>Who is accountable. If one person holds more than one role, say so, say what replaces the second pair of eyes, and say when that ends. Most first Missions have one person doing everything, and this is the field they usually fail on.</td></tr>
+      <tr><td>Work modes</td><td>Which artifacts are finished behind a gate, and which grow in the open under their owner's reading. The test: can this be finished without its authority reading it?</td></tr>
+      <tr><td>Delivery context</td><td>Branch policy, CI, release target, technology. Each takes <code>N/A</code> with a reason, which is the honest answer for a Mission that ships no code.</td></tr>
+      <tr><td>Does it run agent fleets</td><td>If yes, the machinery is read from the harness rather than from you. Nobody is asked to recall a fingerprint.</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="note ok">
+    <h4>What lands</h4>
+    <p>A private collection named <code>Mission Kaufland ERP</code> holding <code>MANIFEST-KAUFLAND-ERP-001</code>, <code>SPEC-KAUFLAND-ERP-001</code> and <code>TP-KAUFLAND-ERP-001</code>. It stays private until a person shares it in the app. Sharing is deliberately unavailable to agents.</p>
+  </div>
+</div></section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<section id="verify"><div class="wrap">
+  <h2><span class="num">06</span>Verification, and the ledger</h2>
+  <p class="lede">Creation writes a claim. Verification tests it, and writes what it found into a record nobody can edit afterwards.</p>
+  <div class="cmd">
+    <div class="cmd-head">claude code</div>
+<pre><span class="k">/mc-vf-manifest-v17</span> Kaufland ERP</pre>
+  </div>
+
+  <p>It checks 24 fields and a handful of cross-checks. The first time it runs, it creates the Mission's <strong>ledger</strong>: a JSON file that records every check ever run on this Mission. Records are only ever added to it. Nothing is edited or deleted, so the history of what was once wrong stays visible.</p>
+
+  <h3>What the file format itself refuses</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Rule</th><th>What happens if you break it</th></tr></thead>
+    <tbody>
+      <tr><td>The record number is assigned by the platform</td><td>Your number is overwritten. Two agents appending at once cannot collide.</td></tr>
+      <tr><td>Verdict is one of PASS, FAIL, BLOCKED, NA</td><td>The write is refused and nothing is stored.</td></tr>
+      <tr><td>Evidence is command-and-output pairs</td><td>A record with a claim and no command is refused.</td></tr>
+      <tr><td>An approval carries the authority's own words</td><td>An approval without them is refused at the write.</td></tr>
+    </tbody>
+  </table></div>
+
+  <p>A refusal names the exact field. This is the whole reply to a bad append:</p>
+  <div class="cmd">
+    <div class="cmd-head">http 422 · nothing was written</div>
+<pre>Patch refused, nothing changed - schema violation at
+/records/2/verdict: enum: must be equal to one of the
+allowed values {"allowedValues":["PASS","FAIL","BLOCKED","NA"]}</pre>
+  </div>
+
+  <h3>Expect your first verification to fail</h3>
+  <p>A brand new Manifest has fields only a person can fill in, so the first run almost always fails. Eleven test Missions were built while proving this out, and they nearly all failed on the same field:</p>
+  <div class="tbl"><table>
+    <thead><tr><th class="m">Field</th><th>Why it fails</th><th>Verdict</th></tr></thead>
+    <tbody>
+      <tr><td class="m">5 Authorities</td><td>One person holds several roles, and the compensating control and end condition are still empty.</td><td><span class="verd fail">FAIL</span></td></tr>
+      <tr><td class="m">2 Summary</td><td>Nobody has written the two sentences a human reader acts on.</td><td><span class="verd warn">FINDING</span></td></tr>
+      <tr><td class="m">7 Modules</td><td>The roster is provisional until an architecture is approved.</td><td><span class="verd warn">WARNING</span></td></tr>
+    </tbody>
+  </table></div>
+  <h3>The writing check, and why it runs over what your agents wrote</h3>
+  <p>Verification checks a Manifest. Everything else a Mission produces gets checked too, and the check is about how it reads. Documents written by agents drift toward long, dense and hard, and they drift fast. On one real Mission two implementation reports written a day apart came out at 14,000 and 31,000 characters, the second one far harder to get through. Nobody chose that. It just happened, because nothing was watching.</p>
+  <p>So there is a lint for governed writing, and one command runs it over anything already published:</p>
+  <div class="cmd">
+    <div class="cmd-head">terminal</div>
+<pre>client/mc17 lintdoc &lt;asset id&gt;
+
+<span class="c">Title: IR-SAAS-IP-010-001</span>
+<span class="c">Violations: 30</span>
+<span class="c">  line 88   neg-foil-B   ...</span></pre>
+  </div>
+  <p>It reads the document out of CanonQ by its id, so it works on anything that landed there. That is the point. A report written by one of your fleet agents, deep inside a run you were not watching, is read by the same command as a document you typed yourself. Who wrote it makes no difference.</p>
+  <p>Your verification runs this over every governed document the Move produced, and a hit is a finding against the document and its author. When we first ran it across a finished Mission it found 284 violations across 21 implementation reports, ranging from none to thirty-three in a single report. None of them had ever been read by anything.</p>
+  <p>You can point it at a local file too, with <code>-f path.md</code>, which is how you check a draft before it goes anywhere.</p>
+  <p>And you do not have to remember any of this. A second gate came with the plugin and it runs on the write itself:</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Question</th><th>Answer</th></tr></thead>
+    <tbody>
+      <tr><td><b>When it fires</b></td><td>The moment a governed document is about to be saved to CanonQ, before it lands.</td></tr>
+      <tr><td><b>What it covers</b></td><td>Manifests, specs, implementation reports, handoffs and the rest of the governed set. A scratch note passes untouched, because a gate that stops everything gets switched off by the first person it annoys.</td></tr>
+      <tr><td><b>What you see</b></td><td>The save is refused and every offending line is named. Repair the text and save again.</td></tr>
+      <tr><td><b>Quoting someone</b></td><td>Put the quotation in a fenced code block. The lint skips those, so you can reproduce anyone's words exactly.</td></tr>
+    </tbody>
+  </table></div>
+  <p>It catches writes made through the tool and writes made by a script posting straight to the API, since both are the same act. If the gate itself breaks it lets your work through, so it can never become the reason you are stuck.</p>
+  <h3>The Change Log, and why a document holds no history of its own text</h3>
+  <p>Every governed document carries a <code>## Change Log</code> table with four columns: the draft, the CanonQ version, what changed, and the ledger records. Its author adds one row for each write that changes what the document declares, before the plain-language pass, and the row names the version that write creates. CanonQ keeps every earlier text, so the log refers to an earlier version by its number and says nothing about what that text said.</p>
+  <div class="cmd">
+    <div class="cmd-head">terminal</div>
+<pre>client/mc17 versions &lt;asset id&gt;         <span class="c"># each version CanonQ holds, newest first, with its date</span>
+client/mc17 versions &lt;asset id&gt; --log   <span class="c"># fails a row that names a version CanonQ does not hold</span></pre>
+  </div>
+  <p>In a document that carries the log, the writing lint refuses a sentence about the document's own earlier text under the rule <code>history-prose</code>, in the body and in the cells of the log. Delete the sentence and let the row refer to the version. A text with no Change Log, such as a hand-over, is refused nothing.</p>
+  <h3>One rewrite per document, and a record of every write</h3>
+  <p>A governed document goes through the plain-language rewrite once: over the whole document, before its first independent review. It goes through it again only when its reader says the word jargon, and then you send the change with <code>mc17 amend --jargon</code>. Every other change to what a document declares is sent with no rewrite. The amend runs the writing lint over the whole body, and for a Manifest, SPEC, ARCH, plan, Test Plan or Wave Plan it finds the record of that one rewrite in the ledger. A scaffold of an ARCH, a plan or the register of rulings, which <code>mc17 create --scaffold</code> sends with no rewrite, takes the pass at the first amend that moves its binding, and again at each such amend while a section still holds the template's placeholder.</p>
+  <div class="cmd">
+    <div class="cmd-head">terminal</div>
+<pre>client/mc17 plain --draft d.md --pass r.md --out p.json                <span class="c"># the proof of one pass</span>
+client/mc17 plain --draft r.md --pass r2.md --prior p.json --out p2.json  <span class="c"># a second pass, chained to the first</span>
+client/mc17 plain --exempt --draft d.md --manifest &lt;id&gt; --ledger &lt;id&gt; --out e.json  <span class="c"># a short body, below the threshold a Manifest row sets</span>
+client/mc17 create --title IP-X-001 --collection &lt;id&gt; --file r.md --plain p.json --manifest &lt;id&gt; --ledger &lt;id&gt;
+client/mc17 amend &lt;id&gt; --edits e.json --class artifact --expect-binding moved --manifest &lt;id&gt; --ledger &lt;id&gt;</pre>
+  </div>
+  <p>Each create, and each write that moves a binding, appends one record of the write to the ledger: the document, its version, its binding, what opened the send, and who ran the command. A person's own text goes out with <code>--written-by</code>, and only a name the Manifest's Authorities section lists passes. A figure the rewriter changed is printed as <code>CHANGED</code> and stops the send, because a rewriter has no authority to change a number. A write that changes a text removes the approvals of the old text in the same write, and the document's Approvals cell in the tracked table then reads none current, with the records kept.</p>
+
+  <h3>The execution acceptance record</h3>
+  <p>After each landing, one record accepts or refuses it: the person or session that merged writes it in a wave run by hand, and the session that launched the fleet writes it from the runner's return. <code>mc17 append</code> reads the record against its form before the send and refuses each fault by name. It needs <code>--manifest</code> and, where the landing is a commit, <code>--repo</code>; it accepts the run of the release checks at the pull request's tip where the tip's tree equals the merge's, or the integration stage's own run at the merged commit under <code>--stage-run</code>; it owes a line for each deviation of the report's Deviations section in a wave run by hand, or of the runner's return under <code>--runner-return</code> in a fleet wave; it owes the words of every role that approved an item a deviation narrows; it sends one record per report; and after the read-back it writes the record's number into the report's status line. <code>mc17 append --draft</code> writes the record's file with the lines a program reads already filled in, so a person types only what a person decides. A report rendered before the field moved into its status line predates the rule, and its record takes a form of its own; <code>mc17 create</code> refuses a report with no Deviations section from this release on.</p>
+  <p>A fix to a test after a stage can land under a narrow proof the authority rules, without both stages run again. His ruling opens <code>NARROW PROOF &lt;Wave Plan id&gt;</code> and names the commit the stage runs stand at, the fix commit that lands, the files the fix may change and the runs that prove the fix at the fix commit, each <code>{host kind} {command} &gt; {output file}</code>, whose output opens with the line that shows its commit and its tree. Under <code>--narrow &lt;record&gt;</code>, the acceptance check and <code>mc17 append --stage</code> accept the landing at the fix commit only where the floor holds: the stage runs stand at an ancestor of the fix commit; the fix changes only test programs, the parts they load and the drill table, each named in the ruling; each test program a changed file belongs to ran whole and green at the fix commit on each host kind the Wave Plan names; and each drill row whose check text changed was proven again there, a hook row's text read with every file <code>hooks/hooks.test.py</code> runs. The integration record then stands at the fix commit and cites the stage runs, the ruling and each proof run.</p>
+
+  <h3>The joins and the landing audit</h3>
+  <p>Before a Mission closes, two joins and the landing audit read every landing. <code>mc17 check &lt;manifest&gt; --ledger &lt;id&gt; --documents</code> pairs each plan whose row reads Landed with its newest report and the latest execution acceptance record that names it, reads the report's field against that record, and then reads the Wave Plan the accepted record names: the plan fails where that Wave Plan is unruled, leaves it out, or has no passing integration record. <code>mc17 landing --manifest &lt;id&gt;</code> reads every ruled Wave Plan beside the tracked table and fails the merge of a plan of record that none of them names; a commit that names no plan is a release, which the audit lists with its parent count and its committer and fails nothing on. A landing made before the rule passes by its accepted record in the older form, a plan that changes only law texts passes by its amendment record, and a ledger that never took up the rule passes all three, each saying so in one line. None of them reads a date. The Move sweep records each failure, and the closure act refuses on each.</p>
+
+  <h3>How the commands read a ledger, and its second version</h3>
+  <p>The commands that read a ledger judge each record by what it already carries: its verdict, its place in the ledger and the first word of its text. <code>mc17 ledger</code> counts a defect record as closed by its own verdict <code>PASS</code>, or by a later record whose text opens <code>RESOLVED {n}</code> and names it, and prints each closed record with the rule that closed it. A <code>RESOLVED</code> record that stands before its defect closes nothing, and the command says so under the defect. <code>mc17 dispatch --recite</code> moves the dispatch of a review item to a later record that names the review, once, with the same disposition and note, and keeps the first record in the item as <code>firstRecord</code>. The evidence join reads <code>repairs</code> as a repair claim only on a record that opens <code>RESOLVED</code> or <code>DEFECT</code>; it reads a record that opens <code>CORRECTION</code> as a correction, and a record that opens with any other word as no claim, and fails on neither. <code>mc17 append</code> refuses <code>repairs</code> on a record that opens with any other word. A declared repair that repairs nothing stops failing the join where a later record that opens <code>RESOLVED</code>, of a verdict other than <code>FAIL</code>, declares its record in <code>repairs</code> and carries a <code>REVIEW</code> or <code>VERIFICATION</code> asset; <code>mc17 evidence</code> prints it as a note that names that record. Where an entry of a review's work order names a record from before the review record, a later ruling in an authority's own words whose first line reads exactly <code>REDISPATCH {n}</code>, naming the review record, and whose text holds a line <code>Entry {id}: {disposition}</code> dispatches the entry, which stays as written; <code>mc17 reviewed</code> and <code>mc17 evidence</code> print a note for each entry such a ruling dispatched and for each such ruling that dispatched nothing. <code>mc17 reviewed</code> and <code>mc17 evidence</code> also name a ruling whose first line opens <code>REDISPATCH {n}</code> and misses the exact form, and each line of such a ruling that opens <code>Entry</code> and misses the exact form. Under <code>--recite</code>, <code>mc17 dispatch</code> names the re-dispatching ruling where it refuses the re-citation of an entry whose dispatch names a record at or before the review record, because the review record names no <code>REVIEW</code> asset, the entry was re-cited once, or the disposition differs. A result manifest may mark a red case <code>red-resolved:{n}</code>, and <code>mc17 accept</code> then prints its criterion <code>ok</code> as accepted with resolved defect <code>{n}</code> where defect record <code>{n}</code> names the case and a later record that opens <code>RESOLVED {n}</code> carries the own words of the Business Owner or the Technical Owner; otherwise the case reads red, with the reason.</p>
+  <p>A ledger moves to version 2 by one command, <code>mc17 ledger &lt;ledger&gt; --declare 2 --schema &lt;asset id&gt;</code>. It binds the ledger to the asset <code>ledger-hybrid-v2.schema</code>, which holds every rule of version 1 and four fields more, and sets <code>version2From</code> to the next record's number, in one patch that tests what the command read. From that record on, every record names who wrote it down in <code>recordedBy</code>, and each passage of an authority's words names who spoke it in <code>spokenBy</code>, as <code>BO {name}</code> or <code>TO {name}</code>. <code>mc17 append</code>, the document hook and the evidence join apply the rule, and a record that carries <code>recordedBy</code> meets it on a ledger of either version. A later record that opens <code>CORRECTION {n}</code> and carries the missing fields clears record n's fault. A ledger whose two fields disagree is in a mixed state: <code>mc17 append</code>, <code>mc17 ledger</code> and <code>mc17 evidence</code> refuse it until the same command completes the declaration.</p>
+  <p>Both schema texts the harness holds, <code>ledger-hybrid-v1.schema.json</code> and <code>ledger-hybrid-v2.schema.json</code>, mark the records array with <code>x-canonq-ledger: true</code> and declare <code>x-canonq-actor</code>, an object, on a record and on a work-order entry. Once a CanonQ instance pins a ledger schema that carries both keywords, its QApp token grant reads them, and CanonQ writes <code>x-canonq-actor</code> itself; no command of this plugin adds it. A ledger whose bound asset holds either text refuses a record or an entry whose <code>x-canonq-actor</code> is no object, and reads every other record as before.</p>
+  <div class="cmd">
+    <div class="cmd-head">terminal</div>
+<pre>client/mc17 ledger &lt;ledger&gt;                                   <span class="c"># the version, the standing and the closed defect records</span>
+client/mc17 ledger &lt;ledger&gt; --declare 2 --schema &lt;asset id&gt;   <span class="c"># the move to version 2, in one tested patch</span>
+client/mc17 dispatch &lt;ledger&gt; --record &lt;n&gt; --item &lt;id&gt; --disposition applied --by &lt;m&gt; --recite</pre>
+  </div>
+
+  <h3>What the integration stage reads and runs</h3>
+  <p>The integration stage takes each test setting from the Wave Plan's row first, then from the Manifest's row in force, then from the default, and prints where each value came from. The <code>baseline</code> reader takes its figures from the Test Plan entry of its case, and from AC-15 of the SPEC only where <code>--spec</code> names one. The stage leaves the <code>acceptance</code> case to the composition: <code>mc17 append &lt;ledger&gt; --stage &lt;dir&gt; --manifest &lt;id&gt; --repo &lt;path&gt;</code> runs the acceptance reader once, after the acceptance records exist, and the integration record reads PASS only where every landing of the wave has its record, written by the person who merged or the session that launched the fleet, citing a run that tested the merged code, with a report whose field read <code>pending</code> before it named the record. In a repository that holds no copy of the plugin, the stage runs the command the Wave Plan's <code>Integration run:</code> line names and records its exit code and its output. A release outside a wave gets its record from <code>mc17 stage --release &lt;sha&gt;</code>, which runs the ten release checks at the release's commit.</p>
+  <p>Where one reader of a finished run read red because an input was missing, and the commit and the tree have not moved since, the input is repaired and <code>mc17 stage --rerun &lt;run directory&gt; --readers &lt;name&gt;</code> runs that reader again over the run's own results. The suites, the drill and every other reader keep what the run wrote, and <code>stage.json</code> keeps its bytes. The rerun writes <code>rerun.json</code> beside it, and its outputs into a folder of its own under <code>rerun/</code>, so the record can show the first result beside the new one. It refuses a run of another Wave Plan, commit, host kind or tree, and names which, and it writes nothing then. The run directory stands outside the plugin's folder, where the run's files read as no edit of the plugin. <code>mc17 append --stage</code> reads each run with its rerun applied, takes the run's verdict again, and names the rerun on a line <code>Rerun: {reader} at {time} on {host kind}</code>; the check of an execution acceptance record reads each <code>--stage-run</code> directory the same way.</p>
+
+  <h3>A ruled reading, and the programs that read it</h3>
+  <p>When a criterion, a bar or a figure of a governed document stops the work, the authority whose approval the document needs may rule on the ledger how it reads for one wave, stage, plan or the rest of the Mission's work. A row of the Manifest's Operational Parameters table names that ruling record, so the row moves no binding and stales no approval. <code>mc17 readings --manifest &lt;id&gt; --ledger &lt;id&gt;</code> lists the rows, <code>--row &lt;n&gt;</code> writes one, and <code>--check</code> exits 1 while a row stands open or its reconciliation fails a test; the Move acceptance and the closure act run that check. A reading never touches nine of the ten release checks, the digest of the protected block or the measures of a judgment module. The drill alone may take one, and only where the Manifest's merge bar and its paragraph on collapsed authorities both carry the sentence <code>A ruled reading may take the drill, mutations, and no other release check.</code> Then <code>mc17 gates</code>, <code>mc17 stage --release</code> and <code>mc17 stage</code> run the other nine checks and report the drill as <code>READ under ruling record {n}</code>. A reading of a lens's bar reaches the fleet script, its lens briefs and the lock, a stage acceptance record may name a reading on its <code>Reading:</code> line, and <code>mc17 accept</code> reads a case state that names the record it rests on and the reading it was judged under.</p>
+
+  <h3>The judgment module, its setting and its store</h3>
+  <p>The command <code>mc17 converge</code> holds the twenty-five subcommands of the judgment module, and with no subcommand it lists them. <code>mc17 converge probe</code> makes one call on the model the setting <code>wave.model.converge</code> names, with a fixed policy and a fixed packet that holds no decision, and prints the model asked and the model that answered, the tokens, the price OpenRouter states, the time and the call state; it writes no file. Every new Wave Plan states the setting's row, <code>none</code> by default. A Wave Plan that lacks the row reads <code>none</code>, and <code>mc17 wavecheck</code> passes it with a <code>NOTE:</code> line. The key file is read at each call, and the transport to OpenRouter is refused in a test run.</p>
+  <p>A Mission's store stands outside the repository, on the one host where <code>mc17 converge init --scope &lt;SCOPE&gt;</code> made it, and every other subcommand refuses on another host. <code>status</code> prints one operation, <code>disposition</code> prints a stage's dispositions at a stage revision, and <code>cancel</code> cancels an operation that is not final, with a note of its cost so far, its unsettled charges and its deadline. <code>key --init</code> makes the key pair of the hidden cases once, and <code>seal</code> checks a set of cases, seals it and writes its sealing record, printing nothing of a case. A decision record goes to the ledger once: <code>mc17 append --mark &lt;operation id&gt;</code> looks for the record that mark names before it sends, and sends nothing where one stands.</p>
+  <p>Outside the fleet runner, <code>mc17 converge evaluate --point &lt;kind&gt;</code> asks the module once at a decision point of a wave run by hand: before a heavy run, which the hook <code>hooks/lint-heavy.py</code> refuses until a start entry of the store admits it under its key; before an agent start, over the prompt's file, which under <code>wave.prompts</code> <code>template</code> is the one line that names the agent's brief; at a review that blocks, over the lenses' results; at a red integration stage, whose last line names the command; and at the four loop points, from the runner's own facts. The command builds the packet from the point's own sources, asks the module once and writes the decision record. <code>decide</code> writes the deciding entry beside the module's record, the session's note or an authority's ruling in his own words, and <code>ended</code> reports an end the hook did not see. A stage start entry that no start used ends only with <code>--stage-dir</code>, which names the run's folder and marks the entry used by that run, or with <code>--no-run</code>, which the command reads against the ledger's integration records. Each running entry of a packet carries its wave, its plan and whether it belongs to the wave of the decision point, and a drill run counts once, its row workers and the shells that carry its command left out while its own process stands.</p>
+  <p>At every decision point the session shows the authority what <code>mc17 converge offer</code> prints, and at a stop still in the blind set what <code>mc17 converge render</code> prints, and adds no route of its own. The offer prints the sha256 of its lines as its last line, <code>Digest</code>. An authority's ruling through <code>decide</code> names what he was shown with <code>--shown "offer &lt;operation id&gt; &lt;digest&gt;"</code> or <code>--shown "render &lt;stop id&gt; &lt;digest&gt;"</code>, and the command refuses a ruling with none, or with a digest other than the one it computes again, before any send; his blind decision at a stop of the set writes that line from the stop's <code>SHOWN</code> record. At a red stage, once the decision stands, <code>decide</code>, his blind decision and a call that applied the decision under a delegation print one line <code>Run going : &lt;table id&gt; on &lt;host&gt;, keep</code> or <code>..., stop</code> for each run the packet lists still going. A fixed table sets each from the decision's action and whether the commit moved since the run: a targeted correction stops a run where the commit moved, a change of strategy stops it at either commit, and every other action keeps it. The session ends a run that reads stop.</p>
+  <p>The hook <code>hooks/lint-heavy.py</code> reads where a heavy run starts. On Windows it reads a Git Bash path in a <code>cd</code>, such as <code>/c/Users/...</code>, as the folder it names, and it writes a folder it cannot place to its journal where a wave run by hand stands on the host. It takes an agent start's folder from the newest agent entry of the store whose prompt digest matches the prompt, so the session starts each agent with the prompt as the file holds it. It reads a heavy run started over <code>ssh</code> in a remote checkout that <code>mc17 wave lock --remote &lt;ssh target&gt;:&lt;path&gt;</code> registers, by the <code>cd</code> the remote command holds, inside <code>zsh -lc</code> too, and judges it under the key of the target. It admits an admitted start only where a fresh reading of the host, the one <code>mc17 converge host</code> prints, matches the host's part of the packet and the wait condition holds, and it refuses a delegated start on a reading that fails or comes late, and a call of two delegated starts. At an agent start it takes only an entry made for the start's own prompt, open, admitted or held, and it refuses a start for whose prompt no entry stands with a refusal written for agent starts, which names the call owed. In a wave run by hand whose committed lock carries <code>handPrompts</code>, it refuses an agent start it places in the wave where the prompt is not the one line that names a brief, the brief is no start text the lock names, or its facts break their form, and it names the steps owed.</p>
+  <p>The blind test: once <code>mc17 converge blind --open</code> has started the set, the module's proposal at a stop of the set is sealed under the public key, the ledger carries its hash alone, and the command prints the stop's id and the hash. <code>render</code> writes the stop's facts under the program's labels with no action named, the Business Owner decides the stop in his own words, <code>reveal</code> opens each envelope of a stage once the stage has ended and checks the proposal against its hash, <code>reading</code> records his reading of each disagreement, and <code>view</code> shows the operator every decision, a sealed one hidden until its reveal; every read of a sealed proposal through a command goes into the store's read log. A ruling of the Business Owner in his own words that opens <code>BLIND EXCLUDES &lt;Wave Plan id&gt;</code> takes every point of that wave out of the set before it opens, so no proposal of the wave is sealed. A stop he takes out of the set by name after it was sealed is revealed as soon as his ruling stands, with <code>reveal &lt;stop id&gt;</code>, before its stage ends; a stop still in the set is refused.</p>
+  <p>The executor carries out a decision of the module where a delegation of the Business Owner covers it. A delegation is his ruling on the ledger, opening <code>Delegation of</code> in his own speaker line, that names the decision kinds, the stages and the Missions it covers, the early end, the ten reports it rests on with their versions, and the version record of the policy and the model; a later ruling that opens <code>Revocation of delegation record {n}</code> ends it. <code>mc17 converge validate</code> checks one decision against the delegations in force and the state as it stands now, and answers <code>authorized</code>, <code>denied</code>, <code>stale</code> or <code>pending</code>. <code>mc17 converge apply</code> then applies it once through the route its action takes at its point. At a heavy-run start and at a red stage the call of <code>mc17 converge evaluate</code> itself applies the decision at once where a delegation in force covers it. It writes each start entry once in its final state: admitted, for the start a step of the work order names on a host the proposal read idle, with the host's part of the packet and the wait condition, and held for every other start. At a red stage a targeted correction admits the one run its route names, the reader rerun at the run's own commit or the stage at the new tip, and a change of strategy, a challenge or a stop sends its decision request to the authority it names. The hook admits an admitted start only where <code>mc17 converge host</code> reads the host as the proposal found it and the wait condition holds, and a revocation appended ends the admitted starts of its delegation that no start used. <code>mc17 converge offer</code> prints what the authority would type and writes nothing, and <code>mc17 converge recover</code> settles each unsettled operation from the store alone after a restart. The lock reads the speaker line of every stage acceptance record and every targeted fix ruling: <code>mc17 wave lock --resume --accept</code> and <code>--fix</code> refuse a record with no line, or with a delegate's or an agent's, and admit the executor's line <code>Speaker: executor under delegation record {n}</code> only where that delegation stands.</p>
+  <p>Inside the fleet runner, a stage carries the field <code>converge</code>, which <code>mc17 wave lock</code> writes for a fleet plan with each member's delegations in force and <code>mc17 wave script</code> writes on each stage; <code>--no-clerk</code> writes the clerk off. At the four points of the review loop where a finding stands, the runner starts the clerk, a small agent that runs <code>mc17 converge evaluate</code> over the facts block and hands back its line <code>Clerk     :</code>, and each call is an entry of <code>convergence</code> on the stage result and in the wave report. The runner waits for the clerk only where a delegation of the field names the early end at the point, and an authorized return there ends the stage early, with <code>endedEarly</code> on the result. After the wave the session writes the runner's return to a file and completes each call that names no decision record with <code>mc17 converge evaluate --wave-report</code>. Each recorded finding carries its id <code>R{round}K{n}</code>, and one targeted fix, taken by <code>mc17 wave lock --resume --fix</code>, follows a critical stop, a stop that still blocks or an early end, naming any finding the runner's return lists.</p>
+  <p>The policy file <code>harness/converge/policy.md</code> is the text the module sends the model with each packet. Its figure table, under the heading Figures, holds each figure the policy uses, with its source, its reason and its scope. <code>mc17 converge policy --check &lt;file&gt; --ledger &lt;id&gt;</code> refuses a policy where a figure lacks one of them, a number stands outside the table, or a sentence repeats a record kept from the module, and <code>--adopt</code> refuses a changed policy until its version holds a measure run of each of published, replay and judgment. <code>version</code> writes the version record that names the policy version and the model, once, and each run names that record. <code>cases</code> prints the prior cases of the Mission's decision and outcome records, each an analogy and no permission. <code>run</code> runs each case of a sealed set of the published, hidden or judgment set through the module's one call, in a run folder of the store, and writes a run record per case and a miss record per miss; a hidden run keeps its texts sealed until its records have landed, and <code>--resume &lt;run id&gt;</code> carries a stopped run on. <code>load</code> reads the host's load, the mean over three seconds, one reading after another, and writes no file; its highest reading under one heavy run gives the row of <code>host-busy-load</code> for the host's kind.</p>
+  <h3>What a change of text owes</h3>
+  <p>When a write changes what a document declares, the document owes a verification again, and every approval of its earlier text has lapsed. <code>mc17 amend</code> ends such a write with the line <code>VERIFICATION OWED NOW: {skill}</code>, naming the verifier skill of the document's class, and the skill that ran the amend runs that verifier before it reports. A write to a document of a class with no verifier, such as an Implementation Report, ends with <code>NO VERIFIER: {class}</code>.</p>
+  <div class="cmd">
+    <div class="cmd-head">terminal</div>
+<pre>client/mc17 check &lt;manifest&gt; --ledger &lt;id&gt; --documents               <span class="c"># every verification owed and every approval of an earlier text</span>
+client/mc17 check &lt;manifest&gt; --ledger &lt;id&gt; --approvals --doc &lt;id&gt;    <span class="c"># the approvals of one document alone</span>
+client/mc17 rework &lt;manifest&gt; --ledger &lt;id&gt; --record &lt;n&gt;            <span class="c"># the landed plans a verified SPEC change names go back to Rework</span>
+client/mc17 published &lt;id&gt; --ledger &lt;id&gt; --manifest &lt;id&gt;            <span class="c"># the version an authority reads, proven by its binding</span></pre>
+  </div>
+  <p>The Move sweep runs the first form. It fails each document that owes a verification, naming the verifier, and each approval of a text that has since changed, naming the live-state write that takes that approval off the page. Each verifier skill runs the second form over its own document. Before an authority approves or rules, the skill runs <code>mc17 published</code>, and the approval or ruling record carries the line it prints last, <code>Read: {asset id} version {n}, binding {hex}, verified at record {m}</code>, so a later reader can check that the version on the page is the version the authority read.</p>
+
+  <div class="note stop">
+    <h4>A failed verification stamps nothing</h4>
+    <p>It writes what it found into the ledger, with the command it ran for each check, and it leaves your Manifest untouched. Fill in the fields it named and run it again. Both runs stay in the ledger. That is deliberate: what was once wrong is part of the record.</p>
+  </div>
+</div></section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<section id="fleet"><div class="wide">
+  <h2><span class="num">07</span>Running an agent fleet</h2>
+</div>
+<div class="wrap">
+  <p class="lede">A fleet is several AI agents working on one piece of work in sequence. One builds it. Two or three review it separately, without seeing each other's comments. Another fixes what they found, with a limit on how many rounds. A fresh reviewer who has seen none of that checks the result. A last one opens the pull request and merges it.</p>
+  <p><strong>You do not write any of this, and you do not write the script either.</strong> You ask for the work in plain language and Claude Code writes it. This section is so you recognise what it produced and can read the message when a run is refused.</p>
+  <div class="note why">
+    <h4>Why the guards are not yours to write</h4>
+    <p>While this system was being built, four fleet runs went wrong in one day, all the same way. A merge check looked at how bad the findings were and forgot to read whether the reviewer had actually approved. A review loop was edited while it was running. One stage assumed the stage before it had finished, and never checked. The fourth was inside the code written to prevent the other three.</p>
+      <p>Every one of those was a safety check somebody meant to add and did not. <strong>So the checks are built into the thing you have to call anyway.</strong> You cannot forget them, because you never write them.</p>
+  </div>
+</div>
+<div class="wide">
+  <figure>
+    <div class="fig-frame">
+      <svg viewBox="0 0 900 330" role="img" aria-label="How a workflow script passes the gate before it runs">
+        <rect x="20" y="40" width="200" height="112" rx="3" class="s-fill-card"/>
+        <rect x="20" y="40" width="200" height="112" rx="3" class="s-stroke"/>
+        <text x="34" y="62" class="s-label">YOUR SCRIPT</text>
+        <text x="34" y="86" class="s-txt-s">the sanctioned block,</text>
+        <text x="34" y="102" class="s-txt-s">pasted whole</text>
+        <text x="34" y="126" class="s-txt-s">+ your wave, declared</text>
+        <text x="34" y="142" class="s-txt-s">once to openWave</text>
+
+        <path d="M224 96 L286 96" class="s-stroke-2" stroke-width="1.5"/>
+        <path d="M286 96 l-7 -4 v8 z" style="fill:var(--ink-3)"/>
+
+        <rect x="290" y="40" width="200" height="112" rx="3" class="s-fill-card"/>
+        <rect x="290" y="40" width="200" height="112" rx="3" class="s-oxide-stroke"/>
+        <text x="304" y="62" class="s-label" style="fill:var(--oxide)">THE GATE</text>
+        <text x="304" y="86" class="s-txt-s">a PreToolUse hook runs</text>
+        <text x="304" y="102" class="s-txt-s">the lint automatically</text>
+        <text x="304" y="126" class="s-txt-xs">every reach for an agent outside</text>
+        <text x="304" y="140" class="s-txt-xs">the block is a violation</text>
+
+        <path d="M494 96 L556 96" class="s-accent-stroke" stroke-width="1.5"/>
+        <path d="M556 96 l-7 -4 v8 z" class="s-accent"/>
+        <text x="500" y="86" class="s-label">CLEAN</text>
+
+        <rect x="560" y="40" width="320" height="112" rx="3" class="s-fill-sunk"/>
+        <rect x="560" y="40" width="320" height="112" rx="3" class="s-accent-stroke"/>
+        <text x="574" y="62" class="s-label">THE WAVE RUNS</text>
+        <g>
+          <rect x="574" y="76" width="66" height="26" rx="2" class="s-fill-paper"/><rect x="574" y="76" width="66" height="26" rx="2" class="s-stroke"/>
+          <text x="607" y="93" class="s-txt-xs" text-anchor="middle">build</text>
+          <rect x="648" y="76" width="66" height="26" rx="2" class="s-fill-paper"/><rect x="648" y="76" width="66" height="26" rx="2" class="s-stroke"/>
+          <text x="681" y="93" class="s-txt-xs" text-anchor="middle">lenses</text>
+          <rect x="722" y="76" width="66" height="26" rx="2" class="s-fill-paper"/><rect x="722" y="76" width="66" height="26" rx="2" class="s-stroke"/>
+          <text x="755" y="93" class="s-txt-xs" text-anchor="middle">fix loop</text>
+          <rect x="796" y="76" width="70" height="26" rx="2" class="s-fill-paper"/><rect x="796" y="76" width="70" height="26" rx="2" class="s-stroke"/>
+          <text x="831" y="93" class="s-txt-xs" text-anchor="middle">re-review</text>
+          <rect x="574" y="112" width="292" height="26" rx="2" class="s-fill-paper"/><rect x="574" y="112" width="292" height="26" rx="2" class="s-accent-stroke"/>
+          <text x="720" y="129" class="s-txt-xs" text-anchor="middle">lander · the next stage reads this merge as its ground</text>
+        </g>
+
+        <path d="M390 156 L390 210" class="s-oxide-stroke" stroke-width="1.5"/>
+        <path d="M390 210 l-4 -7 h8 z" class="s-oxide"/>
+        <text x="402" y="182" class="s-label" style="fill:var(--oxide)">VIOLATION</text>
+
+        <rect x="180" y="216" width="540" height="86" rx="3" class="s-fill-card"/>
+        <rect x="180" y="216" width="540" height="86" rx="3" class="s-oxide-stroke"/>
+        <text x="196" y="240" class="s-txt-s">The call is denied and each violation is named at its line.</text>
+        <text x="196" y="262" class="s-txt-xs">G4-unsanctioned-script · this script reaches the runtime agent 2 time(s)</text>
+        <text x="196" y="278" class="s-txt-xs">outside a verified sanctioned block, and carries no verified block at all.</text>
+        <text x="196" y="294" class="s-txt-xs">Nothing ran.</text>
+      </svg>
+    </div>
+    <figcaption>Change one character inside the pasted block and it stops being sanctioned: the fence hash fails, and every guard the block defined is then defined outside a verified block. A doctored paste loses all the guards at once rather than weakening one.</figcaption>
+  </figure>
+</div>
+<div class="wrap">
+  <h3>Who writes the script</h3>
+  <p><strong>Claude Code does. Not you.</strong> You describe the work in ordinary language, and the agent writes the workflow script, pastes the safety block into it, and runs it. In practice you will type something like:</p>
+  <div class="cmd">
+    <div class="cmd-head">claude code · what you actually type</div>
+<pre>Run a fleet to build the CommunicationHUB adapter.
+Two review lenses: correctness, and what else it touches.
+Land it as a pull request when the reviews clear.</pre>
+  </div>
+  <p>That is the whole of your side. The paragraphs below are here so that when something goes wrong you can read the message and understand it.</p>
+
+  <h3>What the agent produces, and why it looks odd</h3>
+  <p>The script it writes starts with about 1,800 lines it did not compose. That is the safety block, pasted in whole. It looks like bloat and it is the point: a workflow script runs somewhere with no file access, so it cannot load the safety code from disk. It has to carry a copy.</p>
+  <p>Underneath the block sits the only authored part, usually a dozen lines. This is a one-stage fleet in full:</p>
+  <div class="cmd">
+    <div class="cmd-head">the part the agent writes · after the pasted block</div>
+<pre><span class="k">const</span> wave = openWave({
+  waveId: <span class="s">'erp-adapter'</span>,
+  io: { agent, parallel, log },
+  independentStages: 1,
+  independenceBecause: <span class="s">'first stage, nothing to build on'</span>,
+  stages: [{
+    name: <span class="s">'adapter'</span>,
+    dependsOn: <span class="k">null</span>,
+    build:  { prompt: <span class="s">'Implement the CommunicationHUB adapter.'</span> },
+    lenses: [{ name: <span class="s">'correctness'</span>, prompt: <span class="s">'Judge it against the plan.'</span> },
+             { name: <span class="s">'blast-radius'</span>, prompt: <span class="s">'What else does this touch?'</span> }],
+    land:   { prompt: <span class="s">'Open the pull request and land it.'</span> },
+  }],
+})</pre>
+  </div>
+  <p>Those dozen lines say what the work is. Everything that keeps it safe came with the pasted block, and you get all of it whether or not anyone thought to ask:</p>
+  <div class="tbl"><table>
+    <thead><tr><th>You get</th><th>Which means</th></tr></thead>
+    <tbody>
+      <tr><td>One place decides whether it is safe to merge</td><td>It reads whether the reviewer actually approved, not just how serious the findings sounded. A run once merged on "only minor issues" while a reviewer had said no.</td></tr>
+      <tr><td>The fix loop stops</td><td>Fix, re-review, fix again runs a set number of times and then gives up and tells you. It cannot spin.</td></tr>
+      <tr><td>A stage is handed what actually merged</td><td>If stage two builds on stage one, it receives stage one's real merge commit. It cannot build on something that never landed.</td></tr>
+      <tr><td>The fixer does not mark their own work as fixed</td><td>A reviewer who has seen none of the earlier argument looks at the result fresh.</td></tr>
+      <tr><td>A failed merge stops the whole run</td><td>The stages after it do not start on the assumption that it worked.</td></tr>
+    </tbody>
+  </table></div>
+  <p>Every one of those exists because it was once missing and something went wrong. That is why the block carries them for you, every time, on every script.</p>
+
+  <h3>What runs the check, and when</h3>
+  <p>The check is not something you remember to run. A small program sits between Claude Code and the thing that starts a fleet, and it runs every time. It is called a <strong>PreToolUse hook</strong>, and it came with the plugin.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Question</th><th>Answer</th></tr></thead>
+    <tbody>
+      <tr><td><b>Who turns it on</b></td><td>You do, once, by installing the plugin in section 03. There is no second step. It then covers every Mission and every session on this machine.</td></tr>
+      <tr><td><b>How it gets registered</b></td><td>By the file existing. The plugin ships <code>hooks/hooks.json</code>, and Claude Code reads it. You do not edit any settings file.</td></tr>
+      <tr><td><b>Where it runs</b></td><td>On your own machine, as a local process. It reads the script and runs the lint. It never reaches the network and never touches CanonQ.</td></tr>
+      <tr><td><b>When it fires</b></td><td>The moment a fleet is about to start, before anything runs. A clean script gets silence and starts normally. A bad one is stopped and named.</td></tr>
+    </tbody>
+  </table></div>
+  <p>Two behaviours are worth knowing because they will look strange otherwise. When the script is clean, the hook says nothing at all, so a silent run is the check passing. And if the hook itself breaks, it lets a script through that carries no safety block. A gate that blocks everything gets switched off by the first person it annoys, and then nothing is checked at all. A fleet script, one that carries the safety block, is stopped when the hook cannot read it, and the message names the cause, because a fleet that nobody checked against its ruled plan should not run.</p>
+  <p>The reason it exists is the plainest argument in this whole guide. The rule that fleets must use the safety code was written down, and a command existed to check it. Nobody ran the command. All thirty-one fleet scripts written while building this system broke the rule, <strong>including the ones that were checking the methodology</strong>. A check that waits to be remembered is not a check.</p>
+
+  <h3>When you see it refused</h3>
+  <p>If the agent writes a script that reaches for an AI agent outside the pasted block, the run is stopped before anything happens and you see a message like this:</p>
+  <div class="cmd">
+    <div class="cmd-head">the run was denied · nothing executed</div>
+<pre>G4-unsanctioned-script  this script reaches the runtime agent
+2 time(s) outside a verified sanctioned block, and the script
+carries no verified sanctioned block at all.</pre>
+  </div>
+  <p>Read it as: <em>this script was going to run AI agents without the safety code around them</em>. Nothing ran, nothing was written, nothing is broken. Tell the agent to paste the block and declare the wave properly, and it will.</p>
+  <p>The other message you might see says <code>fence-tampered</code>. That means the pasted block was edited. Even one character breaks it, on purpose: an edited copy is no longer the code that was tested, so every safety rule inside it stops counting at once.</p>
+
+  <h3>If you ever do want to write one</h3>
+  <p>Two commands, and the second one is worth knowing regardless because it is what the hook runs for you.</p>
+  <div class="cmd">
+    <div class="cmd-head">terminal</div>
+<pre>client/mc17 block --print &gt; wave.js   <span class="c"># the block to paste</span>
+client/mc17 lint wave.js              <span class="c"># check it yourself</span>
+
+<span class="c">Violations: 0</span>
+<span class="c">Clean. Every reach for an agent stands inside a verified sanctioned block.</span></pre>
+  </div>
+  <p>A worked example ships with the plugin at <code>harness/examples/sanctioned-wave.js</code>. It is the script <code>mc17 wave script</code> writes from the fixture Wave Plan, so it shows the form every fleet script takes: <code>export const meta</code> first, three declaration lines naming the ruled plan, its prompts and every setting in force, and <code>return await main()</code> last.</p>
+  <p>Each lens of a fleet Wave Plan states its bar, the defects it blocks on, in one line beside its brief. <code>mc17 wavecheck</code> refuses a lens with none, and the script carries each bar beside its lens, where the prompt digest reads it. In the opening review a finding blocks only where it falls under the bar; in a re-review only where it raises a blocking finding of the round before again, or falls under the bar in a part the fix report names. Every other finding is recorded for the authority, and the Implementation Report lists it. A recorded finding graded critical stops the stage. A stage that stopped in its review loop returns the head an authority may accept by a ruling record, or fix by one targeted fix, under the same ruled Wave Plan. A build that opened no pull request stops its stage before any lens runs, and a lander that states it used no bypass claims none.</p>
+
+  <h3>The lock on the branch</h3>
+  <p>A ruled Wave Plan is locked onto its branch by <code>mc17 wave lock</code>, which commits the file <code>.mc17/wave.json</code> there. When a fleet is about to start, the hook reads that committed lock and runs the check against it. You can run the same check yourself:</p>
+  <div class="cmd">
+    <div class="cmd-head">terminal</div>
+<pre>git show mission/x:.mc17/wave.json &gt; lock.json
+client/mc17 lint wave.js --lock lock.json   <span class="c"># the launch reading</span></pre>
+  </div>
+  <p>Four things follow from the lock:</p>
+  <ul>
+    <li>A script whose plan, settings or prompts differ from what the lock records is stopped and named. So is a script that runs stages on a branch with no committed lock.</li>
+    <li>After a stop, <code>mc17 wave lock --resume</code> takes the remainder of the wave into the lock, with the authority's acceptance of a stopped stage's head, or one targeted fix after a critical stop, a stop that still blocks or an early end, for findings the runner's return lists, and <code>mc17 wave script --resume</code> writes the remainder script from the same ruled plan. The check then admits that script's seed and holds it to the entry: its order, its prompts, its acceptance or its targeted fix. An acceptance or a targeted fix that no entry carries is stopped in every script.</li>
+    <li>The lock guards the branch it names, whatever that branch is called, and every branch whose name starts with <code>mission/</code>.</li>
+    <li>A commit that edits the committed lock is refused, whatever token it carries, with one exception: the commit of a resume entry, which <code>mc17 wave lock --resume</code> makes under the wave token and which the override never passes. Otherwise a lock changes only through <code>mc17 wave unlock</code> and <code>mc17 wave lock</code>, and each leaves a commit of its own.</li>
+    <li>A merge commit on a locked branch needs the wave's token, as a commit does, through the <code>pre-merge-commit</code> hook beside the <code>pre-commit</code> hook.</li>
+  </ul>
+  <p>If a repository installed the hooks with an earlier release, run <code>mc17 wave hooks</code> there again. It replaces the plugin's own older hook and adds the merge hook, and a repository takes no remainder into its lock until it has.</p>
+
+  <div class="note stop">
+    <h4>Where this check does not reach</h4>
+    <p>It watches one door. Fleets started the way section 07 describes go past it. A fleet started by handing work straight to a single agent uses a different door, and that door has no check on it. A script that reaches an agent by some route the check has never seen will also pass while doing whatever it likes.</p>
+    <p>One more thing to expect: if you install the plugin while Claude Code is already running, restart it. Whether a running session picks up a new hook by itself is untested, and a restart settles it.</p>
+    <p>Really fixing that means the thing that runs your script hands you a safe agent and no other, and nobody has built that yet. Saying so is better than letting you assume you are covered.</p>
+  </div>
+</div></section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<section id="where"><div class="wrap">
+  <h2><span class="num">08</span>Where everything lives</h2>
+  <p class="lede">Four places. Your machine holds the plugin, DevyonQ runs the harness, GitHub holds the plugin's source, CanonQ holds the Missions and the law.</p>
+
+  <h4>On your machine, after install</h4>
+  <div class="cmd">
+    <div class="cmd-head">~/.claude/plugins/cache/devyonq-mc/devyonq-mc/&lt;version&gt;/</div>
+<pre>skills/mc-cre-mission-v17/SKILL.md   <span class="c"># creates a Mission</span>
+skills/mc-vf-manifest-v17/SKILL.md   <span class="c"># verifies one</span>
+client/mc17                          <span class="c"># the client: mc17 login, then every harness command</span>
+client/mc17.cmd                      <span class="c"># the client from PowerShell or cmd on Windows</span>
+client/contract/copy.json            <span class="c"># the commit of devyonq-saas whose harness contract the client carries</span>
+harness/orchestration-harness.js     <span class="c"># the sanctioned runner</span>
+harness/examples/sanctioned-wave.js  <span class="c"># a script that passes the fleet gate</span>
+harness/converge/policy.md           <span class="c"># the judging policy a decision point sends its model</span>
+hooks/lint-workflow.py               <span class="c"># gate: fleet scripts, read against the lock</span>
+hooks/lint-branch.py                 <span class="c"># gate: agents and git commands on a locked branch</span>
+hooks/lint-heavy.py                  <span class="c"># gate: heavy runs of a wave run by hand, each under a start entry</span>
+hooks/lint-secret.py                 <span class="c"># gate: what the client keeps, its sign-in among it</span>
+hooks/git/                           <span class="c"># the lock's pre-commit and pre-merge-commit hooks</span>
+hooks/lint-document.py               <span class="c"># gate: corpus writes, linted by the harness</span>
+hooks/lint-chat.py                   <span class="c"># the writing rules over what the assistant just said</span></pre>
+  </div>
+  <p>Skills call the client as the launcher <code>client/mc17</code> two levels above their own folder, so nothing depends on where you installed it. The harness itself, its templates, the writing lint and its commands, runs in DevyonQ and ships in no package.</p>
+
+  <h4>In CanonQ</h4>
+  <div class="tbl"><table>
+    <thead><tr><th>Collection</th><th>Holds</th></tr></thead>
+    <tbody>
+      <tr><td class="m">Mission Control</td><td>The three law documents at v1.6 and v1.7, and the ledger schema every Mission's records are bound to.</td></tr>
+      <tr><td class="m">Mission &lt;name&gt;</td><td>One per Mission: its Manifest, SPEC, Test Plan and VF ledger. Private until a person shares it.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h4>The source</h4>
+  <p><code>github.com/Macrix-Technology-Group/devyonq-mc</code>. The plugin is served from <code>packages/claude-code/</code>, which the build writes from <code>core/</code> and <code>platforms/claude-code/</code>. The v1.6 plugin stays at <code>skills/mission-control/</code> and is untouched by any of this.</p>
+</div></section>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<section id="trouble"><div class="wrap">
+  <h2><span class="num">09</span>When it refuses</h2>
+  <p class="lede">Most refusals name the thing to fix. These are the ones whose message points somewhere other than the cause.</p>
+
+  <div class="tbl"><table>
+    <thead><tr><th>What you see</th><th>What it means</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>the client holds no sign-in. Run mc17 login in a terminal of your own.</code></td>
+        <td>This computer has not signed the client in to DevyonQ yet. Run <code>client/mc17 login</code> yourself, in a terminal outside the AI tool, and pick your tenant in the browser, or add <code>--tenant &lt;tenant&gt;</code>. Nothing is guessed on purpose: the client never picks a DevyonQ or a tenant for you.</td>
+      </tr>
+      <tr>
+        <td>A hash that does not match anything</td>
+        <td>You hashed the wrong bytes. The REST route returns the body inside a JSON envelope, so hashing the whole reply gives a perfectly normal-looking wrong answer. Use <code>mc17 hash</code>, which unwraps it and self-checks.</td>
+      </tr>
+      <tr>
+        <td><code>the bound schema is unusable</code></td>
+        <td>A platform fault, not a fault in your record. No repair to the record clears it. Stop, report the binding, and never rebind a ledger to a different schema to get past it.</td>
+      </tr>
+      <tr>
+        <td>Verification says a pinned document moved</td>
+        <td>The law changed under your Mission. That is the pin working. Re-pinning is a decision by the Business Owner and Technical Owner, recorded as a Manifest change, and never something a skill does quietly.</td>
+      </tr>
+      <tr>
+        <td>The lint denies a script you believe is fine</td>
+        <td>Read the line it names. If it says <code>fence-tampered</code>, the pasted block was edited, and every guard it defined is now outside the verified region. Re-paste with <code>mc17 block --print</code>.</td>
+      </tr>
+    </tbody>
+  </table></div>
+
+  <h3>The habits worth taking from this</h3>
+  <ul>
+    <li><strong>Run the subject's implementation, never a copy of it.</strong> A recipe transcribed into a document drifts from the code it describes, and then the check certifies the drift.</li>
+    <li><strong>Watch every check fail before trusting it.</strong> Break the thing, see the red, restore, see the green.</li>
+    <li><strong>A finding that reaches nobody has not been produced.</strong> Publish it in the act that produces it, not in a step afterwards that you might drop.</li>
+    <li><strong>A rough first draft is part of the job, not a failure.</strong> Some documents cannot be finished until the person accountable has read them and reacted. Publish those early and let them grow, instead of polishing in private.</li>
+  </ul>
+</div></section>
+
+<section id="settings"><div class="wrap">
+  <h2><span class="num">10</span>Your own settings</h2>
+  <p class="lede">You can give every Claude Code session that works for you the same standing orders. <strong>They live in four CanonQ documents that belong to you, and each session reads all four whole before it acts.</strong></p>
+  <p>The four sit together in one restricted collection your account owns, titled <code>MC Settings {Full Name}</code> and filed under the category <code>DevyonQ Settings</code>, on the CanonQ instance that keeps your settings. Your initials close each title.</p>
+
+  <h3>The four documents</h3>
+  <ul>
+    <li><code>ORDERS-{XX}</code>: the way you want sessions to work with you;</li>
+    <li><code>MANDATE-{XX}</code>: what a session may decide or do for you, and what waits for your word;</li>
+    <li><code>SETUP-{XX}</code>: your machines, your accounts and the hazards each of them carries;</li>
+    <li><code>MISSIONS-{XX}</code>: a row for each Mission you work in, kept up to date by the plugin's skills and commands as a Mission starts, hands over and closes.</li>
+  </ul>
+
+  <h3>Making them</h3>
+  <p>Run <code>mc-cre-settings-v17 {Full Name}</code> in a session of your own. Once you say so, it creates the collection and the four documents from the templates the harness holds. Where a collection of yours stands already, it fills in only what is missing. It names each near miss, a collection of yours that fails part of the test, with what to change in the app, and makes no new collection while one stands.</p>
+
+  <h3>The command underneath</h3>
+  <p><code>mc17 settings</code> finds your collection by the login your credentials carry, and every change the plugin makes to your four documents goes through it. <code>mc17 settings --check</code> holds your <code>MISSIONS</code> table against every Manifest that names you, prints each difference with the line that settles it, and changes nothing.</p>
+
+  <h3>What belongs in them, and how a rule gets in</h3>
+  <p>One rule decides what your settings hold: <code>ORDERS</code>, <code>MANDATE</code> and <code>SETUP</code> hold only what is about the person and holds in every Mission; a project's or a Mission's facts, such as its paths, repositories, names, figures and record numbers, stay in that Mission's own documents, which the <code>MISSIONS</code> table links.</p>
+  <p>A session puts each new entry in front of you whole, as it will land, before it is written, and the command writes it once you confirm that text. An entry that carries none of your own words first passes an adversarial check, made by an agent working in a context of its own. The command turns away an entry whose wording around your words names a project's fact, such as a path, a repository, an id, a record number, a URL or a host name.</p>
+  <p>To have your settings reviewed, ask in your own words, such as "review my settings", or run <code>mc-adv-settings-v17 review</code>. Every closure act runs one for the person who closes the Mission. A panel of independent agents does the reading, and your session publishes the review in your own collection and hands you its link.</p>
+
+  <h3>How a session receives them</h3>
+  <p>As each session starts, the plugin's session-start hook hands it your four documents whole, in labelled parts, together with the machine, the plugin version, the host, your login and your account's name. Each line the hook adds on its own opens with <code>[MC settings]</code>. An agent that a session starts receives nothing from the hook: it gets what the session's brief gives it.</p>
+  <div class="note stop">
+    <h4>Until MANDATE is read</h4>
+    <p>Where a session starts and the hook could not hand it your <code>MANDATE</code> whole, that session sends nothing to production or to other people, and gives no approval in your name, until it has read that document. It holds back in the same way while another editor's version of <code>MANDATE</code> waits for your confirmation, which your session records with <code>mc17 settings --confirm-version</code>.</p>
+  </div>
+
+  <h3>Sharing them</h3>
+  <p>Share the collection in the app, and then a colleague with ordinary rights can edit its documents. CanonQ keeps every version of each one, and a colleague's change reaches every one of your sessions at its next start, which tells you about it.</p>
+
+  <h3>Each machine you work on</h3>
+  <p>Once the hook is installed and finds your credentials, a machine needs no pointer to the documents in <code>~/.claude/CLAUDE.md</code>, and no other setting. Keep this one line in that file, for any session in which no plugin hook runs:</p>
+  <div class="cmd">
+    <div class="cmd-head">~/.claude/CLAUDE.md</div>
+<pre>Where no line opening [MC settings] stands in this session's context, the session reads the person's settings with mc17 settings before its first act, or, where the plugin is not loaded, through its CanonQ connector from the one restricted MC Settings collection the person names, and, until it has read MANDATE, sends nothing to production or to other people and gives no approval in the person's name, unless the person's word in the chat names that one act.</pre>
+  </div>
+</div></section>
+
+</main>
+
+<footer><div class="wrap">
+  Mission Control v1.7 · plugin <code>devyonq-mc@devyonq-mc</code> · the v1.6 line stays installed and untouched.<br>
+  The three law documents are drafts. A Mission created today declares itself a trial of them.
+</div></footer>

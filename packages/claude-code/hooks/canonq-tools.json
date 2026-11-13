@@ -1,0 +1,27 @@
+{
+  "form": "mc17-canonq-tools/1",
+  "reader": "hooks/lint-document.py, which knows a CanonQ tool by its name in tools, whatever the name of the MCP server that offers it, and lets through only the tools of readTools; it refuses every other CanonQ tool (ARCH D23; AC-20). A tool CanonQ adds after the date below passes until this file holds it. list_credentials and select_document stand outside readTools: the first names the connection's credentials and the second changes the session's selection, and no skill needs either.",
+  "listed": {
+    "date": "2026-11-05",
+    "how": "the tool names the CanonQ MCP server lists, read from the servers MX_CanonQ, Demo-Canonq, SMS_CanonQ_MCP and XQDB, which list the same 62 tools"
+  },
+  "tools": [
+    "add_group_member", "amend_domain", "ask_docbase", "check_updates", "classify_asset", "compare_versions", "connect_group", "connect_repo",
+    "create_asset", "create_collection", "create_group", "declare_domain", "define_domain", "embed_all_documents", "extract_all_facts",
+    "find_similar_documents", "get_analytics", "get_attachment", "get_document", "get_document_comments", "get_document_version",
+    "get_embedding_status", "get_knowledge_domain", "get_link", "get_related_documents", "get_vocabulary", "grant_group_collections",
+    "grant_right", "grant_user_collections", "list_collections", "list_credentials", "list_documents", "list_domains", "list_groups",
+    "list_links", "list_properties", "list_repo_tree", "list_selected_documents", "query_assets", "query_sheet",
+    "ratify_domain_classification", "read_repo_file", "reconcile_orphans", "refresh_repo", "remove_group_member", "retire_domain",
+    "revoke_group_collection", "revoke_right", "revoke_user_collection", "search_by_facets", "search_documents", "search_facts",
+    "select_document", "semantic_search", "set_collection_category", "summarize_document", "sync_all_documents", "sync_document",
+    "ungovern_domain", "update_asset", "upload_asset", "withdraw_domain_ratification"
+  ],
+  "readTools": [
+    "ask_docbase", "check_updates", "compare_versions", "find_similar_documents", "get_analytics", "get_attachment", "get_document",
+    "get_document_comments", "get_document_version", "get_embedding_status", "get_knowledge_domain", "get_link", "get_related_documents",
+    "get_vocabulary", "list_collections", "list_documents", "list_domains", "list_groups", "list_links", "list_properties",
+    "list_repo_tree", "list_selected_documents", "query_assets", "query_sheet", "read_repo_file", "search_by_facets", "search_documents",
+    "search_facts", "semantic_search", "summarize_document"
+  ]
+}

@@ -1,0 +1,1725 @@
+{
+  "version": 1,
+  "reader": "The agent that rewrites a draft in plain language under the skill mc-plain-v17. Each entry says what a word of this plugin refers to and where it stands in the code. The file prescribes no replacement words: which words fit depends on the sentence and on the reader, and the agent chooses them there. A word with several meanings carries each one.",
+  "terms": [
+    {
+      "word": "gate",
+      "meanings": [
+        {
+          "what": "One of the ten checks that `mc17 gates` runs before a release: the three test suites, the lint of the fleet scripts, the lint of the documents, the census of the protected block, the check of its declared hash, the check of the figures the law states, the check of the figures the plugin's own texts state, and the drill. A release is refused while one is red.",
+          "where": "harness/mc17/release.js, COMMANDS.gates"
+        },
+        {
+          "what": "The branch gate: a hook that refuses an agent call or a git commit, merge or push aimed at a mission branch that is locked to a ruled wave, unless the call carries the wave's token.",
+          "where": "hooks/lint-branch.py"
+        },
+        {
+          "what": "The document gate: a hook that lints a governed document against the writing rules when a tool writes it to the corpus.",
+          "where": "hooks/lint-document.py"
+        },
+        {
+          "what": "The review gate: before an approval, `mc17 reviewed` reads the ledger for reviews of the document, and the approval is refused while an item of a review stands open.",
+          "where": "harness/mc17/ledger.js, COMMANDS.reviewed"
+        }
+      ]
+    },
+    {
+      "word": "verb",
+      "meanings": [
+        {
+          "what": "A command of the program `mc17`, typed as `mc17 <name>`: `mc17 create`, `mc17 amend`, `mc17 gates`, `mc17 stage` and the others.",
+          "where": "harness/mc17/corpus.js, the table COMMANDS"
+        }
+      ]
+    },
+    {
+      "word": "stand-in",
+      "meanings": [
+        {
+          "what": "A one-line script put in place of a real file, a test suite or the drill, inside a copy of the plugin, so that a test can run a command without running the real thing.",
+          "where": "harness/mc17.test/03-plans-reviews-landing.js, the test AC-2; harness/mc17.test/04-doctrine-plain-stage.js, the tests AC-4b and T-60"
+        }
+      ]
+    },
+    {
+      "word": "binding",
+      "meanings": [
+        {
+          "what": "The sha256 hash of what a document declares: its text with the parts that change by themselves removed, which are the status line, the verification stamp, the approvals and the rows of tracked tables. A verification record and an approval record name the binding they read, so an edit that moves it makes them stale.",
+          "where": "harness/mc17/text.js, computeBinding; harness/mc17/corpus.js, COMMANDS.binding"
+        }
+      ]
+    },
+    {
+      "word": "live state",
+      "meanings": [
+        {
+          "what": "The parts of a document that stand outside its binding and change without making an approval stale: the status line, the verification stamp, the approvals and the rows of tracked tables.",
+          "where": "harness/mc17/text.js, computeBinding"
+        }
+      ]
+    },
+    {
+      "word": "pin",
+      "meanings": [
+        {
+          "what": "In a plan's section `What Stays Refused`, the name in backticks of the test, or of the deliberate break, that guards one direction of a change. The wave's last check confirms that each pin names a test the drill turned red.",
+          "where": "harness/mc17/documents.js, pinTokens"
+        }
+      ]
+    },
+    {
+      "word": "break",
+      "meanings": [
+        {
+          "what": "A deliberate change to one line of the code, written as a row in the list the drill reads. The drill makes the change, confirms that the named test fails, undoes it and confirms that the test passes again. Also called a row or a mutant.",
+          "where": "harness/mc17.mutants.json"
+        }
+      ]
+    },
+    {
+      "word": "drill",
+      "meanings": [
+        {
+          "what": "The program that applies every deliberate break in turn and confirms that each one makes its test fail. It writes what it proved to a file, and it is the tenth release check.",
+          "where": "harness/mc17.mutations.js, with its proofs in harness/BREAK-PROOFS.json"
+        }
+      ]
+    },
+    {
+      "word": "red run",
+      "meanings": [
+        {
+          "what": "The failing run of a test case taken before the code is fixed, written into the ledger as a record and cited in the plan's entry for that test case. It shows that the test can fail.",
+          "where": "the ledger of the Mission, read by the wave's last check under case T-41"
+        }
+      ]
+    },
+    {
+      "word": "ledger",
+      "meanings": [
+        {
+          "what": "The JSON document of a Mission, named VF-{SCOPE}-001, that holds its numbered records: verifications, approvals, rulings, reviews and notes. A record is added at the end and is never edited.",
+          "where": "the corpus; read by harness/mc17/ledger.js, COMMANDS.evidence"
+        }
+      ]
+    },
+    {
+      "word": "append",
+      "meanings": [
+        {
+          "what": "The one way a record is written to a ledger: the command mc17 append sends the record without a number, marks it, reads it back once by its mark and prints the number the platform gave. A write sent again after a lost answer lands once.",
+          "where": "harness/mc17/ledger.js, COMMANDS.append"
+        }
+      ]
+    },
+    {
+      "word": "dispatch",
+      "meanings": [
+        {
+          "what": "The one change a record takes after it landed: the entry of a review's work order that says an item was applied, argued or ruled away, and which record did it. The command mc17 dispatch composes the change, sends it and reads the entry back; --dry prints it and sends nothing.",
+          "where": "harness/mc17/release.js, COMMANDS.dispatch"
+        }
+      ]
+    },
+    {
+      "word": "stage",
+      "meanings": [
+        {
+          "what": "The integration stage, a wave's last check before its approval: `mc17 stage` runs the test cases the wave plan assigns to it at the last commit of the wave's branch, on each kind of machine.",
+          "where": "harness/mc17/stage.js, COMMANDS.stage"
+        },
+        {
+          "what": "One step of a fleet script for one plan of a wave: build, review, fix and land, run by agents.",
+          "where": "harness/orchestration-harness.js, runStage"
+        }
+      ]
+    },
+    {
+      "word": "wave",
+      "meanings": [
+        {
+          "what": "A group of implementation plans that two authorities ruled to land together: the Business Owner rules which plans, the Technical Owner rules their order. The ruling is written in a wave plan, a document named WAVE-PLAN-{SCOPE}-{number}.",
+          "where": "harness/mc17/lock.js, COMMANDS.wavecheck; harness/templates/wave-plan.md"
+        }
+      ]
+    },
+    {
+      "word": "lock",
+      "meanings": [
+        {
+          "what": "The file `.mc17/wave.json`, which `mc17 wave lock` writes and commits as the first commit on a wave's branch. While it stands, the branch belongs to one ruled wave and a commit needs the wave's token.",
+          "where": "harness/mc17/lock.js, COMMANDS.wave"
+        }
+      ]
+    },
+    {
+      "word": "sanctioned block",
+      "meanings": [
+        {
+          "what": "A protected block of code inside the fleet runner that every Mission run by a fleet declares by its hash. It must not change by a single byte without a new declaration.",
+          "where": "harness/orchestration-harness.js; its hashes in harness/BLOCK-HASHES.json"
+        }
+      ]
+    },
+    {
+      "word": "radius",
+      "meanings": [
+        {
+          "what": "The blast radius a plan claims, which decides who approves it: `module-confined` is the Module Owner's, `cross-module` the Technical Owner's, `customer-facing` the Business Owner's.",
+          "where": "harness/mc17/documents.js, blastRadiusGate; harness/mc17/lock.js, COMMANDS.radius"
+        }
+      ]
+    },
+    {
+      "word": "recipe note",
+      "meanings": [
+        {
+          "what": "A ledger note that publishes a changed binding recipe before any binding is recorded under it: the projection's name and the parts it cuts. The verification skill appends one where a ledger holds no record naming the recipe in force, and a ledger created after the change carries the recipe in its bootstrap record.",
+          "where": "skills/mc-vf-manifest-v17/SKILL.md, the paragraph A prior record under another projection id; harness/mc17/text.js, PROJECTION_ID and LIVE_STATE_SECTIONS"
+        }
+      ]
+    },
+    {
+      "word": "placeholder audit",
+      "meanings": [
+        {
+          "what": "The read of a rendered Manifest that counts the placeholder the creation skill leaves in each tracked row, refuses a copy of it in prose, and refuses a Manifest that lacks a load-bearing heading.",
+          "where": "harness/mc17/text.js, placeholderAudit"
+        }
+      ]
+    },
+    {
+      "word": "load-bearing heading",
+      "meanings": [
+        {
+          "what": "One of the six parts of a Manifest that the binding cuts out and every reader finds by its literal heading: the status line under the title, Spawned Documents (tracked), Merges Outside an Implementation Plan, Operational Parameters, VF Stamp and Approvals. A Manifest that lacks one reads as incoherent to the link pass.",
+          "where": "harness/mc17/text.js, LIVE_STATE_SECTIONS and loadBearingHeadings"
+        }
+      ]
+    },
+    {
+      "word": "evidence join",
+      "meanings": [
+        {
+          "what": "The read of a collection that ties every review and verification asset to the record that cites it, every citation to its asset, every independent record to the asset it names, and every review's work order to its dispositions. It reads the Manifest's blocking severity floor and triage parameter, prints a citation of another Mission's document as a note, and fails while an item stands open or a citation of this Mission's evidence resolves to nothing.",
+          "where": "harness/mc17/ledger.js, evidenceJoin and COMMANDS.evidence"
+        }
+      ]
+    },
+    {
+      "word": "provenance header",
+      "meanings": [
+        {
+          "what": "The opening of a published review or verification: who ordered it, in their words; what was read, each target by id and figure or the repository's tip; the statement of independence; and the note that the transcription repaired lint and changed no finding. A document handed to the reviewer as context stands here and in no ref.",
+          "where": "skills/mc-adv-review-v17/SKILL.md, Step 4, point 1"
+        }
+      ]
+    },
+    {
+      "word": "Move sweep",
+      "meanings": [
+        {
+          "what": "The Move-level acceptance verification ahead of closure: one record that reads every governed artifact's verification and approval state, runs the mechanical readers, reads each closure condition for readiness, and states PASS or FAIL with every gap named beside its repair route. It closes nothing; the closure act is another skill's.",
+          "where": "skills/mc-vf-move-v17/SKILL.md; the closure act in skills/mc-close-mission-v17/SKILL.md"
+        }
+      ]
+    },
+    {
+      "word": "mark",
+      "meanings": [
+        {
+          "what": "The field the append command adds to a record before the send: the writer's name and a random token, read back once after the send to find the record and its number.",
+          "where": "harness/mc17/ledger.js, COMMANDS.append"
+        },
+        {
+          "what": "The triage mark: one line of the approving authority's triage record, Triage of REVIEW-SCOPE-NNN: sets aside ids, which the review gate reads before it admits a set-aside entry that cites the record.",
+          "where": "harness/mc17/ledger.js, triageMark and triageRecord"
+        }
+      ]
+    },
+    {
+      "word": "reader",
+      "meanings": [
+        {
+          "what": "The named runner a wave plan's cases line assigns a case to, written `T-24 by release-checks`: one of release-checks, breaks, citations, pins, baseline, acceptance and failing-runs. The stage runs each assigned case under its reader and refuses a case with no reader, a reader outside the list, and acceptance until the plan that builds it lands.",
+          "where": "harness/mc17/stage.js, STAGE_READERS, stageCases and stageRunTable"
+        },
+        {
+          "what": "A function that reads a document's text for one thing and answers what it found: the readers of a Test Plan's entries and owners, of a wave plan's prompts, of a Manifest's tracked table and pin lines.",
+          "where": "harness/mc17/stage.js, harness/mc17/waveplan.js, harness/mc17/release.js, manifestPinIds"
+        }
+      ]
+    },
+    {
+      "word": "host kind",
+      "meanings": [
+        {
+          "what": "The kind of machine a stage runs on: windows on win32, macos on darwin. The Manifest's row wave.test.hosts names the kinds a wave's stage runs on, as `1` for one host of any kind or as a list such as `windows,macos`; the stage refuses to run on a kind the row does not name, writes its host kind into stage.json, and `mc17 append --stage` refuses to compose the record while a kind in force has no run.",
+          "where": "harness/mc17/stage.js, stageHostKindHere and stageHostsForm; harness/mc17/ledger.js, composeStageRecord"
+        }
+      ]
+    },
+    {
+      "word": "setting",
+      "meanings": [
+        {
+          "what": "One value a wave or a document runs under: the model of each stage, whether a fleet or a person runs the wave, the review and its lens count, the fix rounds, the plain-language passes, the test practice and the branch rule. The Manifest's parameters table may set each one for the Mission, a Wave Plan's Wave Settings section states each one for its wave, and the plugin ships a default for each. One function answers which value is in force and where it came from: the plan's row first, then the Manifest's row in force, then the shipped default. A value the setting does not admit reads as not set. It is a different thing from a person's settings, the four documents of one person's collection that `mc17 settings` reads and writes.",
+          "where": "harness/mc17/params.js, settingInForce, PARAMETER_DEFAULTS, PARAMETER_VALUES and PARAMETER_READERS"
+        }
+      ]
+    },
+    {
+      "word": "person's settings",
+      "meanings": [
+        {
+          "what": "The four documents of one person: ORDERS-{XX}, how to work with the person; MANDATE-{XX}, what a session may decide or do for the person and what needs the person's word; SETUP-{XX}, the person's machines, accounts and local hazards; and MISSIONS-{XX}, the table of the Missions the person works in, one row each. `{XX}` is the person's initials. They stand in the one collection `MC Settings {Full Name}` the person's account owns, filed under the category `DevyonQ Settings`. `mc17 settings` reads and writes them; `mc17 create`, `mc17 amend` and `mc17 publish` refuse their titles before any send.",
+          "where": "harness/mc17/settings.js, COMMANDS.settings; harness/mc17/settings/read.js, personsSettings; harness/mc17/settings/titles.js, KINDS and settingsTitleRefusal"
+        }
+      ]
+    },
+    {
+      "word": "settings instance",
+      "meanings": [
+        {
+          "what": "The CanonQ instance that holds a person's settings: the origin on the first line of `~/.canonq/settings-instance`, or, where that file is absent, the host the credentials point to. An action that reads or writes the settings refuses where the credentials point to another host; `--create` writes the file once the collection stands.",
+          "where": "harness/mc17/settings/source.js, resolve, hostRefusal, instanceLine and writeInstance"
+        }
+      ]
+    },
+    {
+      "word": "near miss",
+      "meanings": [
+        {
+          "what": "A collection the account owns whose title opens `MC Settings ` or that is filed under `DevyonQ Settings`, and that fails one or more of the five parts of the test for a person's settings collection: its kind, its category, its access, its owner and its title. The read and `--create` name each near miss with the parts it fails and the remedy of each; `--create` files one under the category on the person's word with `--adopt`.",
+          "where": "harness/mc17/settings/collections.js, failedParts, personsCollection, PARTS and REMEDIES; harness/mc17/settings/read.js, nearMissLine"
+        }
+      ]
+    },
+    {
+      "word": "finder",
+      "meanings": [
+        {
+          "what": "The one function that applies the five-part test to the collections the account can read: it answers the collections that pass all five parts, and the near misses. A read uses the collection only where exactly one passes; where two or more pass, it names each and reads none of them.",
+          "where": "harness/mc17/settings/collections.js, personsCollection and onePassing"
+        }
+      ]
+    },
+    {
+      "word": "last editor",
+      "meanings": [
+        {
+          "what": "The account that wrote the version of a settings document that CanonQ holds now, as the document's record names it. The read prints it beside each document. Where it is an account other than the one running the command, a write needs that version named as seen, and a write into MANDATE needs the person's confirmation of that version first.",
+          "where": "harness/mc17/settings/read.js, editorName and editorLine; harness/mc17/settings/write.js, editorRefusal"
+        }
+      ]
+    },
+    {
+      "word": "seen version",
+      "meanings": [
+        {
+          "what": "The version of a settings document that a write names as read by the person: `seen` in an entry file, or `--seen` on a row write. Where another account last edited the document, a write into ORDERS, SETUP or MISSIONS passes only where it names the version that stands now as seen.",
+          "where": "harness/mc17/settings/write.js, editorRefusal; harness/mc17/settings/entries.js, seenOf; harness/mc17/settings/table.js, rowWrite"
+        }
+      ]
+    },
+    {
+      "word": "hand form",
+      "meanings": [
+        {
+          "what": "The row write `mc17 settings --row hand`, which writes a Mission's row in a person's MISSIONS table from values the person gives, for a Mission whose skills wrote no row. Its row's state ends `, by hand`; the hand form refuses a row a skill wrote, and the row write `cell` refuses a row written by hand. Where a row write meets a host other than the settings instance, or names no Manifest by its asset id, the command prints the hand form's command line with each value it knows.",
+          "where": "harness/mc17/settings/table.js, handForm, isHand and rowWrite"
+        }
+      ]
+    },
+    {
+      "word": "settle",
+      "meanings": [
+        {
+          "what": "The flag `--settle` of a row write, and the settle line `mc17 settings --check` prints for each difference it finds: a command line that brings one row of the person's MISSIONS table into line with the Manifest, sourcing the credentials itself. A value outside its cell's form gets no settle line.",
+          "where": "harness/mc17/settings/check.js, settleLine and runCheck; harness/mc17/settings/table.js, flagRefusal"
+        }
+      ]
+    },
+    {
+      "word": "guard patterns",
+      "meanings": [
+        {
+          "what": "The patterns that keep a project's facts out of a person's settings: URLs, IP addresses, paths, repositories, ids, another person's settings titles, record numbers, commit hashes, file names, host names and the scopes of the person's MISSIONS table. An entry write refuses each match outside the person's own words and outside the spans that pass, naming its kind and line; a fact the person wants in goes in through the person's own words.",
+          "where": "harness/mc17/settings/guard.js, lineMatches, passingSpans, guardEntry, guardRefusal and guardCheck"
+        }
+      ]
+    },
+    {
+      "word": "shown text",
+      "meanings": [
+        {
+          "what": "What `mc17 settings --show {file}` prints of an entry before it is written: the entry as it will land, with the document's title and the section's heading, and its hash on the line `shown`. The person confirms that text; the entry file carries the hash as `confirmed.shown`, and the write composes the entry again and refuses a hash that differs, naming both.",
+          "where": "harness/mc17/settings/guard.js, shownHash and confirmationRefusal; harness/mc17/settings/entries.js, showAction"
+        }
+      ]
+    },
+    {
+      "word": "kept result",
+      "meanings": [
+        {
+          "what": "The document `SETTINGS-CHECK-{XX}-{NNN}` that `--keep {folder}` writes in the person's collection from an adversarial check's return: the hash of the text checked and the clause of its result. An entry without the person's words names it as `check`, and the write refuses a kept result that stands nowhere, stands twice, changed after the keep or was made over another text.",
+          "where": "harness/mc17/settings/kept.js, keepAction; harness/mc17/settings/guard.js, keptFind and keptVerify"
+        }
+      ]
+    },
+    {
+      "word": "settings review",
+      "meanings": [
+        {
+          "what": "The review of one person's settings, published as `SETTINGS-REVIEW-{XX}-{NNN}` in that person's collection: `--export {folder}` writes the review's folder from the settings alone, `--review {folder}` publishes the review once a verdict answers every finding, and `--owed --manifest {id}` names the persons a closure owes a review.",
+          "where": "harness/mc17/settings/review.js, exportAction, reviewAction and owedAction; harness/mc17/settings/check.js, ordersReview"
+        }
+      ]
+    },
+    {
+      "word": "prepared home",
+      "meanings": [
+        {
+          "what": "The one empty folder each test suite makes at its start and names in `HOME`, `USERPROFILE` and `MC17_SETTINGS_TEST_HOME`, with `CANONQ_URL` and `CANONQ_PAT` blank, so no check reads the machine's own `~/.canonq` or `~/.mc17`. Every child of every check inherits it, the starters refuse a child whose home names another folder, and the suite removes the folder when it exits.",
+          "where": "harness/mc17.test.js, t.settingsHome; harness/mc17.test/41-person-settings-start.js, childEnv, startRefusal and home; hooks/hooks.test.py, SETTINGS_HOME; hooks/settings-start.test.py, settings_children"
+        }
+      ]
+    },
+    {
+      "word": "test corpus",
+      "meanings": [
+        {
+          "what": "The stand-in for CanonQ that the checks start on `127.0.0.1`, at a port the system gives, each in a folder of its own: it serves the routes the plugin calls, holds invented accounts, collections and documents seeded by the check, logs every request, and loses or refuses an answer where the check orders it.",
+          "where": "harness/fixtures/ledger-corpus.js; harness/fixtures/helper-start.js"
+        }
+      ]
+    },
+    {
+      "word": "head command",
+      "meanings": [
+        {
+          "what": "The one command of the session-start hook that prints the machine line, the account, the settings instance and the titles of the documents the person's settings collection holds, then one line for each thing that stands in the way, and its hook record. It is the entry `head` under `SessionStart` in `hooks/hooks.json`.",
+          "where": "harness/mc17/settings/hook.js, headString; hooks/hooks.json, SessionStart"
+        }
+      ]
+    },
+    {
+      "word": "part slot",
+      "meanings": [
+        {
+          "what": "One of the eighteen commands of the session-start hook that prints one part of one of the person's four documents between an opening and a closing label, such as part 2 of `ORDERS`, or its hook record alone where the document has no such part. Each document has as many slots as the parts it took when the release was measured, plus one.",
+          "where": "harness/mc17/settings/hook.js, slotStringOf and slotString; hooks/hooks.json, SessionStart"
+        }
+      ]
+    },
+    {
+      "word": "hook record",
+      "meanings": [
+        {
+          "what": "The last line of each command of the session-start hook: what the command delivered, the characters of its whole string, the milliseconds since its process started, the kind of start, the machine, the plugin version and the date. `mc17 settings --measure` prints the record of each command.",
+          "where": "harness/mc17/settings/hook.js, withRecord and measureAction"
+        }
+      ]
+    },
+    {
+      "word": "exec form",
+      "meanings": [
+        {
+          "what": "A hook entry that names a program in `command` and its arguments in `args`, which Claude Code starts with no shell on every kind of machine. The nineteen entries of the session-start hook take this form and start `node` with the launcher `hooks/mc17-node.js`; the gate entries take the shell form.",
+          "where": "hooks/hooks.json, SessionStart; hooks/mc17-node.js"
+        }
+      ]
+    },
+    {
+      "word": "adversarial check",
+      "meanings": [
+        {
+          "what": "The check of one entry that carries none of the person's own words, made before the person is asked to confirm it: an agent in a separate context, which wrote none of the entry, reads the folder `--show --out` wrote and judges the entry less its words line against the rule of what the settings hold, the truth of its claims, every other entry and the document it goes into. `--keep` keeps its return as the kept result, which the entry then names as `check`.",
+          "where": "skills/mc-adv-settings-v17/SKILL.md, mode entry, step 2; harness/mc17/settings/entries.js, showAction and writeOut; harness/mc17/settings/kept.js, keepAction"
+        }
+      ]
+    },
+    {
+      "word": "panel",
+      "meanings": [
+        {
+          "what": "The four agents of a settings review: two reviewers, each in a separate context of its own, and a verifier for each reviewer, which tries to refute each finding of that reviewer against its evidence. None of them wrote a word of the documents under review, and each reads the review's folder alone. `--review` publishes the review once a verdict answers every finding.",
+          "where": "skills/mc-adv-settings-v17/SKILL.md, mode review, steps 2 and 3; harness/mc17/settings/review.js, reviewAction"
+        }
+      ]
+    },
+    {
+      "word": "the one line",
+      "meanings": [
+        {
+          "what": "The one sentence each machine keeps in `~/.claude/CLAUDE.md` for a session in which no plugin hook runs: it tells the session to read the person's settings before its first act, and until it has read `MANDATE`, to send nothing to production or to other people and give no approval in the person's name. `--create` prints it, and the creation skill's report, the README and the GUIDE give it word for word.",
+          "where": "harness/mc17/settings/create.js, CLAUDE_MD_LINE; skills/mc-cre-settings-v17/SKILL.md, step 8; README.md and GUIDE.html, the sections on a person's settings"
+        }
+      ]
+    },
+    {
+      "word": "source",
+      "meanings": [
+        {
+          "what": "Where a setting's value comes from, written in the Source cell of a Wave Settings row and printed beside every value a command reads: `default` for the value the plugin ships, `Manifest record {n}` for the Mission's row in force, which that ruling record set, or `override` for a value the plan sets against both. In the draft that `mc17 wave draft` writes, each source reads `offered: {source}` until the creation skill removes the mark.",
+          "where": "harness/mc17/params.js, settingInForce; harness/templates/wave-plan.md, the Wave Settings section"
+        }
+      ]
+    },
+    {
+      "word": "override",
+      "meanings": [
+        {
+          "what": "A Wave Settings row whose value the plan sets against the Mission's row and the shipped default: its Source cell reads `override` and its Reason cell carries the authority's reason. `mc17 wavecheck` fails an override with no reason and names the row.",
+          "where": "harness/mc17/lock.js, COMMANDS.wavecheck; harness/templates/wave-plan.md"
+        }
+      ]
+    },
+    {
+      "word": "mode",
+      "meanings": [
+        {
+          "what": "The setting wave.mode: `fleet`, where the runner's agents build, review, fix and land each member from the prompts the plan carries, or `hand`, where a person does that work: the plan carries no fleet prompts where `wave.prompts` reads `none`, and the prompts of its agents where it reads `template`. A plan with no Wave Settings section reads fleet.",
+          "where": "harness/mc17/waveplan.js, waveMode; harness/templates/wave-plan.md, the Stage prompts section"
+        }
+      ]
+    },
+    {
+      "word": "older plan",
+      "meanings": [
+        {
+          "what": "A Wave Plan with no Wave Settings section, made before the section stood in the template. `mc17 wavecheck` passes it as it stands with one line saying so, runs none of the checks of the section, the integration run line or the ruling sections over it, and reads its ruling record in the old form, the Business Owner's grouping and the Technical Owner's order. The plan's own form decides this, and no date does.",
+          "where": "harness/mc17/lock.js, COMMANDS.wavecheck and rulingRecordRead"
+        }
+      ]
+    },
+    {
+      "word": "settings line",
+      "meanings": [
+        {
+          "what": "The third declaration line at the top of a fleet script, `// mc17 wave script settings: {name}={value}; ...`. It lists every setting in force for the wave, in the order of the Wave Settings section, and after them each member whose own fix rounds or lens count differs from the plan's row, as `{IP id}.rounds={n}` or `{IP id}.lenses={n}`. The lint compares each stage's model, fix rounds and lens count with it, and the launch reading compares it with the lock.",
+          "where": "harness/mc17/waveplan.js, waveScriptText and settingsEntries; harness/orchestration-preflight.js, scriptDeclaration"
+        }
+      ]
+    },
+    {
+      "word": "launch reading",
+      "meanings": [
+        {
+          "what": "The lint run against the lock committed on the script's branch, `mc17 lint <script> --lock <file>`. The launch hook reads the lock committed at HEAD with git and hands it to the lint before the Workflow tool starts a fleet script. It refuses a script whose plan, ruling record, binding, settings or prompts differ from the lock, a script whose openWave list or stage calls stand in another order than the members the lock rules, a lock whose ruling record is no ruling, a lock of a wave run by hand, and a lock written before the lock carried its mode or its members.",
+          "where": "harness/orchestration-lint.js, lockFindings; harness/mc17/lock.js, COMMANDS.lint; hooks/lint-workflow.py"
+        }
+      ]
+    },
+    {
+      "word": "lock in force",
+      "meanings": [
+        {
+          "what": "The copy of `.mc17/wave.json` committed on the branch, which `mc17 wave lock` commits and `mc17 wave unlock` removes, each in a commit of its own. The git hooks judge a commit or a merge commit by it, and refuse one whose staged or working-tree copy differs from it, read as parsed JSON, or by its git blob id where node does not run. Where the last commit holds none, the lock in force is the copy staged for the commit that adds it, and where nothing is staged, the copy that stands in the working tree alone, as `mc17 wave lock --no-commit` leaves it.",
+          "where": "hooks/git/pre-commit and hooks/git/pre-merge-commit; hooks/lint-workflow.py, lock_on_branch"
+        }
+      ]
+    },
+    {
+      "word": "CanonQ version",
+      "meanings": [
+        {
+          "what": "A numbered text of a document that CanonQ keeps. CanonQ keeps every text a write replaced, and lists them newest first; the current text stands in no list, so it is numbered as the count of replaced texts plus one, and version 1 is the text the document was created with. `mc17 versions <asset id>` prints each version with its date.",
+          "where": "harness/mc17/corpus.js, documentVersions and COMMANDS.versions"
+        }
+      ]
+    },
+    {
+      "word": "Change Log",
+      "meanings": [
+        {
+          "what": "The section `## Change Log` of a governed document: a table with four columns, the draft, the CanonQ version, what changed and the ledger records, with one row for the create and one for each write that moves the binding. It stands inside the binding. The author writes the row before the plain-language pass; `mc17 create` refuses a body whose log holds anything but the row of version 1, `mc17 amend` refuses a write whose last row names another version than the one the write creates, and `mc17 versions --log` fails a row that names a version CanonQ does not hold.",
+          "where": "the templates under harness/templates/; harness/mc17/documents.js, CLASS_TEMPLATE, COMMANDS.create and COMMANDS.amend; harness/mc17/corpus.js, changeLog"
+        }
+      ]
+    },
+    {
+      "word": "older document",
+      "meanings": [
+        {
+          "what": "A document whose first version, the text it was created with, carries no Change Log. A program tells it by that form alone and reads no date. It passes the Change Log check with a note, and gains the section at its first write that moves its binding.",
+          "where": "harness/mc17/corpus.js, madeUnderChange"
+        }
+      ]
+    },
+    {
+      "word": "history prose",
+      "meanings": [
+        {
+          "what": "A sentence about an earlier text of the document itself: what an earlier draft said, how the text changed, or what a review made it say. In a document that carries a Change Log, the writing lint refuses it under the rule `history-prose`, in the body and in the cells of the log, and the Change Log row refers to the earlier version by its number. In a text with no Change Log the lint refuses nothing, and `--notes` prints the same lines as notes.",
+          "where": "check/wlint.py, history_lines, notes and REACH"
+        }
+      ]
+    },
+    {
+      "word": "record of a write",
+      "meanings": [
+        {
+          "what": "A ledger record of kind `note` whose body opens `WRITTEN`: `WRITTEN {document id} version {n}, binding {hex}; {form}; run by {user}`. `mc17 create` appends one for each create made under `--ledger`, and `mc17 amend` one for each write that moves a binding. The form says what opened the send: the template a scaffold was rendered from, `scaffold rendered from templates/{kind}.md`; the rewrite proof's hash and time, the exemption and the record of its row, the name of the person who wrote the text, or, for an amend sent with no rewrite, the edit class and what the record check found. The user is the name the environment reports. On a ledger that declares `version2From`, the record carries that name as `recordedBy` too. A document of the six classes is refused without `--ledger`.",
+          "where": "harness/mc17/documents.js, writtenRecord, writtenForm, appendWritten and writeRecords"
+        }
+      ]
+    },
+    {
+      "word": "rewrite record",
+      "meanings": [
+        {
+          "what": "The record of a write that names a rewrite proof, an exemption, or a person's own text: the forms `pass`, `exempt` and `by`. It is the record of a governed document's one plain-language rewrite, or of what stood in its place. `mc17 amend` without `--jargon` finds it in the ledger before it sends an edit of a document of the six classes with no new rewrite, and refuses where none stands, unless the document is an older document or one the Mission creation act made. After a scaffold record, only the forms `pass` and `exempt` count: `mc17 amend` refuses an edit that moves the scaffold's binding without `--jargon`, `--written-by` included, until one stands and no placeholder of the template is left, for the register of rulings too.",
+          "where": "harness/mc17/documents.js, recordCheck and creationActDocument"
+        }
+      ]
+    },
+    {
+      "word": "scaffold",
+      "meanings": [
+        {
+          "what": "The first, empty version of an ARCH, a plan or the register of rulings, which `mc17 create --scaffold` renders itself from `templates/arch.md`, `templates/ip.md` or `templates/rulings.md` and sends with no proof of a plain-language pass, its record of a write reading `scaffold rendered from templates/{kind}.md`. Its sections are filled later, and the first amend that moves its binding takes the pass under `--jargon`, as does each later one while a section still holds the template's placeholder.",
+          "where": "harness/mc17/documents.js, SCAFFOLD_KINDS, scaffoldProblem, scaffoldCheck and scaffoldRead"
+        }
+      ]
+    },
+    {
+      "word": "edit class",
+      "meanings": [
+        {
+          "what": "How far an amend reaches, which `mc17 amend` prints for the whole write and for each line it changes: `live state` where the binding stays; `figures-only` where every changed line stands in live state or in the Change Log and differs from its stored line only in a number, a record, a version, a date or a hash, and the only added line is this write's own Change Log row; and `beyond figures` for every other edit. The class reads lines; whether a figure was the right figure is the reader's judgment.",
+          "where": "harness/mc17/documents.js, editClass and changedLines"
+        }
+      ]
+    },
+    {
+      "word": "exemption proof",
+      "meanings": [
+        {
+          "what": "The file `mc17 plain --exempt` writes, of kind `mc17-plain-exempt/1`, for a body shorter than the threshold the Manifest row `documents.plain-pass-exempt-below` sets: the body's hash, its length in code points, the row, its value and its record. `mc17 create` and `mc17 amend --jargon` accept it in place of a rewrite proof, after they read the threshold again from the row in force and compare the body with the proof. With no row in force no document is exempt.",
+          "where": "harness/mc17/documents.js, plainExempt, exemptDoor and exemptionInForce"
+        }
+      ]
+    },
+    {
+      "word": "verification owed",
+      "meanings": [
+        {
+          "what": "What a document of the six classes owes once its last verification record read a binding other than the one it carries now, or where no verification record names it. `mc17 amend` ends a write that moved a binding with `VERIFICATION OWED NOW: {skill}`, naming the verifier skill of the document's class, or `NO VERIFIER: {class}` for a class with none, and every skill that runs `mc17 amend` runs the verifier owed before it reports. `mc17 check --documents` finds every document that owes one: it reads the newest verification record whose first reference is the document and whose body carries a binding line, the `Verified:` line or the older `Binding:` line read by its opening, and compares that binding with the document's binding now.",
+          "where": "harness/mc17/owed.js, VERIFIERS, owedLine, lastVerification and verificationOwed; harness/mc17/corpus.js, documentsForm"
+        }
+      ]
+    },
+    {
+      "word": "stale entry",
+      "meanings": [
+        {
+          "what": "An approval entry whose binding differs from the binding its document carries now: an approval of a text that has since changed. `mc17 check --documents`, and the form `--approvals --doc` each verifier skill runs over its own document, fail each one and name the live-state write that takes it off the page: `mc17 amend --expect-binding unmoved`, whose edits replace the entry with the line `Earlier approvals: ledger records {a}, {b}.`, or add its record to that line where one stands. An entry marked in place as superseded reads as no approval and prints as a note. The approval skills remove every such entry in the write that adds their own.",
+          "where": "harness/mc17/owed.js, approvalCheck and staleRoute"
+        }
+      ]
+    },
+    {
+      "word": "Read: line",
+      "meanings": [
+        {
+          "what": "The line an approval, ruling or triage record carries in its body, `Read: {asset id} version {n}, binding {hex}, verified at record {m}`, copied from the last line `mc17 published` prints. It names the version the authority read, its binding as 64 hexadecimal digits, and the verification record that passed that binding. `mc17 published` prints it only where the version's binding, the `**Binding:**` line of its VF Stamp and the `Verified:` line of its last verification record agree and that record reads PASS.",
+          "where": "harness/mc17/owed.js, publishedVerdict; harness/mc17/corpus.js, COMMANDS.published"
+        }
+      ]
+    },
+    {
+      "word": "bar",
+      "meanings": [
+        {
+          "what": "The defects one review lens blocks on, stated in the Wave Plan in one line beside the lens's brief and carried into the fleet script as `bar`, where the prompt digest reads it. In the opening review a finding blocks only where it falls under the bar; in a re-review only where it raises a blocking finding of the round before again, or falls under the bar in a part the fix report names. A lens with no bar is read by its verdict first.",
+          "where": "harness/mc17/waveplan.js, memberBars and parseWavePrompts; harness/orchestration-harness.js, barBlockingReason and judgeReviews"
+        }
+      ]
+    },
+    {
+      "word": "recorded finding",
+      "meanings": [
+        {
+          "what": "A finding that blocks nothing under the rules of the bar: outside the bar in the opening review, or in a re-review neither a blocking finding of its lens raised again nor under the bar in a part the fix report names. The stage result, the wave report and the Implementation Report list it for the authority.",
+          "where": "harness/orchestration-harness.js, judgeReviews and the `recorded` field of the stage result and the wave report"
+        }
+      ]
+    },
+    {
+      "word": "critical finding outside the bar",
+      "meanings": [
+        {
+          "what": "A recorded finding its reviewer grades critical. It stops the stage for the authority, who accepts the head or orders one targeted fix; a recorded finding below critical stays recorded and blocks nothing.",
+          "where": "harness/orchestration-harness.js, criticalStop inside runStage"
+        }
+      ]
+    },
+    {
+      "word": "remainder",
+      "meanings": [
+        {
+          "what": "The members of a ruled Wave Plan from one member on, run again after a stop. `mc17 wave lock --resume` reads the runner's return and the branch and takes the remainder into the lock's `resume` entry, under the wave token; `mc17 wave script --resume` writes the script that runs it from the same ruled plan, seeded at the entry's base, and the launch reading holds that script to the entry.",
+          "where": "harness/mc17/lock.js, waveLockResume and waveScriptResume; harness/mc17/waveplan.js, waveScriptText; harness/orchestration-lint.js, resumeRulingFindings"
+        }
+      ]
+    },
+    {
+      "word": "stage acceptance record",
+      "meanings": [
+        {
+          "what": "The ruling record by which the Business Owner or the Technical Owner accepts the head of a stage that stopped in its review loop. Its body opens `STAGE ACCEPTED {IP id} at {head sha}` and names the Wave Plan and its ruling record, the pull request, the base and the standing findings, as the runner's return names them. `mc17 wave lock --resume --accept` checks it against the ledger, the lock and the runner's return, and the runner then lands that head alone, with no build, no lens and no fix.",
+          "where": "harness/mc17/lock.js, waveLockRuling and rulingRecordForm; harness/orchestration-harness.js, the accepted path of runStage"
+        }
+      ]
+    },
+    {
+      "word": "targeted fix",
+      "meanings": [
+        {
+          "what": "One fix the Business Owner or the Technical Owner orders for a stage a critical finding stopped, by a ruling record opening `TARGETED FIX {IP id} at {head sha}` that names the findings to fix. `mc17 wave lock --resume --fix` checks it as it checks an acceptance; one fix agent then answers for those findings alone, and every lens re-reviews once, bound to that fix. Where the re-review blocks nothing the stage lands, and where it still blocks only the acceptance ends it.",
+          "where": "harness/mc17/lock.js, waveLockRuling; harness/orchestration-harness.js, the targeted-fix path of runStage"
+        }
+      ]
+    },
+    {
+      "word": "execution acceptance record",
+      "meanings": [
+        {
+          "what": "The ledger record, of kind note, by which the person or session that merged a plan, or the session that launched the fleet, accepts or refuses one landing. Its text opens `EXECUTION ACCEPTED {IR id}` or `EXECUTION REFUSED {IR id}`, and its lines name the landing, the Wave Plan and its ruling record, who ran what, the run of the release checks it cites, each deviation with its disposition and its narrowing mark, the line `Nothing narrows.` or the words of each authority a narrowing owes, and a rework order on a refused record. `mc17 append` reads it against this form before the send, refuses each fault by name, and writes its number into the report's status line after the read-back; `mc17 append --draft` writes its file.",
+          "where": "harness/mc17/acceptance.js, acceptanceRecordOf, acceptanceCheck and acceptanceDraft; harness/mc17/ledger.js, appendRecord and COMMANDS.append"
+        }
+      ]
+    },
+    {
+      "word": "deviation reference",
+      "meanings": [
+        {
+          "what": "The opening of a deviation line's text that says which owed deviation it accounts for: `report {k}` for the line `DEVIATION {k}:` of the report's Deviations section, `build {k}` or `land {k}` for an entry of the runner's return, and `standing {id}` for a finding on an accepted stage's Standing: line. A line that opens with no reference is a deviation the writer adds. The check refuses a record that leaves an owed deviation out, and a reference that names none.",
+          "where": "harness/mc17/acceptance.js, REFERENCE_RE, deviationOf, reportDeviations, entryDeviations and deviationRefusals"
+        }
+      ]
+    },
+    {
+      "word": "older landing",
+      "meanings": [
+        {
+          "what": "A landing whose report's first version, the text it was created with, carries no `## Deviations` section, so the report was rendered before the template gained that section. Its acceptance record takes a form of its own: it names a Wave Plan where the landing had one, reads `none recorded before the rule` for its release checks where no run was recorded, is read as a landing by hand, and takes no runner's return. `mc17 append` tells it by the report's first version and reads no date.",
+          "where": "harness/mc17/acceptance.js, madeUnderAcceptanceRule, reportOf and landingMode"
+        }
+      ]
+    },
+    {
+      "word": "cited run",
+      "meanings": [
+        {
+          "what": "The run of the release checks an execution acceptance record names on its `Release checks at` line, `run at {commit}`. The check accepts two runs: the run at the pull request's tip, where the tip's tree equals the merged commit's tree, and the integration stage's own run at the merged commit, named by its directories with `--stage-run`, where each host's stage.json names that commit as its tip and its checks all exited 0. A run at any other commit is refused, with the run, the landing and their trees named.",
+          "where": "harness/mc17/acceptance.js, checksOf, citedRunRefusals and stageRunDirs"
+        }
+      ]
+    },
+    {
+      "word": "release",
+      "meanings": [
+        {
+          "what": "A commit on the trunk that names no Implementation Plan, in its own message or in any commit a merge brings in. `mc17 landing` lists it as a named deviation, with its sha, its parent count and its committer, and fails nothing on it; the Move sweep carries each release in its record, and the closure record states each one. The audit cannot tell a release from an administrator's bypass, which also has one parent, so a person judges each one it lists. Elsewhere the word also names a version of the plugin, cut by the release act.",
+          "where": "harness/mc17/waves.js, governedLanding and COMMANDS.landing"
+        }
+      ]
+    },
+    {
+      "word": "unplanned",
+      "meanings": [
+        {
+          "what": "The verdict `mc17 landing --manifest` gives the merge of a plan of record that no ruled Wave Plan names. The audit reads every Wave Plan the tracked table and the notes beside it name, keeps those whose status line names a ruling record, superseded ones and ones with no Wave Settings section included, and reads their members. The finding names the plan and the commit, and the unruled Wave Plan where only one names the plan. A merge that an accepted record naming no Wave Plan names on its Landing: line passes as a landing made before the rule, and so does every merge on a ledger that declared nothing.",
+          "where": "harness/mc17/waves.js, governedLanding, ruledWavePlans, olderLandings and auditInputs"
+        }
+      ]
+    },
+    {
+      "word": "plan of record",
+      "meanings": [
+        {
+          "what": "A plan the landing audit is given to judge: one that `--ips` names, or, where the call names none, one whose row stands in the Manifest's tracked table. The audit judges `unplanned` over these plans alone, so a plan id a commit names outside them, such as the one every wave lock commit names or one read out of a report id, is judged for nothing.",
+          "where": "harness/mc17/waves.js, readRecordSet and auditInputs"
+        }
+      ]
+    },
+    {
+      "word": "declared nothing",
+      "meanings": [
+        {
+          "what": "Said of a ledger that holds no execution acceptance record and whose landed plans' newest reports were all made before the rule, which their first versions show by carrying no `## Deviations` section. On such a ledger the acceptance join, the Wave Plan join and the landing audit each pass every row and print one line saying the ledger declared nothing; no date is read. A ledger that holds one acceptance record, or one landed plan's report made under the rule, is under the rule.",
+          "where": "harness/mc17/acceptance.js, ledgerDeclared, acceptanceJoin and wavePlanJoin; harness/mc17/waves.js, auditInputs"
+        }
+      ]
+    },
+    {
+      "word": "integration run",
+      "meanings": [
+        {
+          "what": "The command a Wave Plan's line `Integration run: {command}` names. In a repository that holds no copy of the plugin, `mc17 stage` runs it at the merged commit, in the repository's root folder, in place of the suites and the drill, and writes its exit code and its output into stage.json; `mc17 append --stage` then writes `Run: {command}` and each host's exit code into the integration record, and an acceptance record of such a Mission cites that run. In the plugin's own repository the line reads `the suites and the drill`, and the stage refuses any other command there.",
+          "where": "harness/mc17/stage.js, COMMANDS.stage and stageIntegrationRun; harness/mc17/lock.js, integrationRunLine and integrationRunProblems; harness/mc17/ledger.js, composeStageRecord"
+        }
+      ]
+    },
+    {
+      "word": "release outside a wave",
+      "meanings": [
+        {
+          "what": "A release of the plugin whose commit no Wave Plan names, such as a fix shipped between waves. `mc17 stage --release <sha>` runs the ten release checks at its commit, with no Wave Plan, lock or case, and `mc17 append --stage` writes its record, which opens `Release checks at: {sha}`, names the version and names no plan.",
+          "where": "harness/mc17/stage.js, stageRelease and stageReleaseCommand; harness/mc17/ledger.js, composeStageRecord"
+        }
+      ]
+    },
+    {
+      "word": "re-citation",
+      "meanings": [
+        {
+          "what": "The move of a review item's dispatch to a later record, once. `mc17 dispatch --recite` writes it where the later record names the review, carries no FAIL verdict and comes after the record the item names now, and where the disposition and the note stay the same. The item keeps the record it named before as `firstRecord`, and the evidence join reads the later record.",
+          "where": "harness/mc17/release.js, dispatchPatch and COMMANDS.dispatch; harness/mc17/ledger.js, namesReview"
+        }
+      ]
+    },
+    {
+      "word": "repair claim",
+      "meanings": [
+        {
+          "what": "The field `repairs` of a ledger record, read by the evidence join as the record supplying the evidence citation an earlier record lacks. The join reads it only on a record whose text opens `RESOLVED` or `DEFECT`, or a record of kind `defect`; a record that opens `CORRECTION` is a correction, and a record that opens with any other word claims nothing. `mc17 append` refuses `repairs` on a record that opens with any other word. A declared repair that repairs nothing stops failing the join where a later record that opens `RESOLVED`, of a verdict other than `FAIL`, declares its record in `repairs` and carries a `REVIEW` or `VERIFICATION` asset; `mc17 evidence` prints it as a note that names that record.",
+          "where": "harness/mc17/ledger.js, recordOpening, evidenceJoin and appendRecord"
+        }
+      ]
+    },
+    {
+      "word": "ledger version 2",
+      "meanings": [
+        {
+          "what": "A ledger whose `$schema` names the asset `ledger-hybrid-v2.schema` and whose top level holds `version2From`, the number of the first record written under version 2. Every record from that number on names who wrote it down in `recordedBy`, and who spoke each passage of its `authorityWords` in `spokenBy`; the records before it keep the version 1 form. `mc17 ledger <ledger> --declare 2 --schema <asset id>` moves a ledger to version 2 in one write, and `mc17 ledger` prints the version.",
+          "where": "harness/mc17/ledger.js, declarationOf, ledgerDeclaration, declarePatch and COMMANDS.ledger; harness/fixtures/ledger-hybrid-v2.schema.json"
+        }
+      ]
+    },
+    {
+      "word": "ledger keyword",
+      "meanings": [
+        {
+          "what": "One of the two marks CanonQ reads in the two ledger schemas once a CanonQ instance pins a ledger schema that carries both keywords: `x-canonq-ledger: true` on the records array, which tells CanonQ which array holds a ledger's records, and `x-canonq-actor`, an object property of a record and of a work-order entry, where CanonQ then writes who appended the record or dispatched the entry, and through which door. No command of this plugin adds `x-canonq-actor`, and a ledger whose bound asset holds either text refuses one that is no object.",
+          "where": "harness/fixtures/ledger-hybrid-v1.schema.json and harness/fixtures/ledger-hybrid-v2.schema.json; read by CanonQ's QApp token grant once a CanonQ instance pins a ledger schema that carries both keywords, IP-CQ-QAPP-002 C14 and C17"
+        }
+      ]
+    },
+    {
+      "word": "mixed state",
+      "meanings": [
+        {
+          "what": "A ledger whose two fields of the declaration disagree: `version2From` stands while `$schema` names a schema other than version 2, or `$schema` names version 2 and `version2From` is missing. `mc17 append`, `mc17 ledger` and `mc17 evidence` refuse it and name the repair, `mc17 ledger <ledger> --declare 2 --schema <asset id>`, which completes the declaration.",
+          "where": "harness/mc17/ledger.js, declarationOf, appendRecord, COMMANDS.ledger and COMMANDS.evidence"
+        }
+      ]
+    },
+    {
+      "word": "correction",
+      "meanings": [
+        {
+          "what": "A ledger record whose text opens `CORRECTION {n}`, naming record n. Where it carries `recordedBy` and, where record n carries an authority's words, a `spokenBy` that matches them, it clears record n's speaker fault in the evidence join, and `mc17 append` refuses one that falls short. It repairs no evidence citation: the join reads its `repairs` as no repair claim.",
+          "where": "harness/mc17/ledger.js, recordOpening, correctionFor, evidenceJoin and appendRecord"
+        }
+      ]
+    },
+    {
+      "word": "recordedBy",
+      "meanings": [
+        {
+          "what": "The field of a ledger record that names who wrote it down: a person, or the session or program that wrote it. Every record from `version2From` on carries it, and a record that carries it is held to the speaker rule on a ledger of either version. Every skill that appends writes it.",
+          "where": "harness/mc17/ledger.js, speakerFaults; hooks/lint-document.py, speaker_faults"
+        }
+      ]
+    },
+    {
+      "word": "spokenBy",
+      "meanings": [
+        {
+          "what": "The field of a ledger record that names who spoke the words in its `authorityWords`: one entry `{role} {name}` for each passage, in the order the passages stand, a passage being the whole of the words or one labelled part written `{label} ({role}): {words}`. Each labelled passage's entry names its role. One person speaking in two roles at once writes both, joined by a slash, as `BO/TO {name}`.",
+          "where": "harness/mc17/ledger.js, wordPassages and speakerFaults; hooks/lint-document.py, word_passages and speaker_faults"
+        }
+      ]
+    },
+    {
+      "word": "reader rerun",
+      "meanings": [
+        {
+          "what": "The command `mc17 stage --rerun <run directory> --readers <names>`, which runs one or more named readers of a finished integration-stage run again over the run's own directory, once the input one of them missed has been repaired. The suites, the drill and every reader not named keep the results the run wrote, and stage.json keeps its bytes. It refuses, at exit 2 and writing nothing, a run of another Wave Plan, another commit, another host kind or another tree, a reader outside the seven, and a reader no case of the run names. The reader acceptance runs nothing at the rerun and stays left to the composition. It exits 0 where the run with its rerun applied passes. A reader that reads drill.out reads the drill under the reading of the drill the core of the run records, else under the row of the drill in force for the call of the run, and a rerun of release-checks under a reading writes the core judged again into its entry, which the run with its rerun applied takes. From a plugin that stands outside the repository, release-checks starts no check and reads the results the run recorded, and baseline is refused.",
+          "where": "harness/mc17/rerun.js, stageRerunCommand, rerunRefusals, stageRerun and RERUN_READERS; harness/mc17/stage.js, COMMANDS.stage; harness/mc17/readings.js, drillReadingOfRun and coreUnderReading"
+        }
+      ]
+    },
+    {
+      "word": "rerun file",
+      "meanings": [
+        {
+          "what": "rerun.json, which the reader rerun writes beside a run's stage.json: the run it belongs to, each reader it ran with the old and the new result of each case, the reader's time and duration, the release checks of a rerun of release-checks, and the commit, the tree reading and the host kind the rerun ran at. A later rerun of the same run keeps the entries of the readers it does not run. mc17 append --stage and the check of an execution acceptance record read each run with its rerun file applied, and refuse a rerun file of another run or one that cannot be read.",
+          "where": "harness/mc17/rerun.js, stageRerun, rerunApplied and applyRerun; harness/mc17/ledger.js, composeStageRecord; harness/mc17/acceptance.js, citedRunRefusals"
+        }
+      ]
+    },
+    {
+      "word": "ruled reading",
+      "meanings": [
+        {
+          "what": "A provisional reading of one item of a governed document, which the authority the document needs rules before the document is amended. It stands as a ruling record that holds the reading and as a row of the Manifest's Operational Parameters table, `reading {document id} {item} for {scope}`, whose Value cell carries the reading and its `reconciled:` part. Every reader of the item reads the ruled value for a call inside the scope and the declared value outside it, and the row moves no binding. Before closure the document is brought into line, and the row names its reconciliation.",
+          "where": "harness/mc17/readings.js, readingRows, readingInForce, readingsInScope and COMMANDS.readings"
+        }
+      ]
+    },
+    {
+      "word": "ruling record",
+      "meanings": [
+        {
+          "what": "A ledger record of kind ruling that rules a Wave Plan, the record its status line names, which the lock carries.",
+          "where": "harness/mc17/stage.js, stageRuling; harness/mc17/lock.js, COMMANDS.wave"
+        },
+        {
+          "what": "A ledger record of kind ruling that ends a stopped stage of a fleet wave, opening `STAGE ACCEPTED` or `TARGETED FIX`. A stage acceptance record may carry `Reading: record {n}`, which the lock admits only where that reading is in force for the stage.",
+          "where": "harness/mc17/lock.js, rulingRecordForm, waveLockRuling and resumeLedgerRefusals"
+        },
+        {
+          "what": "A ledger record of kind ruling that holds a ruled reading: its body opens `Reading of {document id} {item}` and carries the lines `Now:`, `Reads:`, `Scope:` and `Reason:` and a speaker line of each role the document needs, and its words carry the reading. The row of the reading names it in its Set by record cell.",
+          "where": "harness/mc17/readings.js, readingRecordOf and readingRecordFaults"
+        }
+      ]
+    },
+    {
+      "word": "reading reader",
+      "meanings": [
+        {
+          "what": "The reader of a ruling record that holds a reading. It names every part the record lacks, another authority than the class of the document needs, a speaker line that is no own line of a role the document needs, a writer of the module, words that do not carry the reading, a scope in no form, a reading of a Wave Plan's bar outside its own wave, and a reading of a closed part. A row binds only where its record passes it.",
+          "where": "harness/mc17/readings.js, readingRecordFaults"
+        }
+      ]
+    },
+    {
+      "word": "reconciliation",
+      "meanings": [
+        {
+          "what": "The act that brings a governed document into line with a ruled reading before closure, named in the `reconciled:` part of the row: `amendment {document id} version {n}, record {m}` for a SPEC, a Test Plan, an ARCH or an Implementation Plan, with `, declared value restored` at its end where the final word restored the declared value, and `ruling record {n}`, the row's own record, for a Wave Plan's bar. The check reads that record m writes that version, that no program of the module wrote it, that the Change Log names the ruling record, that a verification at PASS and the approvals of the class follow it, and that each plan that landed under a restored value carries a Rework row. `mc17 readings --check`, `mc17 accept` and the closure act refuse while a row stands open or fails.",
+          "where": "harness/mc17/readings.js, reconciliationFaults, readingsCheck and reworkEdits; harness/mc17/waves.js, COMMANDS.accept"
+        }
+      ]
+    },
+    {
+      "word": "closed part",
+      "meanings": [
+        {
+          "what": "A part of the law or of the plugin that no ruled reading can take: the nine release checks that are not the drill, the digest of the sanctioned block, and the measures the Test Plan scores. The drill can be read in one form alone, a criterion of a SPEC that states the ten release checks, read with its part `:mutations`, and only where both places of the Manifest carry the drill's sentence.",
+          "where": "harness/mc17/readings.js, CLOSED_CRITERIA, NINE_CHECKS, closedPartsOf and drillAdmitted"
+        }
+      ]
+    },
+    {
+      "word": "speaker line",
+      "meanings": [
+        {
+          "what": "A line of a ruling record's body that opens `Speaker:`, in one of four forms: `{role} {name}, own words, typed by the speaker` for the authority's own words, with the role BO, TO, MO or BO and TO; the executor's line under a delegation; a delegate's line; and an agent's line. Two lines of one role, or lines of two kinds, read unread.",
+          "where": "harness/mc17/ledger.js, speakerMark"
+        }
+      ]
+    },
+    {
+      "word": "packet",
+      "meanings": [
+        {
+          "what": "The one input of a call to the judgment module: the point of the decision, the stage revision, the input digest, the routes that stand, and nine inputs, each with its sources by id and binding and a state. A program checks it before any call.",
+          "where": "harness/mc17/converge/packet.js, buildPacket and packetFaults; harness/schemas/convergence-packet-v1.schema.json"
+        }
+      ]
+    },
+    {
+      "word": "proposal",
+      "meanings": [
+        {
+          "what": "The one answer of the judgment module at a decision point, in the form mc17-convergence-proposal/1: one of seven actions with its result, the dispositions of the findings, the evidence, the alternatives, the benefit, the risk, the authority, the work order and what would make it reconsider. A program checks it before anything records it.",
+          "where": "harness/mc17/converge/proposal.js, proposalFaults; harness/schemas/convergence-proposal-v1.schema.json"
+        }
+      ]
+    },
+    {
+      "word": "payload",
+      "meanings": [
+        {
+          "what": "What a decision record carries in its evidence, in the form mc17-convergence-payload/1: the identity of the decision, the model asked and the model that answered, the cost, the call state and the proposal.",
+          "where": "harness/mc17/converge/record.js, composePayload and payloadFaults"
+        }
+      ]
+    },
+    {
+      "word": "operation id",
+      "meanings": [
+        {
+          "what": "The name of one decision of the judgment module, {SCOPE}- and 16 hex characters: random for a wave run by hand, derived from the point and its round for the fleet. The store saves the operation under it, and the record of the decision carries it in its mark.",
+          "where": "harness/mc17/converge/store.js, newOperationId and operationIdFor"
+        }
+      ]
+    },
+    {
+      "word": "input digest",
+      "meanings": [
+        {
+          "what": "The sha256 of the canonical JSON of a packet's nine inputs, the host's load read as busy or not. Two calls over the same inputs carry one input digest.",
+          "where": "harness/mc17/converge/packet.js, inputDigest"
+        }
+      ]
+    },
+    {
+      "word": "payload digest",
+      "meanings": [
+        {
+          "what": "The sha256 of the canonical JSON of a payload. The store saves it before the decision record is sent, so a second send of a changed payload under the same operation is refused.",
+          "where": "harness/mc17/converge/record.js, payloadDigest; harness/mc17/converge/store.js, savePayloadDigest"
+        }
+      ]
+    },
+    {
+      "word": "stage revision",
+      "meanings": [
+        {
+          "what": "The count of a stage's changes of state that the store's event log holds: each new head, review round, disposition, stop and resume counts once.",
+          "where": "harness/mc17/converge/store.js, stageRevision and addStageEvents"
+        }
+      ]
+    },
+    {
+      "word": "durable finding id",
+      "meanings": [
+        {
+          "what": "The one id a finding keeps across review rounds and a superseding plan, {SCOPE}-F{n}, linked to each round's own id and to the lens's carriedFrom link.",
+          "where": "harness/mc17/converge/findings.js, linkFindings"
+        }
+      ]
+    },
+    {
+      "word": "store",
+      "meanings": [
+        {
+          "what": "The judgment module's folder of one Mission on one host, outside the repository: its operations' lines, its stages' event logs, its finding index and the read log of its requests. Each file in it is written whole or not at all.",
+          "where": "harness/mc17/converge/store.js; the folder MC17_CONVERGE_STORE names, by default ~/.mc17/converge"
+        }
+      ]
+    },
+    {
+      "word": "home host",
+      "meanings": [
+        {
+          "what": "The one host on which a Mission's store stands, the host where mc17 converge init ran. Every other command of the module refuses on another host.",
+          "where": "harness/mc17/converge/store.js, initStore and openStore"
+        }
+      ]
+    },
+    {
+      "word": "call state",
+      "meanings": [
+        {
+          "what": "How one call of the judgment module ended: answered, late, failed or malformed, the last after one correction request was refused too. An operation that sent nothing stands not-sent, and a request that waits on its owner stands pending.",
+          "where": "harness/mc17/converge/model.js, askModule"
+        }
+      ]
+    },
+    {
+      "word": "probe",
+      "meanings": [
+        {
+          "what": "The command mc17 converge probe: one call on the model the setting wave.model.converge names, with a fixed policy and a fixed packet that holds no decision. It prints the model asked and the model that answered, the tokens, the price, the time and the call state, and writes no file.",
+          "where": "harness/mc17/converge/model.js, probe"
+        }
+      ]
+    },
+    {
+      "word": "offered sentence",
+      "meanings": [
+        {
+          "what": "A ruling sentence the judgment module proposes beside the action challenge-threshold, in the form I rule that {document id} {item}, now {value now}, reads {reading} for {scope}, because {reason}. It binds nothing until the authority types it with the speaker line of his own words.",
+          "where": "harness/mc17/converge/proposal.js, sentenceFaults and rulingFromSentence"
+        }
+      ]
+    },
+    {
+      "word": "key pair",
+      "meanings": [
+        {
+          "what": "The RSA key pair of the hidden cases, made once on the home host by mc17 converge key --init: the private key in the keys folder, which only the scoring programs read, and the public key in the Mission's sealed folder, which the seal encrypts with.",
+          "where": "harness/mc17/converge/seal.js, keyInit"
+        }
+      ]
+    },
+    {
+      "word": "case file",
+      "meanings": [
+        {
+          "what": "One case of a published or hidden set, in the form mc17-convergence-case/1: its right answer, the feature that makes it hard, its reason, its short way, a harm reading for each of the seven actions, the record it is a variant of, its distinctive sentences and its situation as a packet.",
+          "where": "harness/mc17/converge/seal.js, caseFaults and sealCommand"
+        }
+      ]
+    },
+    {
+      "word": "driver",
+      "meanings": [
+        {
+          "what": "The program a check of the judgment module starts as a child process to run the module's code in a scratch home folder, away from the real key, store and sealed folders. It exits 3 before it loads the plugin where its home folder is another.",
+          "where": "harness/fixtures/converge-driver.js"
+        }
+      ]
+    },
+    {
+      "word": "policy",
+      "meanings": [
+        {
+          "what": "The policy file of the judgment module, harness/converge/policy.md: the text the module sends the model with each packet, in nine sections and a closing figure table. mc17 converge policy --check refuses a policy where a figure lacks its source, its reason or its scope, a number stands outside the figure table, or a sentence repeats a barred record.",
+          "where": "harness/converge/policy.md; harness/mc17/converge/policy.js, policyText and policyFaults"
+        }
+      ]
+    },
+    {
+      "word": "policy version",
+      "meanings": [
+        {
+          "what": "The first twelve hexadecimal digits of the sha256 of a policy's text, read with a byte-order mark dropped and each line ending read as one line feed. The version record and each run record name it, and a changed policy reads as a new version.",
+          "where": "harness/mc17/converge/policy.js, policyVersion"
+        }
+      ]
+    },
+    {
+      "word": "figure table",
+      "meanings": [
+        {
+          "what": "The table under the closing heading Figures of a policy: one row per figure and host kind, each with its value, its source, its reason and its scope. A source takes one of four forms: a measurement with its host, commit, date and ledger note; a ruling by its record; a setting by its name; or an item of a governed document. The figure host-busy-load holds a row for windows and one for macos, and the packet reads a host as busy against the row of its kind.",
+          "where": "harness/mc17/converge/policy.js, policyFigures, SOURCE_FORMS and policyFigure"
+        }
+      ]
+    },
+    {
+      "word": "load reading",
+      "meanings": [
+        {
+          "what": "One reading of a host's load: the share of the processors' time outside idle between two samples three seconds apart. The packet takes one reading of its host. mc17 converge load takes one reading after another for the seconds it is handed, prints each, the highest, the lowest and the count, and writes no file.",
+          "where": "harness/mc17/converge/packet.js, hostState and HOST_SAMPLE_MS; harness/mc17/converge/policy.js, loadCommand and loadSummary"
+        }
+      ]
+    },
+    {
+      "word": "version record",
+      "meanings": [
+        {
+          "what": "The note that names the policy version and the model that will act, written once by mc17 converge version under an operation of its own. Its body opens CONVERGENCE VERSION {policy version} and holds the lines Model: and Policy file:, the second with the sha256 of the policy. Each run names the version record it runs under, and a second version record of the same version and model is refused.",
+          "where": "harness/mc17/converge/policy.js, versionCommand and versionRecordOf"
+        }
+      ]
+    },
+    {
+      "word": "scored set",
+      "meanings": [
+        {
+          "what": "One of the five sets of cases whose hits and harm the measures of the judgment count: published, hidden and judgment, which mc17 converge run runs, and replay and blind. Each run of a scored set passes the order of runs first.",
+          "where": "harness/mc17/converge/run.js, SCORED_SETS and runOrder"
+        }
+      ]
+    },
+    {
+      "word": "run",
+      "meanings": [
+        {
+          "what": "One run of the harness, mc17 converge run: each case of one sealed set of the published, hidden or judgment set goes through the module's one call, under one run id of the form {set}-{8 hex digits}, in a run folder of its own. Each case gets a run record, and each miss a miss record.",
+          "where": "harness/mc17/converge/run.js, runCommand"
+        },
+        {
+          "what": "A step of a work order or a short way that the harm function counts as a run: a heavy run by its id and host, a check by its name and host, or a fix step as one round. A step of another kind is no run.",
+          "where": "harness/mc17/converge/harm.js, runsOf and RUN_KINDS"
+        }
+      ]
+    },
+    {
+      "word": "run record",
+      "meanings": [
+        {
+          "what": "The note of verdict NA that mc17 converge run writes for each case it ran. Its body opens RUN {set} {case} and holds fixed lines such as Action:, Expected:, Hit:, Harm:, Model:, Policy:, Counted:, Run:, Seal: and Version:; its refs name the plan, and its evidence carries the payload. No word of the model stands in its body.",
+          "where": "harness/mc17/converge/run.js, composeRun and runRecordOf"
+        }
+      ]
+    },
+    {
+      "word": "counted run",
+      "meanings": [
+        {
+          "what": "A run whose record reads Counted: yes. Its transport is openrouter, its call reached the model, the policy version it sent and the model it asked are the version record's, the answer names that model, and no earlier run of its set and case at that version record counted. A run on the stub reads Counted: no, transport stub.",
+          "where": "harness/mc17/converge/run.js, countedRun"
+        }
+      ]
+    },
+    {
+      "word": "miss record",
+      "meanings": [
+        {
+          "what": "The note that mc17 converge run writes beside the run record of a case the run missed. Its body opens MISS {case} and holds the lines Set:, Action:, Expected:, Model:, Policy: and Run record:, with no work order. It opens neither DEFECT nor RESOLVED, so the ledger reads it as no defect.",
+          "where": "harness/mc17/converge/run.js, composeMiss and missRecordFaults"
+        }
+      ]
+    },
+    {
+      "word": "hit",
+      "meanings": [
+        {
+          "what": "Whether a run met its case. For the published and hidden sets a run hits where its action is the case's answer. For a judgment case each of the thirteen keys of the case's hit is read by its form: the run misses where one fails, hits where all hold, and owes the Business Owner's reading where all hold and the hit holds wording. A call that failed or ran late reads none, and a malformed call misses.",
+          "where": "harness/mc17/converge/run.js, hitOf, hitFaults and HIT_KEYS"
+        }
+      ]
+    },
+    {
+      "word": "short way",
+      "meanings": [
+        {
+          "what": "The runs a case file states as the least work that settles its case, each a heavy run by its id and host, a check by its name and host, or one fix round. The harm function reads a work order against it: a run the work order holds beyond the short way turns a statement of no harm recorded into waste.",
+          "where": "harness/mc17/converge/seal.js, caseFaults; harness/mc17/converge/harm.js, beyondShortWay and harmAtCase"
+        }
+      ]
+    },
+    {
+      "word": "harm reading",
+      "meanings": [
+        {
+          "what": "What the harm function reads for one action at one case or point: harm, waste, no harm recorded or unknown, with the records it read and the runs past the short way. Waste counts as harm and is named so, and an unknown reading counts neither way.",
+          "where": "harness/mc17/converge/harm.js, harmOf, HARM_WORDS and harmCount"
+        }
+      ]
+    },
+    {
+      "word": "barred record",
+      "meanings": [
+        {
+          "what": "A record kept from the module: each record of the two ledgers of the replay points from the first point on, the reference record of the replay, and the distinctive sentences of the hidden cases, by the digests their sealing records carry. A policy that names one by its number or repeats one of its sentences is refused, and the retrieval refuses a prior case that holds one.",
+          "where": "harness/mc17/converge/policy.js, barredOf, barredIn and BARRED_LEDGERS"
+        }
+      ]
+    },
+    {
+      "word": "prior case",
+      "meanings": [
+        {
+          "what": "A past decision of the Mission as mc17 converge cases reads it: a decision record with its payload and the outcome record of its operation, holding the objective from the store's proposal file, the environment, the authority, the action, the outcome, the limits and the sources, and standing as an analogy and no permission. A sealed decision is passed over until a reveal record carries its payload.",
+          "where": "harness/mc17/converge/policy.js, priorCases and casesCommand"
+        }
+      ]
+    },
+    {
+      "word": "proposal file",
+      "meanings": [
+        {
+          "what": "The file proposals/{operation id}.json of a Mission's store, where the module's one call keeps each answered proposal with its packet. The retrieval reads a prior case's objective from it. In a hidden run the call hands the proposal to the run's holdLog, which seals it in the run folder.",
+          "where": "harness/mc17/converge/model.js, keepProposal; harness/mc17/converge/policy.js, proposalFileOf"
+        }
+      ]
+    },
+    {
+      "word": "run folder",
+      "meanings": [
+        {
+          "what": "The folder runs/{run id} of a Mission's store that one run of the harness writes: its log run.json with each case's call, and for a hidden run the folder held with each text the run holds sealed. A run that stopped is carried on from its folder by --resume {run id}.",
+          "where": "harness/mc17/converge/run.js, runFolders, runOperationOf and runCommand"
+        }
+      ]
+    },
+    {
+      "word": "held text",
+      "meanings": [
+        {
+          "what": "A text a hidden run keeps off the disk in plain until its records have landed: each request body, proposal and refusal of its calls, sealed under the public key of the hidden cases into held/{name}.sealed of the run folder. The private key in the keys folder opens it.",
+          "where": "harness/mc17/converge/run.js, holdLog and heldText; harness/mc17/converge/model.js, askModule"
+        }
+      ]
+    },
+    {
+      "word": "measure run",
+      "meanings": [
+        {
+          "what": "A run of the harness recorded against a policy version, counted once per run id however many cases it holds. A changed policy is adopted where its version holds a measure run of each of published, replay and judgment. mc17 converge policy --adopt prints them set by set, and mc17 converge version refuses the version record of a changed policy that lacks one.",
+          "where": "harness/mc17/converge/policy.js, measureRuns, adoptionFaults and adoptCommand"
+        }
+      ]
+    },
+    {
+      "word": "input shape",
+      "meanings": [
+        {
+          "what": "The form the module's readers take of the value of three of the nine inputs of a packet. The requirements are a list, each requirement with id, origin and value. The findings are a list, each finding with id and actual. Its id is a text that holds words, or null beside a roundId that holds words, which then names the finding. The evidence is an object with head, tree and entries, each entry with id and kind, and an entry of the kind check also holds check, result, commit and tree. The packet check refuses a present input whose value stands outside its shape and quotes no value, so the seal refuses such a case and the call over such a packet ends failed before any request. The six other inputs keep their value free.",
+          "where": "harness/mc17/converge/packet.js, INPUT_SHAPES and inputShapeFaults; harness/schemas/convergence-packet-v1.schema.json"
+        }
+      ]
+    },
+    {
+      "word": "citation form",
+      "meanings": [
+        {
+          "what": "One of the five forms of an id that the reason of an offered sentence names, each one the proposal check reads: {ledger id}#{n} and record {n} for a record a source of the packet names, E{n} for an entry of the evidence, {SCOPE}-F{n} for a finding by its durable id, and R{n}F{n} for a finding by its round id. The policy states them to the model. A finding whose id stands in another form, such as a short id of a case writer's own, is named in the dispositions alone.",
+          "where": "harness/mc17/converge/policy.js, REASON_ID_FORMS; harness/converge/policy.md, the section Thresholds"
+        }
+      ]
+    },
+    {
+      "word": "set-aside version record",
+      "meanings": [
+        {
+          "what": "The one version record a ledger holds, set aside once by mc17 converge version --set-aside {n} --ruling {m}. The ruling record m stands after it, reads the verdict PASS, names both owners in its spokenBy, and holds one sentence that names that version record and the words no adoption. The version record of the changed policy then carries the line Sets aside: version record {n}, under ruling record {m} and needs no measure run, and the record set aside leaves the adoption rule. Its run and miss records stay on the ledger. Once a ledger holds two version records, every set-aside on it is refused.",
+          "where": "harness/mc17/converge/policy.js, setAsideFaults, setAsideOf, versionFaults and versionCommand"
+        }
+      ]
+    },
+    {
+      "word": "decision point",
+      "meanings": [
+        {
+          "what": "A moment at which the judgment module is asked, one of seven kinds: the four loop points of the runner's review loop (the opening, a re-review, before a still-blocking round and before the landing), a red integration-stage result, a heavy-run start and a review that blocks in a wave run by hand. mc17 converge evaluate --point {kind} asks the module once at one of them, outside the fleet runner.",
+          "where": "harness/mc17/converge/points.js, DECISION_KINDS, LOOP_KINDS and evaluateCommand"
+        }
+      ]
+    },
+    {
+      "word": "heavy run",
+      "meanings": [
+        {
+          "what": "A run the table hooks/heavy-runs.json names: a whole test suite, the drill, a release check, an integration stage or an agent start. A suite run with a word after its file that names checks is light. In a wave run by hand each heavy run needs an open start entry, or the heavy-run hook refuses it.",
+          "where": "hooks/heavy-runs.json; hooks/lint-heavy.py; harness/mc17/converge/points.js, heavyRunKeys"
+        }
+      ]
+    },
+    {
+      "word": "stop",
+      "meanings": [
+        {
+          "what": "A decision point where the work halts for a decision: a stage stopped in its review loop, a review that blocks in a wave run by hand, or a red integration-stage result. The stage's log gains the event stop {point} {round} at one.",
+          "where": "harness/mc17/converge/points.js, isStop and pointEvents"
+        }
+      ]
+    },
+    {
+      "word": "blind set",
+      "meanings": [
+        {
+          "what": "The stops whose proposals the Business Owner decides without seeing them. mc17 converge blind --open starts it once, the store keeps it in blind.json with his number, and while it admits a stop the proposal at a loop point, a red stage or a review that blocks is sealed.",
+          "where": "harness/mc17/converge/blind.js, openBlindSet, blindSet, blindNumber and sealingFor"
+        }
+      ]
+    },
+    {
+      "word": "stop id",
+      "meanings": [
+        {
+          "what": "The name of a stop in the blind set, {SCOPE}-S{n}, where n is its place in the set. mc17 converge render, decide and reading take it.",
+          "where": "harness/mc17/converge/blind.js, nextStopId and stopNamed"
+        }
+      ]
+    },
+    {
+      "word": "start entry",
+      "meanings": [
+        {
+          "what": "A line of the store's starts.jsonl that admits one heavy run under its key, written once the decision record of a heavy-run start stands. It carries the wave and the plan of the call that wrote it. The hook marks it used when the run starts and ended when it sees the end; at an agent start the hook takes only an entry made for the start's own prompt. mc17 converge ended marks an end the hook did not see, and ends a stage entry that no start used only with --stage-dir, which marks it used by the run that folder holds, or with --no-run, read against the ledger's integration records.",
+          "where": "harness/mc17/converge/points.js, writeStarts, startsOf and endedCommand; hooks/lint-heavy.py"
+        }
+      ]
+    },
+    {
+      "word": "key of a start",
+      "meanings": [
+        {
+          "what": "{table id}@{host}: the table id of the heavy run and the host it runs on, local, or the target of the ssh that carries the start. The hook's --key form prints it for each command, and the command keys a start through that form.",
+          "where": "hooks/lint-heavy.py, --key; harness/mc17/converge/points.js, keyRun and heavyRunKeys"
+        }
+      ]
+    },
+    {
+      "word": "registered checkout",
+      "meanings": [
+        {
+          "what": "A folder of a wave run by hand that the store's hand.json lists: the wave's own checkout, which mc17 wave lock writes, and which mc17 wave unlock removes with every other entry of the wave, whatever checkout the lock was taken in, naming each other checkout that still holds the lock file, and each folder an agent works in, which mc17 converge evaluate adds at an agent start. The hook is on in each of them.",
+          "where": "harness/mc17/converge/points.js, registerHandLock, releaseHandLock, registerCheckout and handCheckouts"
+        }
+      ]
+    },
+    {
+      "word": "end event",
+      "meanings": [
+        {
+          "what": "A hook event that reports the end of a call: PostToolUse for a command, SubagentStop for an agent. The heavy-run hook marks the end of a start it admitted at one, and prints nothing.",
+          "where": "hooks/lint-heavy.py; hooks/hooks.json"
+        }
+      ]
+    },
+    {
+      "word": "deciding entry",
+      "meanings": [
+        {
+          "what": "The record of who decided at a decision point, beside the module's own record: the session's note or an authority's ruling, which mc17 converge decide writes, or the entry the hook writes into decided.jsonl when a start runs, which the next command sends as a DECIDED note.",
+          "where": "harness/mc17/converge/points.js, decideCommand, decidedOf and sendDecided"
+        }
+      ]
+    },
+    {
+      "word": "envelope",
+      "meanings": [
+        {
+          "what": "A sealed file in the form mc17-sealed/1, which the private key alone opens: a hidden case of a sealed set, or the proposal of a stop of the blind set with its payload and the texts its call held, written as sealed/{operation id}.enc in the store.",
+          "where": "harness/mc17/converge/seal.js, sealBytes and openSealed; harness/mc17/converge/blind.js, sealProposal"
+        }
+      ]
+    },
+    {
+      "word": "rendering",
+      "meanings": [
+        {
+          "what": "The text of a stop's facts that the Business Owner reads before his blind decision: the program's labels, each value in a code span, each reviewer's words in a fence, and no action named. mc17 converge render writes it into the store's shown/ and sends the SHOWN record with its hash.",
+          "where": "harness/mc17/converge/blind.js, renderStop, renderFaults and renderCommand"
+        }
+      ]
+    },
+    {
+      "word": "read log",
+      "meanings": [
+        {
+          "what": "The store's readlog.jsonl: one line for each read of a sealed proposal through a command, with who, when, which command, the operation and the stop, and whether the read was admitted or refused.",
+          "where": "harness/mc17/converge/blind.js, logRead"
+        }
+      ]
+    },
+    {
+      "word": "reveal",
+      "meanings": [
+        {
+          "what": "The act that opens a stop's envelope after the stage has ended and his decision at each stop stands, hashes the proposal again, checks it against the hash the record carries, and writes the REVEALED record with the payload. mc17 converge reveal runs it over a stage.",
+          "where": "harness/mc17/converge/blind.js, revealCommand and stageEnded"
+        }
+      ]
+    },
+    {
+      "word": "release check",
+      "meanings": [
+        {
+          "what": "One of the ten checks that mc17 gates runs before a release; the tenth is the drill. A release check is a heavy run, and in a wave run by hand it needs a start entry.",
+          "where": "harness/mc17/release.js, COMMANDS.gates; hooks/heavy-runs.json"
+        }
+      ]
+    },
+    {
+      "word": "drill row",
+      "meanings": [
+        {
+          "what": "One deliberate break, listed in harness/mc17.mutants.json as the check it turns red, the text it replaces, the text it writes and its label. Each check must turn red under its rows. A stored row is one that an earlier release ships.",
+          "where": "harness/mc17.mutants.json; harness/mc17.mutations.js"
+        }
+      ]
+    },
+    {
+      "word": "executor",
+      "meanings": [
+        {
+          "what": "The program that checks one decision of the judgment module against its delegation and the state as it stands now, and applies it once through the route its action takes, or offers it where no delegation covers it. mc17 converge validate, apply, offer and recover run it.",
+          "where": "harness/mc17/converge/executor.js"
+        }
+      ]
+    },
+    {
+      "word": "delegation",
+      "meanings": [
+        {
+          "what": "A ruling of the Business Owner, on the ledger, whose body opens `Delegation of`, in his own speaker line, that lets the executor apply decisions of the kinds, at the stages and in the Missions it names. It names the ten reports it rests on, each by asset id and version, and the version record of the policy and the model. A later ruling that opens `Revocation of delegation record {n}` ends it.",
+          "where": "harness/mc17/converge/executor.js, delegationOf and delegationFaults"
+        }
+      ]
+    },
+    {
+      "word": "decision kind",
+      "meanings": [
+        {
+          "what": "One action at one kind of decision point, written `{action} at {point kind}`, as `accept at blocked-review`. The executor reads it from the module's own decision record, and a delegation names the kinds it covers.",
+          "where": "harness/mc17/converge/executor.js, decisionKindOf and covers"
+        }
+      ]
+    },
+    {
+      "word": "revocation",
+      "meanings": [
+        {
+          "what": "A ruling in the Business Owner's own words whose body opens `Revocation of delegation record {n}`. It ends that delegation, and a decision the delegation covered reads denied from then on. A revocation in a delegate's or an agent's line, or with none, revokes nothing.",
+          "where": "harness/mc17/converge/executor.js, revocationOf"
+        }
+      ]
+    },
+    {
+      "word": "validation",
+      "meanings": [
+        {
+          "what": "The executor's answer on one decision: authorized, denied, stale or pending, with its reasons. Pending lands a DECISION REQUEST note to the authority, denied lands a DENIED note naming the check that failed, and stale names both digests and both stage revisions.",
+          "where": "harness/mc17/converge/executor.js, validateOperation and recordValidation"
+        }
+      ]
+    },
+    {
+      "word": "acceptance snapshot",
+      "meanings": [
+        {
+          "what": "What an accept rests on: the head, the reviews at that head, the evidence and the settings, as the proposal's packet holds them. A commit made since the proposal makes it stale.",
+          "where": "harness/mc17/converge/executor.js, currentParts"
+        }
+      ]
+    },
+    {
+      "word": "route",
+      "meanings": [
+        {
+          "what": "An existing way a decision takes effect, such as the stage acceptance record, the targeted fix, the recorded finding or a decision request to an authority. The routes map names one route for each of the seven actions at each of three kinds of point, and the executor refuses any other.",
+          "where": "harness/mc17/converge/executor.js, ROUTES and routeOf"
+        }
+      ]
+    },
+    {
+      "word": "executor's record",
+      "meanings": [
+        {
+          "what": "A stage acceptance record or a targeted fix ruling the executor writes under a delegation, in the form the lock reads: the delegation's words byte for byte, its spokenBy, the line `Operation: {operation id}` and the speaker line `Speaker: executor under delegation record {n}`. The lock admits it only where that delegation stands.",
+          "where": "harness/mc17/converge/executor.js, acceptanceRecord, targetedFixRecord and executorRecordFaults; harness/mc17/lock.js, rulingRecordForm"
+        }
+      ]
+    },
+    {
+      "word": "effect",
+      "meanings": [
+        {
+          "what": "What an application left outside the store: a ledger record, a merge, a correction, a cancellation or a publication. Each reads outcome unknown until it is read at its own source, and mc17 converge status and recover read it there.",
+          "where": "harness/mc17/converge/executor.js, effectsOf and readEffect"
+        }
+      ]
+    },
+    {
+      "word": "send operation",
+      "meanings": [
+        {
+          "what": "An operation of the store under which one record of the executor goes out, found or made by the record's point, its ledger and the sha256 of its body, so a second send of the same record finds the first by its mark. It is not the decision's own operation.",
+          "where": "harness/mc17/converge/executor.js, sendRecord; harness/mc17/converge/points.js, sendOnce"
+        }
+      ]
+    },
+    {
+      "word": "approval in force",
+      "meanings": [
+        {
+          "what": "An approval record of a document that no later verification record of the same document has outrun with another binding, and that no later approval record of the same role has replaced. A lapsed or replaced approval makes a decision stale.",
+          "where": "harness/mc17/converge/executor.js, approvalsNow and liveStateFaults"
+        }
+      ]
+    },
+    {
+      "word": "block digest",
+      "meanings": [
+        {
+          "what": "The sha256 of the fleet runner's protected block, normalized by the runner's own function, as mc17 machinery prints it. The executor compares it with the newest row of the block registry before a route through the runner, and refuses the application where the two differ.",
+          "where": "harness/mc17/converge/executor.js, blockDigest and digestFaults; harness/BLOCK-HASHES.json"
+        }
+      ]
+    },
+    {
+      "word": "narrow proof",
+      "meanings": [
+        {
+          "what": "A ruling of the authority, on the ledger, that opens `NARROW PROOF {Wave Plan id}` and names the commit the stage runs stand at, the fix commit that lands, the files the fix may change and the runs that prove the fix at the fix commit. The acceptance check and `mc17 append --stage` take `--narrow {record}` and accept a landing at the fix commit under it where its floor holds: the stage runs stand at an ancestor of the fix commit; the fix changes only test programs, the parts they load and the drill table, each named in the ruling; each test program a changed file belongs to ran whole and green at the fix commit on each host kind the Wave Plan names; and each drill row whose check text changed was proven again there. A hook row's check text is read with every file `hooks/hooks.test.py` runs by exec.",
+          "where": "harness/mc17/narrow.js, narrowRuling, narrowFloor, narrowProof and narrowRecord; harness/mc17/acceptance.js, citedRunRefusals; harness/mc17/ledger.js, COMMANDS.append"
+        }
+      ]
+    },
+    {
+      "word": "proof run",
+      "meanings": [
+        {
+          "what": "One run a narrow proof names, `{host kind} {command} > {output file}`. Its output opens with the line that shows its commit and its tree: the drill's own `drill at {sha} (clean)`, or `run at {sha} (clean)`, which the session writes before a test program's output.",
+          "where": "harness/mc17/narrow.js, narrowRuling and proofRunOf"
+        }
+      ]
+    },
+    {
+      "word": "run going",
+      "meanings": [
+        {
+          "what": "A heavy run the packet of a red stage lists as still going, by its table id and its host. Once a decision stands, the deciding command prints one line `Run going : {table id} on {host}, keep` or `..., stop` for each, from a fixed table of the decision's action and whether the commit moved since the run; the session ends a run that reads stop.",
+          "where": "harness/mc17/converge/points.js, RUNS_GOING, keepOrStop and runsGoingLines"
+        }
+      ]
+    },
+    {
+      "word": "admitted start",
+      "meanings": [
+        {
+          "what": "A start entry the executor writes in the state admitted under a delegation in force, for a start that a heavy-run step of the work order names on a host the proposal read idle, with the delegation, the host's part of the packet and the wait condition. The hook admits a start on it only where the host reads again as the proposal found it and the wait condition holds. Every other start of the decision is held: its entry is written ended, with the field held.",
+          "where": "harness/mc17/converge/executor.js, startEntries; hooks/lint-heavy.py, admit"
+        }
+      ]
+    },
+    {
+      "word": "host's part",
+      "meanings": [
+        {
+          "what": "The part of a packet that the heavy-run hook compares a fresh reading of the host with: the flag busy and the runs still going, by table id and host. `mc17 converge host` prints the reading with its host's part, as a call takes it.",
+          "where": "harness/mc17/converge/packet.js, hostPartOf; harness/mc17/converge/points.js, hostCommand"
+        }
+      ]
+    },
+    {
+      "word": "remote checkout",
+      "meanings": [
+        {
+          "what": "A checkout of a wave run by hand on another host, which `mc17 wave lock --remote {ssh target}:{path}` reads over ssh as the top folder of a checkout on the wave's branch and writes into the wave's registry entry. The heavy-run hook reads a heavy run started there over ssh by the cd the remote command holds, and judges it under the key of the target.",
+          "where": "harness/mc17/lock.js, COMMANDS.wave; harness/mc17/converge/points.js, remotesOf, remoteFaults and registerRemotes; hooks/lint-heavy.py, wave_for_remote"
+        }
+      ]
+    },
+    {
+      "word": "excluded wave",
+      "meanings": [
+        {
+          "what": "A wave the Business Owner takes out of the blind set before it opens, by a ruling in his own words that opens `BLIND EXCLUDES {Wave Plan id}`: no proposal of the wave is sealed, and no stop of it enters the set.",
+          "where": "harness/mc17/converge/blind.js, waveExcludedBy; harness/mc17/converge/points.js, evaluateCommand"
+        }
+      ]
+    },
+    {
+      "word": "shown digest",
+      "meanings": [
+        {
+          "what": "The digest of what an authority was shown at a decision point: the sha256 of the lines `mc17 converge offer` prints, on its last line `Digest`, or the text digest a stop's `SHOWN` record names. An authority's ruling through `mc17 converge decide` carries it on the line `Shown: offer {operation id} {digest}` or `Shown: render {stop id} {digest}`, and the command refuses a ruling with none or with another; his blind decision at a stop of the set writes it from the `SHOWN` record.",
+          "where": "harness/mc17/converge/executor.js, offerCommand and offerDigest; harness/mc17/converge/points.js, shownCheck; harness/mc17/converge/blind.js, blindDecision"
+        }
+      ]
+    },
+    {
+      "word": "clerk",
+      "meanings": [
+        {
+          "what": "A small agent the fleet runner starts at a decision point of a stage's review loop, where the stage carries the field `converge` and a finding stands. It writes the facts block to a file, runs `mc17 converge evaluate` with `--runner-facts`, and hands back the object the command prints on its line `Clerk     :`, in the schema `HARNESS_CONVERGE_SCHEMA`. It decides nothing and changes no file of the change.",
+          "where": "harness/orchestration-harness.js, runStage: atPoint and clerkBrief; harness/mc17/converge/clerk.js, clerkEvaluate"
+        }
+      ]
+    },
+    {
+      "word": "facts block",
+      "meanings": [
+        {
+          "what": "The JSON object the fleet runner composes at a decision point for the judgment module: the point, the Wave Plan, the stage, the round, the rounds run and allowed, the run, the pull request, the head and the base, the lenses with their bars, each review of each round with each finding under one id, the recorded findings, the last fix, the routes the runner offers, the critical stop after the point, the field's delegations and the check figure. It holds at most 120,000 characters: past that the findings' texts are clipped, then cut to their ids, grades and locations.",
+          "where": "harness/orchestration-harness.js, runStage: factsAt; harness/mc17/converge/points.js, readFacts and loopFacts"
+        }
+      ]
+    },
+    {
+      "word": "check figure",
+      "meanings": [
+        {
+          "what": "The 32-bit FNV-1a sum, eight hexadecimal characters, of a facts block's JSON text without its field `sum`, written last in the block as `sum`. `mc17 converge evaluate` through the clerk's wrapper computes it again and refuses a copy whose figure differs. It detects a changed copy of the block, and it is no hash of any record.",
+          "where": "harness/orchestration-harness.js, factsSum; harness/mc17/converge/clerk.js, clerkEvaluate"
+        }
+      ]
+    },
+    {
+      "word": "early end",
+      "meanings": [
+        {
+          "what": "The stop of a fleet stage at the opening, after a re-review while rounds remain or before a landing, on the clerk's authorized return under a delegation of the field that names the early end and lists the pair of action and point. The runner waits for the clerk only there. The stage result reads `endedEarly` with the point, the decision record and the operation, and `acceptable.stop` reads `ended-early`; nothing lands, and the acceptance or one targeted fix follows by a ruling record.",
+          "where": "harness/orchestration-harness.js, runStage: waitsAt, earlyEndOf and endEarly; harness/mc17/converge/executor.js, stoppedAt"
+        }
+      ]
+    },
+    {
+      "word": "recorded finding id",
+      "meanings": [
+        {
+          "what": "The id `R{round}K{n}` the fleet runner gives each finding it records, where `n` counts the recorded findings of that round in their order; the letter `K` keeps it apart from the runner's `R{round}F{n}`. A recorded finding that a critical stop names also carries that stop's id in `critical`. A targeted fix may name it in its `Fix:` line, and the lock refuses a line that names one finding by both its ids.",
+          "where": "harness/orchestration-harness.js, runStage, the two lines that add recorded findings; harness/mc17/lock.js, fixLineRefusals"
+        }
+      ]
+    },
+    {
+      "word": "routes present",
+      "meanings": [
+        {
+          "what": "`ROUTES_PRESENT`, the map of the five routes the fleet runner of a release offers: `stage-acceptance`, `targeted-fix`, `widened-targeted-fix`, `recorded-finding` and `early-end`. Every facts block carries it, the packet reads the runner's four routes from it, and the executor reads a route from the decision's own packet.",
+          "where": "harness/orchestration-harness.js, ROUTES_PRESENT; harness/mc17/converge/packet.js, routesPresent; harness/mc17/converge/executor.js, applyOperation"
+        }
+      ]
+    },
+    {
+      "word": "judged case",
+      "meanings": [
+        {
+          "what": "A past decision point of the judgment module where an authority's own decision stands, kept as one entry of the plugin's file of judged cases, `harness/converge/cases.json`: the point and the facts the module saw, its action, the authority's decision in his own words, his reading where one stands, the rulings he gave that name the point, the outcome, and the ledger records each part cites. The packet of every call carries up to `CASES_PER_CALL` of them, those of the call's kind of point first, each an analogy and never a permission. `mc17 converge cases --add` writes a new one into a checkout's copy of the file, and it ships with the next release.",
+          "where": "harness/converge/cases.json; harness/mc17/converge/policy.js, casesFileOf, judgedCases and caseEntryOf; harness/mc17/converge/points.js, evaluateCommand"
+        }
+      ]
+    },
+    {
+      "word": "false red",
+      "meanings": [
+        {
+          "what": "A red run of `mc17 stage` whose core passed, meaning the three test suites and the drill, and whose only red release checks are `lintdoc`, `doctrine` or `selftext`, the checks that read texts and figures. The last line of the stage then names, after the call of the judgment module, the landing route: the authority may rule that the run lands as it was run, in a ruling that states each red check and its cause. The stage itself decides nothing.",
+          "where": "harness/mc17/stage.js, falseRedOf and stageOwedLine; harness/mc17/acceptance.js, TEXT_CHECKS; skills/mc-converge-v17/SKILL.md, step 6"
+        }
+      ]
+    },
+    {
+      "word": "re-dispatching ruling",
+      "meanings": [
+        {
+          "what": "A later record of kind `ruling` that dispatches an entry of a review's work order whose own dispatch names a record at or before the review record, as when the review was recorded after the records that applied it. It carries an authority's own words, `authorityWords` and a speaker line in the own-words form of any role that form admits; its first line reads exactly `REDISPATCH {n}`, naming the review record by its number, and its text holds one line `Entry {id}: {disposition}` for each entry, the disposition one of `applied`, `argued` and `ruled-away`. The entry stays as written. `mc17 reviewed` and `mc17 evidence` read the first such lawful ruling as the entry's dispatch and print a note line for it, and for each such ruling that dispatches nothing, with the reason; `mc17 dispatch` names it where it refuses a second dispatch of such an entry. `mc17 reviewed` and `mc17 evidence` also name a ruling whose first line opens `REDISPATCH {n}` and misses the exact form, and each line of such a ruling that opens `Entry` and misses the exact form. Under `--recite`, `mc17 dispatch` names the re-dispatching ruling where it refuses the re-citation of an entry whose dispatch names a record at or before the review record, because the review record names no `REVIEW` asset, the entry was re-cited once, or the disposition differs.",
+          "where": "harness/mc17/ledger.js, REDISPATCH_OPENING_RE, REDISPATCH_ENTRY_RE, redispatchesOf, redispatchOf, openItemsOf, reviewGate and evidenceJoin; harness/mc17/release.js, dispatchPatch; skills/mc-adv-review-v17/SKILL.md, steps 5 and 6"
+        }
+      ]
+    },
+    {
+      "word": "red-resolved",
+      "meanings": [
+        {
+          "what": "The state `red-resolved:{n}` a result manifest gives a test case that ran and came back red, `{n}` being the number of the defect record that names the case. `mc17 accept` reads it against the ledger: where record `{n}` is a defect record whose text names the case and a later record that opens `RESOLVED {n}` carries the own words of the Business Owner or the Technical Owner, with no verdict FAIL, the case is admitted and its criterion reads accepted with resolved defect `{n}`, `ok` in the command's output and passing at the Move sweep and at closure, which name it on their records. Any other mark, a bare `red-resolved` among them, reads red with the reason.",
+          "where": "harness/mc17/waves.js, AC_STATES, RED_RESOLVED_RE, parseResultManifest, caseUnderDefect, acCoverage and COMMANDS.accept; skills/mc-vf-move-v17/SKILL.md; skills/mc-close-mission-v17/SKILL.md, Step 3; skills/mc-vf-tp-v17/SKILL.md"
+        }
+      ]
+    },
+    {
+      "word": "wave.prompts",
+      "meanings": [
+        {
+          "what": "The setting that decides whether the prompts of a wave's agents come from the prompt template: `template`, where `mc17 wave prompts` renders them into the Wave Plan and a plan run by hand carries them as a fleet plan does, or `none`, the shipped default, where a plan run by hand carries no fleet prompts and the command renders nothing. A Mission sets it in its Manifest's Operational Parameters, on a ruling record; it stays out of the rows every Wave Settings section states.",
+          "where": "harness/mc17/params.js, PARAMETER_DEFAULTS, PARAMETER_VALUES, PARAMETER_READERS and WAVE_SETTINGS; harness/mc17/prompts.js, wavePrompts and promptsSettingProblems"
+        }
+      ]
+    },
+    {
+      "word": "prompt template",
+      "meanings": [
+        {
+          "what": "The file `harness/prompts/stage-prompts.md`, the text of the rules every agent of a wave reads and of the prompt of each role, in eight blocks and two bars, from which `mc17 wave prompts` renders every prompt of a wave; its digest stands in `TEMPLATE_DIGEST`, and the command refuses a template whose digest differs.",
+          "where": "harness/prompts/stage-prompts.md; harness/mc17/prompts.js, TEMPLATE_DIGEST, templateBlocks, renderBlock and renderPrompts"
+        }
+      ]
+    },
+    {
+      "word": "start text",
+      "meanings": [
+        {
+          "what": "The whole text an agent of a wave run by hand starts on: the rules, then the prompt of its role, as the ruled Wave Plan holds them, composed by `handStartTexts`; the lock of such a plan carries the digest of each in `handPrompts`.",
+          "where": "harness/mc17/prompts.js, handStartTexts and handLockPrompts; harness/mc17/lock.js, mc17 wave lock"
+        }
+      ]
+    },
+    {
+      "word": "brief",
+      "meanings": [
+        {
+          "what": "The file that holds a start text, followed by the facts of that one start under the line `THE FACTS OF THIS START`, each under one of seven labels in its fixed form; `mc17 wave prompts --start` writes it, with the file `{brief}.start` that holds the one line naming it, and the heavy-run hook reads it at the agent start.",
+          "where": "harness/mc17/prompts.js, startBrief, FACT_FORMS and factsProblems; hooks/lint-heavy.py, ruled_brief"
+        }
+      ]
+    }
+  ]
+}
