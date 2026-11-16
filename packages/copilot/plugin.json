@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "devyonq-mc",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "Mission Control v1.7 for GitHub Copilot, in the Copilot CLI and in VS Code: the creation, verification, approval, review and closure skills, the client mc17 that sends their commands to the harness in DevyonQ, the hook gates, which each client runs through hooks/dialect.py with a dialect file of its own, and the custom agent mc-independent, which the review and rewriting skills start in a context of its own. Waves run by hand on Copilot: the package carries no fleet runner.",
   "author": {
     "name": "Macrix Technology Group"

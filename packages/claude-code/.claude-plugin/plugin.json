@@ -1,6 +1,6 @@
 {
   "name": "devyonq-mc",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "Mission Control v1.7 governance toolkit for Claude Code: the creation, verification, approval, review and closure skills, the gate hooks and the client mc17. The harness runs in DevyonQ: the deterministic half of the methodology (content hashes, the approval-binding projection, field checks, template rendering, the sanctioned-block hash) is a program there, which every skill and hook reaches through the client, signed in once per computer with mc17 login. A recipe copied into a document drifts from the code it describes, so a skill asks the program and computes no figure itself.",
   "author": {
     "name": "Marek Zuchowski",

@@ -9,7 +9,7 @@
       "source": "./packages/copilot",
       "description": "Mission Control v1.7 for GitHub Copilot, the CLI and VS Code: the creation, verification, approval, review and closure skills, the harness they call, the hook gates through a dialect for each client, and the custom agent the review skills start. Coexists with the v1.6 line; a Mission pins one line for its lifetime.",
       "category": "methodology",
-      "version": "0.2.6"
+      "version": "0.2.7"
     }
   ]
 }

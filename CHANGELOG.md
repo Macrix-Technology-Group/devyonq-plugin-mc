@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.7 - 2026-11-16
+
+- **The plugin works when installed on Windows.** The plugin's repository now tells git to convert no line ending, so
+  an install on Windows keeps every file as published. With 0.2.6 installed from `devyonq-plugin-mc` on Windows, every
+  `mc17` command was refused with "a copy edited by hand is no copy", because the client's copy of the contract no
+  longer matched. Install 0.2.7 afresh: remove the plugin and install it again.
+
 ## 0.2.6 - 2026-11-13
 
 - **The plugin installs from its own repository.** Each release is published to
