@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "sha256": "aa5cf7b165ad1209324bee7a82465cdbf5ef6a2100dea5ff0ca3acc396b6bbb4",
+  "sha256": "4055e268f289d311c8e4fb0523fa90d962c2837154e9a0d387a408f75a14bfa7",
   "path": "src/devyonq/server/harness/contract/harness-contract.json",
-  "commit": "28fb584e945fc996a67310ead3f5b99c92890cde"
+  "commit": "4f58e5db8997f97e4fd34df91103e548644b472f"
 }

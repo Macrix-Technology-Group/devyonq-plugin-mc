@@ -298,6 +298,25 @@ Wait. Record them. Each activated specialty produces three things downstream, an
 
 #### 4c. Authorities
 
+**First, the DevyonQ project.** DevyonQ records each Mission on one of its projects, and its team says who may hold each role. List the projects on which the person may record this Mission:
+
+```bash
+mc17 mission projects
+```
+
+Put the list to the person and ask which project this Mission belongs to. Offer no default, since the project is the person's choice. Record the answer as `project_id`. Then read who on that project's team may hold each role, and the Factories the project links:
+
+```bash
+mc17 mission projects --project {project_id} --json
+```
+
+The answer holds `roles`, each member with the `manifestForm` the Manifest's Authorities line takes, `Display Name (address)`; `caller`, which says whether the person is the project's Project Manager; and `factories`. Where the project links more than one Factory, ask the person at which one the Mission stands, and record it as `factory_id`.
+
+**Each authority question below offers that project's people for its role**, each with the name and email address the command prints. Where one person alone may hold the role, offer that person as the default. Where several may, list them and offer none as the default. Where the person answers with a name off the list, or `TBD`, record it as given and say that `mc17 mission register` will refuse the Mission in DevyonQ until that role is held by someone on the project's team. Write the authority into the Manifest in its `manifestForm`, since `mc17 mission register` matches that form: an email address exactly, else the display name. Where the command says the person is not the project's Project Manager, DevyonQ records the Mission only with the person as its Business Owner: offer the person as the BO, and where they name someone else, say that the project's Project Manager must then run `mc17 mission register`.
+
+Where the list of projects is empty, or the person names no project, say that this Mission will be created in CanonQ alone, record no `project_id`, and ask the authority questions with no defaults.
+
+
 Ask one at a time.
 
 > **Authorities (1 of 5) - BO (Business Owner):** who? (A name, or `TBD` to defer.)
@@ -706,6 +725,20 @@ mc17 settings --row add --manifest {manifest_asset_id} --collection {collection_
 
 The command writes the row only where the host of the credentials is that person's settings instance, and prints the row, which the Step 11 report names. Where the Mission lives on another instance, the command writes no row and prints the hand form's command line, `mc17 settings --row hand`, which the report names. Where the command refuses the write, the Mission stays as created, and the report names the refusal; `mc17 settings --check` then names the missing row.
 
+### Step 10c - The Mission in DevyonQ
+
+Where 4c recorded a `project_id`, record the Mission on that project once Step 10b has run, with `--factory {factory_id}` where 4c recorded one:
+
+```bash
+mc17 mission register --project {project_id} --manifest {manifest_asset_id}
+```
+
+DevyonQ records a Mission only with a person in each of its four roles. Where the Manifest leaves the MO `TBD`, or names an AI-AO, ask the person who holds that role in DevyonQ, offering the project's people for it, and add `--mo {manifestForm}` or `--ao {manifestForm}`; the Manifest stays as written.
+
+The command reads the Manifest, finds each of the four authorities it names among the project's team, records the Mission in DevyonQ and binds it to this collection. DevyonQ then shares the collection with the Mission's group in CanonQ, which holds its four authorities, and hands the collection to the Technical Owner, else the Business Owner, once that person's CanonQ account is linked; the command prints both states. DevyonQ shows the Mission's status from its ledger, which `mc-vf-manifest-v17` creates later. Run again, it brings the DevyonQ Mission's four authorities in line with the Manifest, under the same checks, and prints each change, or that nothing differs; run it after any change to the Manifest's Authorities field. A Mission stays on the project it was first recorded on.
+
+Where 4c recorded no `project_id`, or where the command refuses, for example because an authority is not on the project's team, the CanonQ Mission stays as created. The Step 11 report then names the refusal as the command printed it, and the command to run once it is settled.
+
 ### Step 11 - Report
 
 **Read the field states off the tool, then judge them.** `mc17 check {manifest_asset_id}` reports the state of the 24 declarative fields and **judges nothing**. The dispositions below are this skill's. A `[TBD]` inside an otherwise complete field is the state the scaffold writes closure conditions 3 and 4 in, which is neither an absence nor a deferred field.
@@ -742,7 +775,7 @@ Pinned methodology:
 {On the trial path:} This Mission is a DECLARED TRIAL of the v1.7 drafts. Its conclusions carry no
 force outside itself while the pin stands on drafts.
 
-Collection: Mission {mission_name} (id {collection_id}), private to you until you share it.
+Collection: Mission {mission_name} (id {collection_id}), shared with the Mission's four authorities where Step 10c recorded it in DevyonQ, private to you otherwise.
 
 Documents created:
 - MANIFEST-{SCOPE}-001 (Draft)   asset {id}   AO {AO string}   work mode {mode}
@@ -778,6 +811,8 @@ Next:
    to ledger-hybrid-v1.schema, with a bootstrap record carrying the hash recipe and the
    projection schema.
 4. Share the collection when the BO says it is ready.
+5. Where Step 10c recorded no Mission in DevyonQ, settle what the command named and run
+   mc17 mission register --project {project_id} --manifest {manifest_asset_id}.
 
 The line ships this skill and the ARCH and IP creation skills, the verification skills for the
 Manifest, SPEC, ARCH, IP, TP, Wave Plan and Move, the four approval skills, the independent act,

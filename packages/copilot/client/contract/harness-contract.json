@@ -608,6 +608,19 @@
         }
       }
     },
+    "mission": {
+      "kind": "read",
+      "forms": {
+        "projects": {
+          "kind": "read",
+          "facts": []
+        },
+        "register": {
+          "kind": "write",
+          "facts": []
+        }
+      }
+    },
     "accept": {
       "kind": "read",
       "files": [

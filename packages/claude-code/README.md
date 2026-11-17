@@ -69,6 +69,14 @@ To sign this computer out, run `mc17 logout` the same way, in your own terminal.
 keeps; the key DevyonQ issued stays valid until it expires, or until you revoke "mc17, the client of devyonq-mc" 
 under Connect AI agent in DevyonQ.
 
+**Your Missions in DevyonQ.** `mc-cre-mission-v17` records each new Mission on a DevyonQ project too, so DevyonQ
+shows it with its status, and shares its collection with the Mission's four authorities in CanonQ. `mc17 mission projects` lists the projects on which you may record a Mission: those where
+you are the Project Manager, and those where you are on the team and may hold the Business Owner role, for a Mission
+whose Business Owner you are. To record a Mission made before, run
+`mc17 mission register --project <project id> --manifest <Manifest asset id>`. Run again, it brings the Mission's
+authorities in DevyonQ in line with the Manifest. It refuses an authority who is not on the project's team, or whose
+role on the team does not admit the role, and names the role and the person.
+
 `client/mc17 version` prints the plugin's version, the contract the client carries and the DevyonQ it is signed in to,
 and sends nothing.
 

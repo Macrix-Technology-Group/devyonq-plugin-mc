@@ -3,7 +3,7 @@
   "source": {
     "repository": "devyonq-saas",
     "path": "src/devyonq/server/harness",
-    "commit": "33c46dde7ebdaa8bd8610895475c3c02170e6331"
+    "commit": "4f58e5db8997f97e4fd34df91103e548644b472f"
   },
   "global": [
     "--json",
@@ -54,6 +54,35 @@
       ],
       "usage": [
         "collection create --title <title> [--category <category>] [--json]"
+      ]
+    },
+    "mission": {
+      "flags": [],
+      "usage": []
+    },
+    "mission projects": {
+      "flags": [
+        "--json",
+        "--project"
+      ],
+      "usage": [
+        "mission projects [--project <project id>] [--json]"
+      ]
+    },
+    "mission register": {
+      "flags": [
+        "--ao",
+        "--bo",
+        "--collection",
+        "--factory",
+        "--json",
+        "--manifest",
+        "--mo",
+        "--project",
+        "--to"
+      ],
+      "usage": [
+        "mission register --project <project id> --manifest <Manifest asset id> [--factory <Factory id>] [--collection <collection id>] [--bo <address>] [--to <address>] [--mo <address>] [--ao <address>] [--json]"
       ]
     },
     "accept": {

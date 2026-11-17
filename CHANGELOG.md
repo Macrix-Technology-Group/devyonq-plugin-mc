@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.2.8 - 2026-11-17
+
+- **A new Mission is recorded in DevyonQ.** `mc-cre-mission-v17` asks for the DevyonQ project with the authorities,
+  offers each role the project members who may hold it, asks for the Factory where the project links several, and at
+  its end runs `mc17 mission register`: the Mission stands in the project with its four authorities, its ledger and its
+  status, and its CanonQ collection is shared with the Mission's group. A refusal leaves the CanonQ Mission as created,
+  and the report names the command to run again.
+- **Two new commands.** `mc17 mission projects` lists the projects where you may record a Mission, and
+  `mc17 mission register` records a Mission made earlier; run again, it brings the DevyonQ owners in line with the
+  Manifest. Both need the DevyonQ release of 2026-11-17, which serves the client's contract copy.
+
 ## 0.2.7 - 2026-11-16
 
 - **The plugin works when installed on Windows.** The plugin's repository now tells git to convert no line ending, so
