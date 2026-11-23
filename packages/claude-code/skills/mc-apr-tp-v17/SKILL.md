@@ -35,6 +35,23 @@ The `advisory` lines the command prints, open entries whose severity stands belo
 
 Run before the interview, under Definition Section 12 as amended by IP-MC17-012 L10-B. Its five states are acted on exactly as `mc-apr-spec-v17` writes them: where no record of any kind names the TP (`unknown`, exit 1), the title in the command is wrong, because Step 1 read the verification record a moment ago, so correct it and run again; where no review names the TP (`none`, exit 0), the authority is told at the interview's opening that `mc-adv-review-v17 review TP-{SCOPE}-{tpnum}` is how one is ordered and the answer is recorded verbatim in the record's body; where a review names it and a work-order item stands open, which is any disposition outside `applied`, `argued` and `ruled-away`, a dispatched entry naming a record the ledger does not hold, one carrying verdict FAIL, or one naming the entry's review in neither its refs nor its body, or one naming a record that does not follow the review record, except a `ruled-away` entry citing the approving authority's triage record where the Manifest's `review.triage-before-obligation` reads on as it stood at the review record's number, or a kind `review` record carrying no work order at all (`open`, exit 1), the approval REFUSES before any interview, prints the verb's output, names every open item and the dispatch step of `mc-adv-review-v17` as the repair, and stops with no record and no stamp; the `prose` and `dispatched` states (exit 0) proceed with the body and evidence that skill names; and a `note` line naming a review older than the TP's last verification goes to the authority in the interview's opening, because the verb carries no binding and the review's currency is the authority's to judge.
 
+## Writing a ledger record
+
+**Write the record file with the file tool, and let `mc17 append` put each output into it.** Save each command's output in a file of its own, as `mc17 fields ip {asset id} > fields.txt`. In the record, give that output as an evidence entry naming the file, `{"command": "mc17 fields ip {asset id}", "outputFile": "fields.txt"}`, and name every such file in the append:
+
+```bash
+mc17 append {ledger_asset_id} --record record.json --evidence fields.txt,binding.txt --json
+```
+
+- **Why:** a script that reads a file Windows PowerShell 5.1 wrote, which is UTF-16, as UTF-8 puts NUL characters into the record, and the ledger keeps them. `mc17 append` reads each `--evidence` file in UTF-8 or UTF-16 and puts its text in word for word, and it refuses, before the send, a record that holds a NUL or the character U+FFFD.
+- **The time:** leave `at` out of the record; the command writes the time of the append.
+- **The number:** take the record's number from the field `n` of the `--json` answer, never from a pattern matched over the output.
+- **No script builds the record.** The record is one JSON file written with the file tool, its body a string with `\n` between its lines.
+
+**Read each `mc17` output whole.** A filter such as `Select-String -NotMatch` or `grep -v` over the output hides the lines written for you, and a `Changed:` line of `mc17 plain` is the line most often lost that way.
+
+**One `mc17` command per shell call**, with nothing chained before or after it and no variable holding the launcher's path, so the person reads each command whole at its approval. A redirection of its output into a file, `> fields.txt`, belongs to the command. Write every other file with the file tool.
+
 ## Rules this skill cannot check
 
 - Whether the verification strategy fits the Move's risk: the whole point of the interview.

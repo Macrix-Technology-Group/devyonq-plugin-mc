@@ -59,6 +59,23 @@ Answers: `{SCOPE, seq, ao_string, parent_mission, parent_state, parent_arch, sum
 
 Ids and hashes as printed; the defect record number; the reproduction in full; the state of the parent; what comes next in order: `mc-vf-ip-v17` on the plan, `mc-apr-ip-v17` with the repair ruling (what is deferred, and by when, into the register), one sanctioned stage with the review gate whole (`mc-cre-wave-v17` where the repair needs more than one stage), the reproduction's PASS record at the landed sha, then the `RESOLVED {n}` record, which closes the Repair Move.
 
+## Writing a ledger record
+
+**Write the record file with the file tool, and let `mc17 append` put each output into it.** Save each command's output in a file of its own, as `mc17 fields ip {asset id} > fields.txt`. In the record, give that output as an evidence entry naming the file, `{"command": "mc17 fields ip {asset id}", "outputFile": "fields.txt"}`, and name every such file in the append:
+
+```bash
+mc17 append {ledger_asset_id} --record record.json --evidence fields.txt,binding.txt --json
+```
+
+- **Why:** a script that reads a file Windows PowerShell 5.1 wrote, which is UTF-16, as UTF-8 puts NUL characters into the record, and the ledger keeps them. `mc17 append` reads each `--evidence` file in UTF-8 or UTF-16 and puts its text in word for word, and it refuses, before the send, a record that holds a NUL or the character U+FFFD.
+- **The time:** leave `at` out of the record; the command writes the time of the append.
+- **The number:** take the record's number from the field `n` of the `--json` answer, never from a pattern matched over the output.
+- **No script builds the record.** The record is one JSON file written with the file tool, its body a string with `\n` between its lines.
+
+**Read each `mc17` output whole.** A filter such as `Select-String -NotMatch` or `grep -v` over the output hides the lines written for you, and a `Changed:` line of `mc17 plain` is the line most often lost that way.
+
+**One `mc17` command per shell call**, with nothing chained before or after it and no variable holding the launcher's path, so the person reads each command whole at its approval. A redirection of its output into a file, `> fields.txt`, belongs to the command. Write every other file with the file tool.
+
 ## Rules this skill cannot check
 
 - Whether the defect is a defect: the authority who raised it, and the disposition is his.

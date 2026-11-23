@@ -7,7 +7,7 @@ runs differently from Claude Code.
 ## What this plugin is
 
 This is the GitHub Copilot package of `devyonq-mc`, one Agent Plugins 1.0 package that both clients read. It holds the
-same skills, the same gate hooks and the same client `mc17` as the Claude Code package, built from one source, and one
+same skills, the same gate hooks and the same client `mc17` as the Claude Code package, and one
 custom agent of its own. The harness itself runs in DevyonQ. Every skill and every hook calls the client, and the client
 sends each command to the harness gateway of your DevyonQ tenant, under the sign-in it keeps on your computer. The
 harness reads and writes the Mission's documents in CanonQ and answers the client.
@@ -105,6 +105,31 @@ starts a hook file's entries one after another.
 Each part keeps its own lines and its own hook record, and a part whose read fails names that in its own record while
 the others arrive. The entry's time limit is 15 seconds. `node <the plugin's folder>/hooks/mc17-node.js settings
 --measure` runs the entry as each client runs it and prints the record of each part.
+
+## Fewer approval prompts
+
+Copilot asks you to approve each shell command it runs, unless a rule you gave allows it. The skills run each `mc17`
+command as a shell call of its own, with nothing chained to it, so one rule can cover them all:
+
+1. Put the plugin's `client` folder on your PATH, so the commands read `mc17 ...`. In PowerShell, for the current user:
+
+   ```
+   $user = [Environment]::GetEnvironmentVariable('Path', 'User')
+   [Environment]::SetEnvironmentVariable('Path', "$user;$HOME\.copilot\installed-plugins\devyonq-mc\devyonq-mc\client", 'User')
+   ```
+
+   Open a new terminal afterwards, and check with `Get-Command mc17`.
+2. Start Copilot with a rule that allows `mc17` and nothing else:
+
+   ```
+   copilot --allow-tool='shell(mc17:*)'
+   ```
+
+   The rule holds for that session only. Do not put it into a shell alias: an alias grants it at every start.
+
+Where a prompt still appears, read the program name it shows. A line that chains commands, or that calls the launcher
+through a variable or behind `&`, carries no single program name, and no rule matches it; tell the agent to run the
+`mc17` command on its own.
 
 ## Waves run by hand
 

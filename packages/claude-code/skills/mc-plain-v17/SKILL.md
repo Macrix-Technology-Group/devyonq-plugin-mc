@@ -31,6 +31,8 @@ Say what the rewrite may touch. It may touch every sentence the author wrote. It
 
 **The Change Log row, which the calling skill writes before the pass.** Before the pass, the calling skill writes the Change Log row of this write: the draft, the CanonQ version the write creates, the parts the write changes by name, and the ledger records. The version is 1 for a create; for an amend it is the current version `mc17 versions <asset id>` prints, plus one. The calling skill then runs `mc17 lintdoc -f <draft.md>`, deletes each line the lint names under `history-prose`, and corrects the row where the lint names a cell.
 
+**What a cell of the row holds.** The draft cell and the what-changed cell hold names alone: each item between commas holds at most six words and no change word, such as `changed`, `moved`, `added` or `removed`. `Runtime, Test Strategy, TC-7` passes. `the runtime change to Node.js 24` is refused, because the item holds seven words. No cell of the row holds a sentence.
+
 ## Step 2 - The rewriting agent, in a separate context
 
 Spawn one agent in a context that wrote none of the draft: a fresh subagent with no memory of the author's session. The author never rewrites its own text through this skill. Hand the agent the draft file, the Reader line, the path of `harness/TERMS.json`, the path of the plugin's folder, the template the document was rendered from where one exists, which `mc17 render <kind>` reads in the engine, and the brief below, whole. For an amend under `--jargon`, the draft is the whole composed body, which `mc17 amend --dry --out <body.md>` writes from the edits.
@@ -51,7 +53,7 @@ Every path in the agent's prompt must stand outside a worktree that is checked o
 - every identifier outside backticks, such as AC-8, T-5, TC-R1, IA-3, D21 or IP-MC171-016, and every record number and every number written in digits;
 - every heading, with its words and in the same order, and no heading added;
 - every fenced block, whole, whether fenced with backticks or with tildes;
-- every row of a table; every Test Plan entry, a list line that opens with a case id such as `- **T-61**`, `- TC-R1` or a backticked id, with the indented lines under it; the line `**Radius claimed:**`; the line `Cases assigned to the integration stage:`; and the lines `**Status:**`, `**Reader:**`, `**AO:**` and `**Move type:**`, each word for word;
+- every row of a table; every Test Plan entry, a list line that opens with a case id such as `- **T-61**`, `- TC-R1` or a backticked id, with the indented lines under it; the line `**Radius claimed:**`; the line `Cases assigned to the integration stage:`; the lines `**Status:**`, `**Reader:**`, `**AO:**` and `**Move type:**`; and every line of a field written as not applicable, such as `Not applicable: this Mission's waves run by hand.` or `- **The merge bar:** N/A, ...`, each word for word, because a verification reads those words as written;
 - in a Wave Plan's section Stage prompts, every part label line, such as `- **Rules:**`, `- **Build:**`, `- **Review:**`, ``- **Lens `plan`:**`` or `- **Rereview:**`, and the line that opens `Rendered:`, each word for word;
 - every paragraph that carries `**Stopped` or `**Started`, with that word and the names in backticks inside it. You may reword the rest of such a paragraph.
 
@@ -83,7 +85,7 @@ Every path in the agent's prompt must stand outside a worktree that is checked o
 
 Take the rules and leave the two personas' document structures: the Mission's template holds the structure. Write no dashes longer than a hyphen, no metaphors and no slogans.
 
-**The plugin's words.** `TERMS.json` says what each word of this plugin refers to and where it stands in the code: gate, verb, stand-in, binding, pin, break, drill, red run, ledger, stage and others. A word with several meanings carries each one. The file gives you no replacement words. Which words fit depends on the sentence and on the reader, and you choose them there. Write your own words first and the plugin's word after them where the reader must be able to find the thing.
+**The plugin's words.** `TERMS.json`, which you read with `cat`, `grep`, `Get-Content` or `Select-String`, says what each word of this plugin refers to and where it stands in the code: gate, verb, stand-in, binding, pin, break, drill, red run, ledger, stage and others. A word with several meanings carries each one. The file gives you no replacement words. Which words fit depends on the sentence and on the reader, and you choose them there. Write your own words first and the plugin's word after them where the reader must be able to find the thing.
 
 **Reading the code, within a limit.** Where `TERMS.json` is silent on a word, or you are unsure and a wrong meaning would change what the sentence tells the reader, read the code. Read the copy of the plugin in the folder you were given. Start from the file and line the draft cites, or from the place the entry names. Read that function and never a whole file; `mc17` alone is about 110,000 tokens. Look up five words at most in one document. Guess no meaning: a word you still doubt after that goes into your list, and the sentence keeps the plugin's word in backticks.
 
@@ -99,6 +101,8 @@ mc17 plain --draft <draft.md> --pass <rewrite.md> --out <proof.json>
 
 Exit 0 means the rewrite kept everything a program reads, and the proof file names the draft and the rewrite by their hashes. Exit 1 names each thing the rewrite dropped, with the line of the draft it stood on, and each heading that moved; no proof is written. A rewrite that is its draft word for word is refused too, because no rewrite happened. The command judges no sentence. Whether the rewrite reads well is the reader's judgment.
 
+**Read the output whole.** Read every line `mc17 plain` prints, unfiltered: a `CHANGED` line or a `Changed:` line names a figure the rewrite changed, and a filter such as `Select-String -NotMatch` or `grep -v` drops exactly those lines.
+
 **The passes.** The calling skill runs as many passes as `documents.plain-passes` asks, one by default: one rewrite per pass, each over the rewrite before it. The calling skill runs `mc17 plain` once per pass, and from the second pass on adds `--prior <proof.json>`, the proof of the pass before:
 
 ```
@@ -109,9 +113,9 @@ Where the wave's ruled plan sets `documents.plain-passes`, the calling skill add
 
 ## Step 4 - One retry, then refuse
 
-On exit 1, hand the agent the command's output once, with the dropped things named, and ask for the same rewrite with those things restored. Run the check again. On a second exit 1 this skill refuses: report the output, send nothing, and leave the draft as it was. A third try would be the author and the agent wearing the check down.
+On exit 1, start the rewriting agent once more, in a fresh context as Step 2 starts it, and hand it in one prompt the draft, its first rewrite, and the command's output with the dropped things named; ask for the same rewrite with those things restored. **Start a new agent; never send a second message to the first one.** A host such as Copilot returns a subagent once and takes no message after it, so a retry that waits on a follow-up never runs there. Run the check again. On a second exit 1 this skill refuses: report the output, send nothing, and leave the draft as it was. A third try would be the author and the agent wearing the check down.
 
-A line reading `CHANGED` names a figure the rewrite changed: a number, a record, a version, a date or a hash. The command exits 0 and lists it in the proof, and `mc17 create` and `mc17 amend --jargon` refuse that proof. The calling skill hands each `CHANGED` line back to the agent, as it hands back a dropped thing, and asks for the draft's figure; the same one retry holds.
+A line reading `CHANGED` names a figure the rewrite changed: a number, a record, a version, a date or a hash. The command exits 0 and lists it in the proof, and `mc17 create` and `mc17 amend --jargon` refuse that proof. The calling skill hands each `CHANGED` line to a new agent with the draft and the first rewrite, as it hands over a dropped thing, and asks for the draft's figure; the same one retry holds.
 
 ## Step 5 - Hand back
 
@@ -120,13 +124,18 @@ Return to the calling skill: the path of the rewrite, the path of the proof, and
 ```
 mc17 create --title {TITLE} --collection {id} --file <rewrite.md> --plain <proof.json> --manifest {manifest_asset_id} --ledger {ledger_asset_id} ...
 mc17 amend {asset_id} --edits <edits.json> --class artifact --expect-binding moved --jargon --plain <proof.json> --manifest {manifest_asset_id} --ledger {ledger_asset_id}
+mc17 amend {asset_id} --body <rewrite.md> --class artifact --expect-binding moved --jargon --plain <proof.json> --manifest {manifest_asset_id} --ledger {ledger_asset_id}
 ```
+
+**Send the rewrite whole with `--body`.** The second amend line sends the rewrite as the whole body, so no session builds edits from it; every guard an edit meets still holds, the hash of the proof among them. Anchored edits remain for a write that changes a few lines.
 
 Where the wave's ruled plan sets `documents.plain-passes`, both send lines add `--plan {plan_asset_id}`, so the command compares the passes the proof records with the plan's row; without it the command reads the Manifest's row, or the default of one pass. Both commands refuse a send that names `--ledger` and no `--manifest`, because the Manifest's rows bind only where the call names both.
 
 Before the send, run the same `amend` with `--dry`: it composes the edits, runs the writing lint over the whole composed body, the stored text included, names every hit by line and rule, and sends nothing. A hit on a line the edits did not touch stands in the stored text; repair it in the same edits file.
 
-For an amend under `--jargon`, the draft and the rewrite are the whole body as it will stand after the edits, and the edits must compose exactly the rewrite: the command compares the hash of the composed body with the hash the proof names, and refuses where they differ. A proof taken over the body before the edit proves nothing about the body after it.
+**The sections, before the send.** For a class with a field table, which are `arch`, `ip`, `spec`, `tp`, `apr`, `ir` and `wave-plan`, run `mc17 fields ip -f <rewrite.md>`, with the document's class in place of `ip`, and confirm every section the class needs still stands in the rewrite. The file goes under `-f`: a bare file name is read as an asset id. A Manifest has no field table; `mc17 plain` has already confirmed that every heading stands in the same order.
+
+For an amend under `--jargon`, the draft and the rewrite are the whole body as it will stand after the write, and the edits, or the body `--body` names, must compose exactly the rewrite: the command compares the hash of the composed body with the hash the proof names, and refuses where they differ. A proof taken over the body before the edit proves nothing about the body after it.
 
 **The verification owed.** Where `mc17 amend` printed `VERIFICATION OWED NOW: {skill}` as its last line, run that skill over the document before this skill reports, and the calling skill reports after it; a line `NO VERIFIER: {class}` owes nothing.
 

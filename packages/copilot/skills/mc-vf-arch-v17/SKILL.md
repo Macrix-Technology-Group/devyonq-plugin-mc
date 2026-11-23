@@ -74,7 +74,7 @@ The rows this skill judges, none softened by any mode:
 
 ## Step 4 - The record, then the stamp
 
-Verdict PASS or FAIL from the dispositions; BLOCKED was settled at Step 1. Append one `verification` record with `mc17 append {ledger_asset_id} --record <record.json>`, the record written to a file first: `refs` leading with the ARCH, then the SPEC, then the Manifest; `evidence` carrying the three command outputs verbatim; the body naming corpus, binding with projection id, findings, owed runs on a FAIL, judgments. The record's body carries the line `Verified: {document id} version {n}, binding sha256:{hex} (projection {id})`, on a line of its own: the document id `ARCH-{SCOPE}-{archnum}`, `{n}` the current version `versions` printed, and `{hex}` and `{id}` the figure and the projection `binding --class artifact` printed. `mc17 published` reads it when an authority reads the document. The command sends the record without a number, reads it back once by its mark and prints the number the platform gave; name that number and no other.
+Verdict PASS or FAIL from the dispositions; BLOCKED was settled at Step 1. Append one `verification` record with `mc17 append {ledger_asset_id} --record <record.json>`, the record written to a file first as *Writing a ledger record* says: `refs` leading with the ARCH, then the SPEC, then the Manifest; `evidence` carrying the three command outputs verbatim; the body naming corpus, binding with projection id, findings, owed runs on a FAIL, judgments. The record's body carries the line `Verified: {document id} version {n}, binding sha256:{hex} (projection {id})`, on a line of its own: the document id `ARCH-{SCOPE}-{archnum}`, `{n}` the current version `versions` printed, and `{hex}` and `{id}` the figure and the projection `binding --class artifact` printed. `mc17 published` reads it when an authority reads the document. The command sends the record without a number, reads it back once by its mark and prints the number the platform gave; name that number and no other.
 
 **On PASS**, one guarded edit writes the stamp and the header word, both live state:
 
@@ -87,6 +87,25 @@ Before the send, run the same `amend` with `--dry`: it composes the edits, runs 
 The edits replace the VF Stamp block's lines, which carry `**Binding:** sha256:{hex} (projection mc-v17-artifact-text-projection/1)` beside Status, Last verified and Record, and the status line's word; the guard proves the write moved nothing, which is what makes stamping a just-bound artifact lawful. **On FAIL, stamp nothing and edit no status line**; the record is the whole act.
 
 **The verification owed.** Where `mc17 amend` printed `VERIFICATION OWED NOW: {skill}` as its last line, run that skill over the document before this skill reports: the stamp is a live-state write and owes none; a line `NO VERIFIER: {class}` owes nothing.
+
+**A runtime version the document states.** Where the document states the version of a runtime or a tool the build runs on, such as Node.js, Python or .NET, run that program's version command on the session's machine, as `node --version`, and compare. Where the two differ, ask the person which one holds before the document is written or passed, even where a ruling named the version: a ruling names what was true when it was given, and a document that states another version than the machine runs leads every later act astray. The answer goes into the record.
+
+## Writing a ledger record
+
+**Write the record file with the file tool, and let `mc17 append` put each output into it.** Save each command's output in a file of its own, as `mc17 fields ip {asset id} > fields.txt`. In the record, give that output as an evidence entry naming the file, `{"command": "mc17 fields ip {asset id}", "outputFile": "fields.txt"}`, and name every such file in the append:
+
+```bash
+mc17 append {ledger_asset_id} --record record.json --evidence fields.txt,binding.txt --json
+```
+
+- **Why:** a script that reads a file Windows PowerShell 5.1 wrote, which is UTF-16, as UTF-8 puts NUL characters into the record, and the ledger keeps them. `mc17 append` reads each `--evidence` file in UTF-8 or UTF-16 and puts its text in word for word, and it refuses, before the send, a record that holds a NUL or the character U+FFFD.
+- **The time:** leave `at` out of the record; the command writes the time of the append.
+- **The number:** take the record's number from the field `n` of the `--json` answer, never from a pattern matched over the output.
+- **No script builds the record.** The record is one JSON file written with the file tool, its body a string with `\n` between its lines.
+
+**Read each `mc17` output whole.** A filter such as `Select-String -NotMatch` or `grep -v` over the output hides the lines written for you, and a `Changed:` line of `mc17 plain` is the line most often lost that way.
+
+**One `mc17` command per shell call.** Run the launcher with its command and flags and nothing else on the line: no `;`, `&&` or pipe joining it to another command, a change of folder, `Set-Location`, in a call of its own, and no variable holding the launcher's path. Where `Get-Command mc17` finds the launcher on the PATH, call it as `mc17`; otherwise call it by its full path, without quotes and without `&` where the path holds no space. A redirection of its output into a file, `> fields.txt`, belongs to the command. Copilot asks the person to approve each shell call it cannot match to one program, and a chained line, a launcher in a variable or a path behind `&` is such a call every time. Write every file with the file tool, never with `Out-File`, `Set-Content` or `Tee-Object`.
 
 ## Rules this skill cannot check
 

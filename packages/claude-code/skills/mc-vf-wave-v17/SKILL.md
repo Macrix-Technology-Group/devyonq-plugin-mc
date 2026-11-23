@@ -61,7 +61,24 @@ A Wave Plan is gated by design, one plan per ruling, so nothing here is softened
 
 ## Step 3 - The record, then the stamp
 
-Append one `verification` record with `mc17 append {ledger_asset_id} --record <record.json>`, the record written to a file first: `refs` leading with the plan, evidence carrying the four command outputs verbatim; on a trial-pinned Mission the trial sentence rides along as everywhere. Take the number the command prints. The record's body carries the line `Verified: {document id} version {n}, binding sha256:{hex} (projection {id})`, on a line of its own: the document id `WAVE-PLAN-{SCOPE}-{seq}`, `{n}` the current version `versions` printed, and `{hex}` and `{id}` the figure and the projection `binding --class artifact` printed. `mc17 published` reads it when an authority reads the document. **On PASS**, one guarded amend writes the plan's VF Stamp block, `--expect-binding unmoved`, with the line `**Binding:** sha256:{hex} (projection mc-v17-artifact-text-projection/1)` beside Status, Last verified and Record, the figure the `binding --class artifact` read of Step 1 printed. **On FAIL, stamp nothing.**
+Append one `verification` record with `mc17 append {ledger_asset_id} --record <record.json>`, the record written to a file first as *Writing a ledger record* says: `refs` leading with the plan, evidence carrying the four command outputs verbatim; on a trial-pinned Mission the trial sentence rides along as everywhere. Take the number the command prints. The record's body carries the line `Verified: {document id} version {n}, binding sha256:{hex} (projection {id})`, on a line of its own: the document id `WAVE-PLAN-{SCOPE}-{seq}`, `{n}` the current version `versions` printed, and `{hex}` and `{id}` the figure and the projection `binding --class artifact` printed. `mc17 published` reads it when an authority reads the document. **On PASS**, one guarded amend writes the plan's VF Stamp block, `--expect-binding unmoved`, with the line `**Binding:** sha256:{hex} (projection mc-v17-artifact-text-projection/1)` beside Status, Last verified and Record, the figure the `binding --class artifact` read of Step 1 printed. **On FAIL, stamp nothing.**
+
+## Writing a ledger record
+
+**Write the record file with the file tool, and let `mc17 append` put each output into it.** Save each command's output in a file of its own, as `mc17 fields ip {asset id} > fields.txt`. In the record, give that output as an evidence entry naming the file, `{"command": "mc17 fields ip {asset id}", "outputFile": "fields.txt"}`, and name every such file in the append:
+
+```bash
+mc17 append {ledger_asset_id} --record record.json --evidence fields.txt,binding.txt --json
+```
+
+- **Why:** a script that reads a file Windows PowerShell 5.1 wrote, which is UTF-16, as UTF-8 puts NUL characters into the record, and the ledger keeps them. `mc17 append` reads each `--evidence` file in UTF-8 or UTF-16 and puts its text in word for word, and it refuses, before the send, a record that holds a NUL or the character U+FFFD.
+- **The time:** leave `at` out of the record; the command writes the time of the append.
+- **The number:** take the record's number from the field `n` of the `--json` answer, never from a pattern matched over the output.
+- **No script builds the record.** The record is one JSON file written with the file tool, its body a string with `\n` between its lines.
+
+**Read each `mc17` output whole.** A filter such as `Select-String -NotMatch` or `grep -v` over the output hides the lines written for you, and a `Changed:` line of `mc17 plain` is the line most often lost that way.
+
+**One `mc17` command per shell call**, with nothing chained before or after it and no variable holding the launcher's path, so the person reads each command whole at its approval. A redirection of its output into a file, `> fields.txt`, belongs to the command. Write every other file with the file tool.
 
 ## Rules this skill cannot check
 

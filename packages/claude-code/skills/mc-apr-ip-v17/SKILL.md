@@ -81,10 +81,27 @@ The command fetches the IP by its asset id and proves that the version on the pa
 
 ## Step 3 - The record, the id, the stamps
 
-1. **The ledger record**, appended with `mc17 append {ledger_asset_id} --record <record.json>`, the record written to a file first: kind `approval`, verdict mapped (`Rejected` is FAIL, both others PASS), `refs` leading with the IP, `authorityWords` verbatim, evidence carrying the radius-gate output, the binding, the Step 1b `reviewed` output and the Step 1c `published` output; the body carrying the `Read:` line Step 1c printed, and the authority's answer verbatim where Step 1b answered `none`, and the review records named where it answered `prose`. Take the number the command prints.
+1. **The ledger record**, appended with `mc17 append {ledger_asset_id} --record <record.json>`, the record written to a file first as *Writing a ledger record* says: kind `approval`, verdict mapped (`Rejected` is FAIL, both others PASS), `refs` leading with the IP, `authorityWords` verbatim, evidence carrying the radius-gate output, the binding, the Step 1b `reviewed` output and the Step 1c `published` output; the body carrying the `Read:` line Step 1c printed, and the authority's answer verbatim where Step 1b answered `none`, and the review records named where it answered `prose`. Take the number the command prints.
 2. **The id**: `mc17 aprid --scheme {declared} --scope {SCOPE} --authority {role} --artifact IP-{ipnum}` (sequence-keyed adds `--seq`).
 3. **The stamps, all live state, all guarded `--expect-binding unmoved`**: the Approvals entry on the IP from `mc17 aprentry`, and the Manifest row's Status and Approvals cells (`Approved, {date}, record {n}` and the entry). The same live-state write removes every entry at a binding other than the one this approval names, and adds their records to the line `Earlier approvals: ledger records {a}, {b}.`, which stands in the section in their place; `mc17 check` names each such entry as stale. The approval act writes no status line and nothing declarative; the guard enforces the boundary.
 4. **Promotion, where ruled**: `mc17 create --render apr` with `--type APR --authority A1 --lifecycle current`; the words stay in the ledger, the document cites the record. `mc17 create` refuses a governed title without proof of the plain-language pass (`AC-24`). So render the APR to a file first, run the skill `mc-plain-v17` over it, and create with `--file <rewrite.md> --plain <proof.json>` in the place of `--render apr`.
+
+## Writing a ledger record
+
+**Write the record file with the file tool, and let `mc17 append` put each output into it.** Save each command's output in a file of its own, as `mc17 fields ip {asset id} > fields.txt`. In the record, give that output as an evidence entry naming the file, `{"command": "mc17 fields ip {asset id}", "outputFile": "fields.txt"}`, and name every such file in the append:
+
+```bash
+mc17 append {ledger_asset_id} --record record.json --evidence fields.txt,binding.txt --json
+```
+
+- **Why:** a script that reads a file Windows PowerShell 5.1 wrote, which is UTF-16, as UTF-8 puts NUL characters into the record, and the ledger keeps them. `mc17 append` reads each `--evidence` file in UTF-8 or UTF-16 and puts its text in word for word, and it refuses, before the send, a record that holds a NUL or the character U+FFFD.
+- **The time:** leave `at` out of the record; the command writes the time of the append.
+- **The number:** take the record's number from the field `n` of the `--json` answer, never from a pattern matched over the output.
+- **No script builds the record.** The record is one JSON file written with the file tool, its body a string with `\n` between its lines.
+
+**Read each `mc17` output whole.** A filter such as `Select-String -NotMatch` or `grep -v` over the output hides the lines written for you, and a `Changed:` line of `mc17 plain` is the line most often lost that way.
+
+**One `mc17` command per shell call**, with nothing chained before or after it and no variable holding the launcher's path, so the person reads each command whole at its approval. A redirection of its output into a file, `> fields.txt`, belongs to the command. Write every other file with the file tool.
 
 ## Rules this skill cannot check
 

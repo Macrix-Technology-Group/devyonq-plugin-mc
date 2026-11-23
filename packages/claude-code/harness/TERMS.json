@@ -796,7 +796,7 @@
       "meanings": [
         {
           "what": "A ledger whose `$schema` names the asset `ledger-hybrid-v2.schema` and whose top level holds `version2From`, the number of the first record written under version 2. Every record from that number on names who wrote it down in `recordedBy`, and who spoke each passage of its `authorityWords` in `spokenBy`; the records before it keep the version 1 form. `mc17 ledger <ledger> --declare 2 --schema <asset id>` moves a ledger to version 2 in one write, and `mc17 ledger` prints the version.",
-          "where": "harness/mc17/ledger.js, declarationOf, ledgerDeclaration, declarePatch and COMMANDS.ledger; harness/fixtures/ledger-hybrid-v2.schema.json"
+          "where": "harness/mc17/ledger.js, declarationOf, ledgerDeclaration, declarePatch and COMMANDS.ledger; the asset `ledger-hybrid-v2.schema` each CanonQ instance holds"
         }
       ]
     },
@@ -805,7 +805,7 @@
       "meanings": [
         {
           "what": "One of the two marks CanonQ reads in the two ledger schemas once a CanonQ instance pins a ledger schema that carries both keywords: `x-canonq-ledger: true` on the records array, which tells CanonQ which array holds a ledger's records, and `x-canonq-actor`, an object property of a record and of a work-order entry, where CanonQ then writes who appended the record or dispatched the entry, and through which door. No command of this plugin adds `x-canonq-actor`, and a ledger whose bound asset holds either text refuses one that is no object.",
-          "where": "harness/fixtures/ledger-hybrid-v1.schema.json and harness/fixtures/ledger-hybrid-v2.schema.json; read by CanonQ's QApp token grant once a CanonQ instance pins a ledger schema that carries both keywords, IP-CQ-QAPP-002 C14 and C17"
+          "where": "the assets `ledger-hybrid-v1.schema` and `ledger-hybrid-v2.schema` each CanonQ instance holds, uploaded and pinned by its admin; read by CanonQ's QApp token grant once a CanonQ instance pins a ledger schema that carries both keywords, IP-CQ-QAPP-002 C14 and C17"
         }
       ]
     },

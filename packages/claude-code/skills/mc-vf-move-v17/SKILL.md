@@ -51,7 +51,24 @@ Read the Manifest's numbered closure conditions and, for each, say from the reco
 
 ## Step 3 - The verdict and the record
 
-PASS where every artifact stands verified and approved as the conditions require and nothing in the sweep contradicts a record; FAIL otherwise, with every gap named and the repair route beside it. Append one record with `mc17 append {ledger_asset_id} --record <record.json>`, the record written to a file first: kind `verification`, `refs` leading with the Manifest and then every artifact swept, a document of another Mission named in the body and in no ref, evidence carrying the command outputs verbatim, the body opening with the sentence a Business Owner acts on: what stands ready, what does not, and what closing now would mean. **This record is the Move Acceptance record closure condition 2 reads.**
+PASS where every artifact stands verified and approved as the conditions require and nothing in the sweep contradicts a record; FAIL otherwise, with every gap named and the repair route beside it. Append one record with `mc17 append {ledger_asset_id} --record <record.json>`, the record written to a file first as *Writing a ledger record* says: kind `verification`, `refs` leading with the Manifest and then every artifact swept, a document of another Mission named in the body and in no ref, evidence carrying the command outputs verbatim, the body opening with the sentence a Business Owner acts on: what stands ready, what does not, and what closing now would mean. **This record is the Move Acceptance record closure condition 2 reads.**
+
+## Writing a ledger record
+
+**Write the record file with the file tool, and let `mc17 append` put each output into it.** Save each command's output in a file of its own, as `mc17 fields ip {asset id} > fields.txt`. In the record, give that output as an evidence entry naming the file, `{"command": "mc17 fields ip {asset id}", "outputFile": "fields.txt"}`, and name every such file in the append:
+
+```bash
+mc17 append {ledger_asset_id} --record record.json --evidence fields.txt,binding.txt --json
+```
+
+- **Why:** a script that reads a file Windows PowerShell 5.1 wrote, which is UTF-16, as UTF-8 puts NUL characters into the record, and the ledger keeps them. `mc17 append` reads each `--evidence` file in UTF-8 or UTF-16 and puts its text in word for word, and it refuses, before the send, a record that holds a NUL or the character U+FFFD.
+- **The time:** leave `at` out of the record; the command writes the time of the append.
+- **The number:** take the record's number from the field `n` of the `--json` answer, never from a pattern matched over the output.
+- **No script builds the record.** The record is one JSON file written with the file tool, its body a string with `\n` between its lines.
+
+**Read each `mc17` output whole.** A filter such as `Select-String -NotMatch` or `grep -v` over the output hides the lines written for you, and a `Changed:` line of `mc17 plain` is the line most often lost that way.
+
+**One `mc17` command per shell call**, with nothing chained before or after it and no variable holding the launcher's path, so the person reads each command whole at its approval. A redirection of its output into a file, `> fields.txt`, belongs to the command. Write every other file with the file tool.
 
 ## Rules this skill cannot check
 

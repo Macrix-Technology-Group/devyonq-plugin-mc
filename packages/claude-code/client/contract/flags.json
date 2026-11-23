@@ -3,7 +3,7 @@
   "source": {
     "repository": "devyonq-saas",
     "path": "src/devyonq/server/harness",
-    "commit": "4f58e5db8997f97e4fd34df91103e548644b472f"
+    "commit": "010a1b38f6f3e1f7c7a0cb66ae11f90cb83039e7"
   },
   "global": [
     "--json",
@@ -33,13 +33,14 @@
         "--domains",
         "--file",
         "--json",
+        "--ledger-schema",
         "--lifecycle",
         "--scope-tags",
         "--type",
         "-f"
       ],
       "usage": [
-        "upload --collection <id> -f <file> [--json]"
+        "upload --collection <id> -f <file> [--json] | mc17 upload --collection <id> --ledger-schema [--json]"
       ]
     },
     "collection": {
@@ -54,6 +55,14 @@
       ],
       "usage": [
         "collection create --title <title> [--category <category>] [--json]"
+      ]
+    },
+    "pin": {
+      "flags": [
+        "--json"
+      ],
+      "usage": [
+        "pin [--json]"
       ]
     },
     "mission": {
@@ -102,6 +111,7 @@
     },
     "amend": {
       "flags": [
+        "--body",
         "--class",
         "--dry",
         "--edits",
@@ -117,12 +127,14 @@
         "-f"
       ],
       "usage": [
-        "amend <assetId> --edits <f.json> [--class manifest|artifact] [--expect-binding unmoved|moved|any] [--jargon --plain <proof.json> | --written-by <name>] [--manifest <id>] [--ledger <id>] [--plan <id>] [--dry [--out <body.md>]]  anchored replacements, binding-guarded BEFORE the write, the writing lint over the whole composed body; a write that moves the binding brings its Change Log row, removes the approvals of the old text, and is sent on the record of the document's one rewrite, or through the door under --jargon; PATCH, prove, append the record of the write under --ledger, and end with the verification the document owes, VERIFICATION OWED NOW: {skill} or NO VERIFIER: {class}; --dry stops after the lint and sends nothing, and --dry --out writes the composed body to a file"
+        "amend <assetId> (--edits <f.json> | --body <f.md>) [--class manifest|artifact] [--expect-binding unmoved|moved|any] [--jargon --plain <proof.json> | --written-by <name>] [--manifest <id>] [--ledger <id>] [--plan <id>] [--dry [--out <body.md>]]  anchored replacements, or with --body the whole body a file holds (a plain-language rewrite), binding-guarded BEFORE the write, the writing lint over the whole composed body; a write that moves the binding brings its Change Log row, removes the approvals of the old text, and is sent on the record of the document's one rewrite, or through the door under --jargon; PATCH, prove, append the record of the write under --ledger, and end with the verification the document owes, VERIFICATION OWED NOW: {skill} or NO VERIFIER: {class}; --dry stops after the lint and sends nothing, and --dry --out writes the composed body to a file"
       ]
     },
     "append": {
       "flags": [
+        "--at",
         "--draft",
+        "--evidence",
         "--file",
         "--hand",
         "--json",
@@ -944,10 +956,11 @@
       "flags": [
         "--answers",
         "--audit",
-        "--out"
+        "--out",
+        "--skeleton"
       ],
       "usage": [
-        "render <kind> --answers <f>     resolve a template of templates/ into the document it writes"
+        "render <kind> --answers <f>     resolve a template of templates/ into the document it writes; a refusal names every key the answer set lacks at once, and a key that follows from the others (the date, the derived ID, the collapse, the SPEC and TP AO, the pin state) is filled where left out; --skeleton [--out <f.json>] prints the answer set to fill, every key null with a _guide naming where each comes from"
       ]
     },
     "reviewed": {

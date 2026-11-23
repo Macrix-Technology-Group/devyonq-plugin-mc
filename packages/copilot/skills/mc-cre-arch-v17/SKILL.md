@@ -43,6 +43,8 @@ Ask one at a time; each is answerable in one line.
 2. **The AO:** default is the Manifest's default AO, offered. An AI-AO is refused here: the ARCH is an internal artifact of an Active Mission, and the law bars an AI steward for it.
 3. **The Summary:** offer one drafted sentence from the Mission's own SPEC reference, or `defer`. A deferral takes the template's declared default, `[TBD]`, and the report names the gap and the owner.
 
+**A runtime version the document states.** Where the document states the version of a runtime or a tool the build runs on, such as Node.js, Python or .NET, run that program's version command on the session's machine, as `node --version`, and compare. Where the two differ, ask the person which one holds before the document is written or passed, even where a ruling named the version: a ruling names what was true when it was given, and a document that states another version than the machine runs leads every later act astray. The Technical Owner writes the version the person names.
+
 The work mode is read from the Manifest's Work Modes table and never asked: the ARCH row where one stands, gated otherwise, by the undeclared-class rule.
 
 ## Step 3 - Create, in one guarded act
@@ -75,11 +77,28 @@ Before the send, run the same `amend` with `--dry`: it composes the edits, runs 
 
 ## Step 5 - The ledger note, where a ledger exists
 
-Where `VF-{SCOPE}-001` exists, append one `note` record with `mc17 append {ledger_asset_id} --record <record.json>`, the record written to a file first: kind `note`, verdict `NA`, `refs` leading with the ARCH, evidence carrying the `create` output verbatim. **Where no ledger exists**, the Mission has not had its first Manifest verification; say so, write nothing, and name the note as owed on the ledger's first existence. Never create the ledger: `mc-vf-manifest-v17` owns it.
+Where `VF-{SCOPE}-001` exists, append one `note` record with `mc17 append {ledger_asset_id} --record <record.json>`, the record written to a file first as *Writing a ledger record* says: kind `note`, verdict `NA`, `refs` leading with the ARCH, evidence carrying the `create` output verbatim. **Where no ledger exists**, the Mission has not had its first Manifest verification; say so, write nothing, and name the note as owed on the ledger's first existence. Never create the ledger: `mc-vf-manifest-v17` owns it.
 
 ## Step 6 - Report
 
 Ids and hashes as the commands printed them; every `[TBD]` section named with its owner, the Technical Owner; the work mode recorded and its source; the owed next steps: the TO decides the architecture, `mc-vf-arch-v17` verifies it, `mc-apr-arch-v17` approves it, and the Modules adoption into the Manifest happens at approval, never here.
+
+## Writing a ledger record
+
+**Write the record file with the file tool, and let `mc17 append` put each output into it.** Save each command's output in a file of its own, as `mc17 fields ip {asset id} > fields.txt`. In the record, give that output as an evidence entry naming the file, `{"command": "mc17 fields ip {asset id}", "outputFile": "fields.txt"}`, and name every such file in the append:
+
+```bash
+mc17 append {ledger_asset_id} --record record.json --evidence fields.txt,binding.txt --json
+```
+
+- **Why:** a script that reads a file Windows PowerShell 5.1 wrote, which is UTF-16, as UTF-8 puts NUL characters into the record, and the ledger keeps them. `mc17 append` reads each `--evidence` file in UTF-8 or UTF-16 and puts its text in word for word, and it refuses, before the send, a record that holds a NUL or the character U+FFFD.
+- **The time:** leave `at` out of the record; the command writes the time of the append.
+- **The number:** take the record's number from the field `n` of the `--json` answer, never from a pattern matched over the output.
+- **No script builds the record.** The record is one JSON file written with the file tool, its body a string with `\n` between its lines.
+
+**Read each `mc17` output whole.** A filter such as `Select-String -NotMatch` or `grep -v` over the output hides the lines written for you, and a `Changed:` line of `mc17 plain` is the line most often lost that way.
+
+**One `mc17` command per shell call.** Run the launcher with its command and flags and nothing else on the line: no `;`, `&&` or pipe joining it to another command, a change of folder, `Set-Location`, in a call of its own, and no variable holding the launcher's path. Where `Get-Command mc17` finds the launcher on the PATH, call it as `mc17`; otherwise call it by its full path, without quotes and without `&` where the path holds no space. A redirection of its output into a file, `> fields.txt`, belongs to the command. Copilot asks the person to approve each shell call it cannot match to one program, and a chained line, a launcher in a variable or a path behind `&` is such a call every time. Write every file with the file tool, never with `Out-File`, `Set-Content` or `Tee-Object`.
 
 ## Rules this skill cannot check
 

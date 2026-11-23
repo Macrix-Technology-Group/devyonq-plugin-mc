@@ -82,7 +82,7 @@ One question at a time, the answers verbatim.
 
 ## Step 3 - The record, the id, the stamps
 
-1. **The ledger record first**, appended with `mc17 append {ledger_asset_id} --record <record.json>`, the record written to a file first: kind `approval`, verdict mapped (`Approved` and `Approved with conditions` are PASS, `Rejected` is FAIL), `refs` leading with the ARCH, `authorityWords` verbatim, evidence carrying the Step 1 binding output, the verification record's pointer, the Step 1b `reviewed` output and the Step 1c `published` output; the body carrying the `Read:` line Step 1c printed, and the authority's answer verbatim where Step 1b answered `none`, and the review records named where it answered `prose`. Read the assigned `n` back before naming it anywhere.
+1. **The ledger record first**, appended with `mc17 append {ledger_asset_id} --record <record.json>`, the record written to a file first as *Writing a ledger record* says: kind `approval`, verdict mapped (`Approved` and `Approved with conditions` are PASS, `Rejected` is FAIL), `refs` leading with the ARCH, `authorityWords` verbatim, evidence carrying the Step 1 binding output, the verification record's pointer, the Step 1b `reviewed` output and the Step 1c `published` output; the body carrying the `Read:` line Step 1c printed, and the authority's answer verbatim where Step 1b answered `none`, and the review records named where it answered `prose`. Read the assigned `n` back before naming it anywhere.
 2. **The id**: `mc17 aprid --scheme {the Manifest's declared scheme} --scope {SCOPE} --authority TO --artifact ARCH-{archnum}` (sequence-keyed adds `--seq`). The creation act refuses an id outside the declared scheme, which is why the id comes from the tool.
 3. **The Approvals entry**, composed by the tool so the load-bearing form cannot drift, then written as one guarded live-state edit:
 
@@ -111,6 +111,23 @@ mc17 amend {manifest_asset_id} --edits modules.json --class manifest --expect-bi
 ```
 
 and the report names the staled approvals and the re-runs owed. **The verification owed.** Where `mc17 amend` printed `VERIFICATION OWED NOW: {skill}` as its last line, run that skill over the document before this skill reports: here `mc-vf-manifest-v17` over the Manifest, whose binding the adoption moved, and the report names that verification's record; a line `NO VERIFIER: {class}` owes nothing. Where the Mission's Manifest carries no approvals yet, the announcement says so and the cost is one re-verification.
+
+## Writing a ledger record
+
+**Write the record file with the file tool, and let `mc17 append` put each output into it.** Save each command's output in a file of its own, as `mc17 fields ip {asset id} > fields.txt`. In the record, give that output as an evidence entry naming the file, `{"command": "mc17 fields ip {asset id}", "outputFile": "fields.txt"}`, and name every such file in the append:
+
+```bash
+mc17 append {ledger_asset_id} --record record.json --evidence fields.txt,binding.txt --json
+```
+
+- **Why:** a script that reads a file Windows PowerShell 5.1 wrote, which is UTF-16, as UTF-8 puts NUL characters into the record, and the ledger keeps them. `mc17 append` reads each `--evidence` file in UTF-8 or UTF-16 and puts its text in word for word, and it refuses, before the send, a record that holds a NUL or the character U+FFFD.
+- **The time:** leave `at` out of the record; the command writes the time of the append.
+- **The number:** take the record's number from the field `n` of the `--json` answer, never from a pattern matched over the output.
+- **No script builds the record.** The record is one JSON file written with the file tool, its body a string with `\n` between its lines.
+
+**Read each `mc17` output whole.** A filter such as `Select-String -NotMatch` or `grep -v` over the output hides the lines written for you, and a `Changed:` line of `mc17 plain` is the line most often lost that way.
+
+**One `mc17` command per shell call**, with nothing chained before or after it and no variable holding the launcher's path, so the person reads each command whole at its approval. A redirection of its output into a file, `> fields.txt`, belongs to the command. Write every other file with the file tool.
 
 ## Rules this skill cannot check
 

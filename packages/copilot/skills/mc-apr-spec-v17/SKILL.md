@@ -73,7 +73,24 @@ The command fetches the SPEC by its asset id and proves that the version on the 
 
 ## Step 3 - The record, the id, the stamps
 
-The ledger `approval` record first, appended with `mc17 append {ledger_asset_id} --record <record.json>`, the record written to a file first (`refs` leading with the SPEC, `authorityWords` verbatim, the verification record cited, the evidence carrying the Step 1b `reviewed` output and the Step 1c `published` output, the body carrying the `Read:` line Step 1c printed and the authority's answer verbatim where Step 1b answered `none` and the review records named where it answered `prose`), `n` read back. Then `mc17 aprid --scheme {declared} --scope {SCOPE} --authority {role} --artifact SPEC-{specnum}`. Then one guarded amend on the SPEC's Approvals section with the `aprentry` line, and one on the Manifest's SPEC row Approvals cell, both `--expect-binding unmoved`. The same live-state write removes every entry at a binding other than the one this approval names, and adds their records to the line `Earlier approvals: ledger records {a}, {b}.`, which stands in the section in their place; `mc17 check` names each such entry as stale. The approval writes no status line: the header word is the verification act's.
+The ledger `approval` record first, appended with `mc17 append {ledger_asset_id} --record <record.json>`, the record written to a file first as *Writing a ledger record* says (`refs` leading with the SPEC, `authorityWords` verbatim, the verification record cited, the evidence carrying the Step 1b `reviewed` output and the Step 1c `published` output, the body carrying the `Read:` line Step 1c printed and the authority's answer verbatim where Step 1b answered `none` and the review records named where it answered `prose`), `n` read back. Then `mc17 aprid --scheme {declared} --scope {SCOPE} --authority {role} --artifact SPEC-{specnum}`. Then one guarded amend on the SPEC's Approvals section with the `aprentry` line, and one on the Manifest's SPEC row Approvals cell, both `--expect-binding unmoved`. The same live-state write removes every entry at a binding other than the one this approval names, and adds their records to the line `Earlier approvals: ledger records {a}, {b}.`, which stands in the section in their place; `mc17 check` names each such entry as stale. The approval writes no status line: the header word is the verification act's.
+
+## Writing a ledger record
+
+**Write the record file with the file tool, and let `mc17 append` put each output into it.** Save each command's output in a file of its own, as `mc17 fields ip {asset id} > fields.txt`. In the record, give that output as an evidence entry naming the file, `{"command": "mc17 fields ip {asset id}", "outputFile": "fields.txt"}`, and name every such file in the append:
+
+```bash
+mc17 append {ledger_asset_id} --record record.json --evidence fields.txt,binding.txt --json
+```
+
+- **Why:** a script that reads a file Windows PowerShell 5.1 wrote, which is UTF-16, as UTF-8 puts NUL characters into the record, and the ledger keeps them. `mc17 append` reads each `--evidence` file in UTF-8 or UTF-16 and puts its text in word for word, and it refuses, before the send, a record that holds a NUL or the character U+FFFD.
+- **The time:** leave `at` out of the record; the command writes the time of the append.
+- **The number:** take the record's number from the field `n` of the `--json` answer, never from a pattern matched over the output.
+- **No script builds the record.** The record is one JSON file written with the file tool, its body a string with `\n` between its lines.
+
+**Read each `mc17` output whole.** A filter such as `Select-String -NotMatch` or `grep -v` over the output hides the lines written for you, and a `Changed:` line of `mc17 plain` is the line most often lost that way.
+
+**One `mc17` command per shell call.** Run the launcher with its command and flags and nothing else on the line: no `;`, `&&` or pipe joining it to another command, a change of folder, `Set-Location`, in a call of its own, and no variable holding the launcher's path. Where `Get-Command mc17` finds the launcher on the PATH, call it as `mc17`; otherwise call it by its full path, without quotes and without `&` where the path holds no space. A redirection of its output into a file, `> fields.txt`, belongs to the command. Copilot asks the person to approve each shell call it cannot match to one program, and a chained line, a launcher in a variable or a path behind `&` is such a call every time. Write every file with the file tool, never with `Out-File`, `Set-Content` or `Tee-Object`.
 
 ## Rules this skill cannot check
 

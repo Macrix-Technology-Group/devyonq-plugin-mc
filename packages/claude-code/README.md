@@ -1,21 +1,75 @@
 # devyonq-mc for Claude Code
 
-**Reader:** a person who runs Missions under Mission Control v1.7 from Claude Code. This page says what the plugin holds,
-how its client signs in to DevyonQ, how the skills reach the harness, and how a person's settings reach every session.
+**Reader:** a person who runs Missions under Mission Control v1.7 from Claude Code. This page says how to install the
+plugin, how its client signs in to DevyonQ, how the skills reach the harness, and how a person's settings reach every
+session.
 
 ## What this plugin is
 
 The plugin holds three things: the skills, the gate hooks and the client `mc17`. The harness itself runs in DevyonQ.
 Every skill and every hook calls the client, and the client sends each command to the harness gateway of your DevyonQ
 tenant, under the sign-in it keeps on your computer. The harness reads and writes the Mission's documents in CanonQ,
-computes every figure a machine can compute, and answers the client.
+computes every hash, binding and field check, and answers the client.
 
-**A check resolves a declared value by running the subject's own implementation, wherever the subject publishes one.**
-A recipe copied into a document drifts from the code it describes, and a check that reads the copy then certifies the
-drift. That is why a skill asks the harness for every hash, binding and field check, and computes none of them itself.
+A Mission belongs to one line of Mission Control for its lifetime.
 
-A Mission belongs to one line of Mission Control for its lifetime. The plugin of the old repository,
-`Macrix-Technology-Group/devyonq`, stays installable beside this one; switch one of the two on at a time.
+## What you need
+
+- **Node 22 or later** for the client.
+- **Python 3** for the gate hooks.
+- **git**, which the client reads a checkout with.
+- **A DevyonQ seat.** Any active person of the tenant who holds a seat may run Missions with this plugin. The tenant's
+  reach covers a Mission collection only where the collection was made through the harness.
+
+## Install
+
+In Claude Code:
+
+```
+/plugin marketplace add Macrix-Technology-Group/devyonq-plugin-mc
+/plugin install devyonq-mc@devyonq-mc
+```
+
+Start a new session afterwards, so it loads the skills and the hooks. Claude Code installs the plugin into
+`~/.claude/plugins/cache/devyonq-mc/devyonq-mc/<version>/`. `FILES.lock` at the package's root lists every file of the
+package with its SHA-256, so you can compare an installed copy with the package of a release.
+
+## Sign in
+
+The client signs you in to DevyonQ once per computer. Run it yourself, in a terminal outside the AI tool, from the
+folder Claude Code installed the plugin into:
+
+```
+client/mc17 login
+```
+
+On Windows, from PowerShell or cmd, run `client\mc17.cmd login`. Your browser opens: sign in to DevyonQ, pick your
+tenant, and approve the sign-in. To skip the pick, add `--tenant <tenant>`, where `<tenant>` is your tenant's id or your
+DevyonQ MCP address; `https://app.devyonq.ai/choose-tenant` lists your tenants with their ids to copy. The client keeps
+what the sign-in answers in the credential store of your operating system, and refuses where none stands. No token goes
+into an environment variable or a file a tool may read back.
+
+A session started on a computer that is not signed in yet says so at its start, with the exact command for that
+computer, and on Windows and macOS opens a window that runs the sign-in for you; Mission skills and `mc17` commands wait
+until you are signed in. To keep that window from opening, create the empty file `~/.mc17/client/no-sign-in-window`.
+
+To sign this computer out, run `client/mc17 logout` the same way, in your own terminal. It removes the sign-in the client
+keeps; the key DevyonQ issued stays valid until it expires, or until you revoke "mc17, the client of devyonq-mc" under
+Connect AI agent in DevyonQ.
+
+`client/mc17 version` prints the plugin's version, the contract the client carries and the DevyonQ it is signed in to,
+and sends nothing.
+
+## How the skills reach the harness
+
+Each skill names the client as the launcher `client/mc17` two levels above its own folder, so nothing depends on where
+the plugin is installed. A command such as `mc17 check <manifest> --ledger <id>` goes to the harness in DevyonQ, which
+answers it; `mc17 help` lists the commands the client carries. Where `mc17` reports no sign-in, the skill stops and tells
+you to run `mc17 login` yourself.
+
+A decision point's call spends your own OpenRouter key on the model you set on this computer, in a terminal of your own,
+with `client/mc17 config model <provider/model>`. `mc17 config model` alone prints it, and `--clear` clears it. With no
+model set, the client spends nothing.
 
 ## What is here
 
@@ -23,7 +77,7 @@ A Mission belongs to one line of Mission Control for its lifetime. The plugin of
 |---|---|
 | `skills/` | twenty-two skills, each suffixed `-v17`: creation (`mc-cre-mission-v17`, `mc-cre-arch-v17`, `mc-cre-ip-v17`, `mc-cre-wave-v17`, `mc-cre-repair-v17`), verification (`mc-vf-manifest-v17`, `mc-vf-spec-v17`, `mc-vf-arch-v17`, `mc-vf-ip-v17`, `mc-vf-tp-v17`, `mc-vf-wave-v17`, `mc-vf-move-v17`), approval (`mc-apr-spec-v17`, `mc-apr-arch-v17`, `mc-apr-ip-v17`, `mc-apr-tp-v17`), the independent act (`mc-adv-review-v17`), the plain-language pass (`mc-plain-v17`), the decision points (`mc-converge-v17`), a person's settings (`mc-cre-settings-v17`, `mc-adv-settings-v17`) and closure (`mc-close-mission-v17`) |
 | `client/mc17` | the client: `mc17 login` once per computer, then every harness command a skill or a hook runs; `client/mc17.cmd` runs it from PowerShell or cmd on Windows |
-| `client/contract/copy.json` | the commit of `devyonq-saas` whose harness contract the client carries, beside the contract itself; `mc17 version` prints it |
+| `client/contract/` | the harness contract the client carries; `mc17 version` prints which one |
 | `client/keys/` | the checking keys of the decisions the harness signs |
 | `hooks/hooks.json` | the hook configuration: the secret gate, the document gate, the branch gate, the fleet gate, the heavy-run hook, the chat lint and the settings hook |
 | `hooks/lint-secret.py` | refuses a call that reaches what the client keeps: its credential store, its folders, `mc17 login` and `mc17 trust` |
@@ -36,60 +90,8 @@ A Mission belongs to one line of Mission Control for its lifetime. The plugin of
 | `harness/orchestration-harness.js` | the sanctioned runner a fleet script carries; `mc17 machinery` compares the hash of its block with the hash DevyonQ holds |
 | `harness/examples/sanctioned-wave.js` | a fleet script that passes the fleet gate |
 | `harness/converge/policy.md` | the judging policy a decision point sends its model |
-| `GUIDE.html` | the developer guide; open it in a browser |
-
-## What you need
-
-- **Node 22 or later** for the client.
-- **Python 3** for the gate hooks.
-- **git**, which the client reads a checkout with.
-- **A DevyonQ seat.** Any active person of the tenant who holds a seat may run Missions with this plugin. The tenant's
-  reach covers a Mission collection only where the collection was made through the harness.
-
-## Sign in
-
-The client signs you in to DevyonQ once per computer. Run it yourself, in a terminal outside the AI tool, from
-the folder Claude Code installed the plugin into, `~/.claude/plugins/cache/devyonq-mc/devyonq-mc/<version>/`:
-
-```
-client/mc17 login
-```
-
-On Windows, from PowerShell or cmd, run `client\mc17.cmd login`. Your browser opens: sign in to DevyonQ, pick your tenant,
-and approve the sign-in. To skip the pick, add `--tenant <tenant>`, where `<tenant>` is your tenant's id or your DevyonQ
-MCP address; `https://app.devyonq.ai/choose-tenant` lists your tenants with their ids to copy. The client keeps what the sign-in answers in the credential store of your operating system, and
-refuses where none stands. No token goes into an environment variable or a file a tool may read back.
-
-A session started on a computer that is not signed in yet says so at its start, with the exact command for that 
-computer, and on Windows and macOS opens a window that runs the sign-in for you; Mission skills and `mc17` commands 
-wait until you are signed in. To keep that window from opening, create the empty file 
-`~/.mc17/client/no-sign-in-window`.
-
-To sign this computer out, run `mc17 logout` the same way, in your own terminal. It removes the sign-in the client 
-keeps; the key DevyonQ issued stays valid until it expires, or until you revoke "mc17, the client of devyonq-mc" 
-under Connect AI agent in DevyonQ.
-
-**Your Missions in DevyonQ.** `mc-cre-mission-v17` records each new Mission on a DevyonQ project too, so DevyonQ
-shows it with its status, and shares its collection with the Mission's four authorities in CanonQ. `mc17 mission projects` lists the projects on which you may record a Mission: those where
-you are the Project Manager, and those where you are on the team and may hold the Business Owner role, for a Mission
-whose Business Owner you are. To record a Mission made before, run
-`mc17 mission register --project <project id> --manifest <Manifest asset id>`. Run again, it brings the Mission's
-authorities in DevyonQ in line with the Manifest. It refuses an authority who is not on the project's team, or whose
-role on the team does not admit the role, and names the role and the person.
-
-`client/mc17 version` prints the plugin's version, the contract the client carries and the DevyonQ it is signed in to,
-and sends nothing.
-
-## How the skills reach the harness
-
-Each skill names the client as the launcher `client/mc17` two levels above its own folder, so nothing depends on where
-the plugin is installed. A command such as `mc17 check <manifest> --ledger <id>` goes to the harness in DevyonQ, which
-answers it; `mc17 help` lists the commands the client carries. Where `mc17` reports no sign-in, the skill stops and tells
-the person to run `mc17 login` themself.
-
-A decision point's call spends your own OpenRouter key on the model you set on this computer, in a terminal of your own,
-with `client/mc17 config model <provider/model>`. `mc17 config model` alone prints it, and `--clear` clears it. With no
-model set, the client spends nothing.
+| `GUIDE.html` | the guide to the skills and the method; open it in a browser |
+| `CHANGELOG.md` | what each release changed |
 
 ## A person's settings
 
@@ -118,10 +120,6 @@ model set, the client spends nothing.
 Where no line opening [MC settings] stands in this session's context, the session reads the person's settings with mc17 settings before its first act, or, where the plugin is not loaded, through its CanonQ connector from the one restricted MC Settings collection the person names, and, until it has read MANDATE, sends nothing to production or to other people and gives no approval in the person's name, unless the person's word in the chat names that one act.
 ```
 
-## The rule worth reading before anything else
+## Where to read more
 
-**A check nobody has watched fail proves nothing.** Every check of this plugin's suites, in its repository, was watched failing before it was trusted: break the thing, see it go red, restore, see it go green. This project has already shipped a lint that could not fail at all, and a hash check that agreed with a copy of itself.
-
-## Handoff
-
-The developer guide is `GUIDE.html` in this directory. Open it in a browser.
+The guide to the skills and the method is `GUIDE.html` in this folder. Open it in a browser.

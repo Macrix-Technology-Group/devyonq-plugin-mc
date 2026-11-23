@@ -130,7 +130,8 @@ READ_TOOLS = ("Read", "Grep", "Glob", "LS", "NotebookRead", "WebFetch", "WebSear
 # shell call names a file of the plugin or of the folder of the client's node through one of them alone, or prints its
 # path with echo or printf. sed counts with -n and no -i or -f, git with
 # show, diff or log, each with the options that write a file refused (reader_refusal).
-READERS = ("cat", "head", "tail", "less", "grep", "egrep", "fgrep", "rg", "sed", "wc", "ls", "get-content", "gc", "git", "echo", "printf")
+READERS = ("cat", "head", "tail", "less", "grep", "egrep", "fgrep", "rg", "sed", "wc", "ls", "get-content", "gc", "git", "echo", "printf",
+           "select-string", "sls", "findstr")
 GIT_READS = ("show", "diff", "log")
 # The git commands that change files of the work tree, which are refused where they touch the plugin's files.
 GIT_WRITES = ("checkout", "restore", "reset", "apply", "am", "stash", "clean", "switch", "merge", "pull", "rebase", "cherry-pick",
@@ -664,7 +665,11 @@ def judge_paths(command, cwd):
     """Refuses a shell `command` whose words reach a kept folder by their real form, or that makes a link into or out of
     ~/.mc17 (N6)."""
     words = call_words(command)
+    # In a call that runs code its words carry, a comment mark or a regular expression's literal is no path.
+    inline = EVAL_CALL.search(command) is not None
     for w in words:
+        if inline and script_mark(w):
+            continue
         label = reached(w, cwd)
         if label:
             deny("This command names %s, which reaches %s by its real form, which the mc17 client keeps from every AI tool.\n\nCommand: %s\n\n%s" % (w[:200], label, command.strip()[:400], remedy()))
@@ -732,6 +737,13 @@ def program_index(words):
         if re.match(r"^[A-Za-z_][A-Za-z0-9_]*=", w):
             i += 1
             continue
+        # A PowerShell assignment, `$t = Get-Content x` or `$t=Get-Content x`: the program follows it.
+        if re.match(r"^\$[A-Za-z_][A-Za-z0-9_:]*$", w) and i + 1 < len(words) and words[i + 1] == "=":
+            i += 2
+            continue
+        if re.match(r"^\$[A-Za-z_][A-Za-z0-9_:]*=$", w):
+            i += 1
+            continue
         if last_part(w) in WRAPPERS:
             i += 1
             while i < len(words) and (words[i].startswith("-") or re.match(r"^[A-Za-z_][A-Za-z0-9_]*=", words[i]) or re.match(r"^\d+[smhd]?$", words[i])):
@@ -779,6 +791,36 @@ def whole_forms(word):
     if "," in word:
         out.extend(x for x in word.split(",") if x)
     return out
+
+
+LAUNCHERS = ("mc17", "mc17.cmd")
+# The pieces of a script's text that only look like a path: the marks that open and close a comment, and a regular
+# expression's literal that opens with /^. The gate read `/**` as every file of the drive, and `/^\*\*` likewise.
+SCRIPT_MARKS = ("/*", "/**", "*/", "**/")
+# A call that runs code its words carry: node -e, python -c, pwsh -Command and their kin.
+EVAL_CALL = re.compile(r"(?:^|[\s;|&(])(?:node|deno|bun|python3?|py|ruby|perl)(?:\.exe)?\s+(?:-\S+\s+)*?(?:-e|-p|-c|--eval|--print)(?:\s|=|$)"
+                       r"|(?:^|[\s;|&(])(?:pwsh|powershell)(?:\.exe)?\s+(?:-\S+\s+)*?-(?:c|command|encodedcommand|ec)(?:\s|$)", re.I)
+
+
+def script_mark(piece):
+    """Whether a piece of a script's text is a comment mark or a regular expression's literal, which names no path."""
+    p = piece.strip("'\"`")
+    return p in SCRIPT_MARKS or p.startswith("/^")
+
+
+def script_piece_names_nothing(piece, cwd):
+    """Whether a piece of a script's text, read as a path, names no file a call could change: a comment mark or a regular
+    expression's literal (script_mark), and the plugin's own launcher, which a script runs as any other call runs it. A
+    path to any other file of the plugin, a glob among them, is still judged."""
+    if script_mark(piece):
+        return True
+    w = expanded(piece, cwd)
+    if w is None:
+        return True
+    if GLOB.search(w):
+        return False
+    real = real_of(w)
+    return os.path.basename(real).lower() in LAUNCHERS and os.path.normcase(os.path.dirname(real)) == os.path.normcase(os.path.join(real_of(PLUGIN_ROOT), "client"))
 
 
 def embedded_forms(word, every):
@@ -955,6 +997,8 @@ def guarded_reach(command, cwd):
                     if held:
                         return held, "%s %s removes or moves the folder that holds it" % (name, w[:200])
             for form in embedded_forms(w, not reader or inside_guarded):
+                if script_piece_names_nothing(form, here):
+                    continue
                 hit = hit_of(form)
                 if hit:
                     return hit, "%s names it inside the word %s" % (name, w[:200])

@@ -405,8 +405,8 @@ The binding is computed regardless of the result, so a failed verification still
 
 | | |
 |---|---|
-| Schema asset | `6f1d3c75-c189-42e6-98f5-7a4ef7a23ca0`, titled `ledger-hybrid-v1.schema` |
-| Binding form | `"$schema": "canonq:asset:6f1d3c75-c189-42e6-98f5-7a4ef7a23ca0"` as the object's first key |
+| Schema asset | `{schema_asset_id}`, the asset `mc17 upload --ledger-schema` prints at 6a: the one document titled `ledger-hybrid-v1.schema` that this CanonQ instance holds. Its id differs on every instance |
+| Binding form | `"$schema": "canonq:asset:{schema_asset_id}"` as the object's first key |
 | Worked example | asset `61165f30-fed1-4b53-84f9-2e3805173c85`, titled `VF-DEMO-ledger` |
 | Write | `mc17 append`, which sends the one-operation patch the platform applies atomically under a row lock |
 | Read | `mc17 read record --ledger <ledger id> --n <n>` for one record, or `mc17 read tail --ledger <ledger id> --count <k>` for the last k records |
@@ -416,14 +416,14 @@ Locate the ledger: `mc17 read collection --id {collectionId}`, exact title `VF-{
 #### 6a - The schema resolves before anything is written
 
 ```
-mc17 read document --id 6f1d3c75-c189-42e6-98f5-7a4ef7a23ca0
+mc17 upload --collection "{the Manifest's collection id}" --ledger-schema
 ```
 
-It runs against **this Mission's corpus**, the one the signed-in tenant reaches; read the returned object's `$id`. It reads `canonq:ledger-hybrid-v1`.
+It runs against **this Mission's corpus**, the one the signed-in tenant reaches. CanonQ numbers a ledger's records from the schema the ledger's `$schema` names, so that schema has to stand in this corpus. **Each CanonQ instance holds its own copy of the schema**: its admin uploads `ledger-hybrid-v1.schema.json` under the title `ledger-hybrid-v1.schema`, pins it in `QAPP_LEDGER_SCHEMAS`, and keeps it where the DevyonQ connection reads. The command finds the one document of that exact title, reads CanonQ itself to confirm the schema numbers records, and uploads nothing. It prints the asset as `Schema: {schema_asset_id}` and the line `Bind a new ledger with: "$schema": "canonq:asset:{schema_asset_id}"`. Take `{schema_asset_id}` from that output into 6b and 6c. **Never write a schema id from anywhere else into a ledger**: the id differs on every instance, and under an id this corpus does not hold every record lands as number 1. `mc17 upload` refuses such a ledger before the send.
 
 **This read proves the schema is reachable, and proves nothing about writing against it.** The platform compiles the bound schema on the write path, and a schema that reads back perfectly can still refuse every write on that instance. That failure has its own error shape and surfaces at the first append; it is handled at 6f. A clean 6a is no green light for the write half.
 
-**Where the read fails, or the object is another schema, STOP and write nothing.** The `$schema` key a ledger carries has to resolve in the corpus the ledger lives in, for the reader who opens it. Report that the ledger schema is unreachable in this corpus under this sign-in, name the asset id, and state the repair: a grant on the collection that holds the schema, or a copy of the schema asset into a collection this Mission's readers can reach. **Never create a ledger with an unresolvable `$schema`, and never inline the schema into the ledger to work around a missing grant** - an inlined copy is a second schema that drifts, and the platform validates against the bound asset.
+**Where the command fails, STOP and write nothing.** The `$schema` key a ledger carries has to resolve in the corpus the ledger lives in, for the reader who opens it. Report the command's output whole, and that no schema that numbers records stands in reach of this corpus under this sign-in. **Never create a ledger with an unresolvable `$schema`, and never inline the schema into the ledger to work around a missing grant** - an inlined copy is a second schema that drifts, and the platform validates against the bound asset.
 
 #### 6b - Creating the ledger, first run
 
@@ -466,7 +466,7 @@ The created object is exactly this shape. `mission` carries the Mission name, `l
 
 ```json
 {
-  "$schema": "canonq:asset:6f1d3c75-c189-42e6-98f5-7a4ef7a23ca0",
+  "$schema": "canonq:asset:{schema_asset_id}",
   "mission": "{mission_name}",
   "ledger": "VF",
   "records": [
@@ -477,12 +477,12 @@ The created object is exactly this shape. `mission` carries the Mission name, `l
       "verdict": "NA",
       "refs": [
         { "doc": "MANIFEST-{SCOPE}-001", "asset": "{manifest_asset_id}" },
-        { "doc": "ledger-hybrid-v1.schema", "asset": "6f1d3c75-c189-42e6-98f5-7a4ef7a23ca0" }
+        { "doc": "ledger-hybrid-v1.schema", "asset": "{schema_asset_id}" }
       ],
       "evidence": [
         {
-          "command": "mc17 read document --id 6f1d3c75-c189-42e6-98f5-7a4ef7a23ca0",
-          "output": "{the schema's $id line as returned, verbatim}"
+          "command": "mc17 upload --collection {the Manifest's collection id} --ledger-schema",
+          "output": "{the two lines it printed, verbatim}"
         },
         {
           "command": "mc17 binding {manifest_asset_id}",
@@ -507,7 +507,7 @@ The created object is exactly this shape. `mission` carries the Mission name, `l
 
 #### 6d - Appending a record
 
-One record, one command. Write the record to a file with `n` left out and run `mc17 append {ledger_asset_id} --record <record.json>`. The command refuses, before any send, a record that carries a number or lacks a required field; sends one patch that adds the record at the end of the ledger; and looks for its own record by its mark before it ever sends again, so a write sent twice lands once. It is the only thing that writes to a ledger, and a correction is a new record naming what it corrects.
+One record, one command. Write the record to a file with `n` left out, as *Writing a ledger record* says, and run `mc17 append {ledger_asset_id} --record <record.json>`. The command refuses, before any send, a record that carries a number or lacks a required field; sends one patch that adds the record at the end of the ledger; and looks for its own record by its mark before it ever sends again, so a write sent twice lands once. It is the only thing that writes to a ledger, and a correction is a new record naming what it corrects.
 
 #### 6e - The platform assigns `n`. There is no numbering step
 
@@ -528,13 +528,13 @@ A patch whose result violates the bound schema answers **422**, names the failin
 ```
 Patch refused, nothing changed - schema violation at /records/2/verdict:
 enum: must be equal to one of the allowed values {"allowedValues":["PASS","FAIL","BLOCKED","NA"]}
-(schema: canonq:asset:6f1d3c75-c189-42e6-98f5-7a4ef7a23ca0)
+(schema: canonq:asset:{schema_asset_id})
 ```
 
 ```
 Patch refused, nothing changed - schema violation at /records/2:
 required: must have required property 'authorityWords' {"missingProperty":"authorityWords"}
-(schema: canonq:asset:6f1d3c75-c189-42e6-98f5-7a4ef7a23ca0)
+(schema: canonq:asset:{schema_asset_id})
 ```
 
 **What the agent does with it, in order:**
@@ -550,7 +550,7 @@ required: must have required property 'authorityWords' {"missingProperty":"autho
 
 ```
 Patch refused, nothing changed - the bound schema
-(canonq:asset:6f1d3c75-c189-42e6-98f5-7a4ef7a23ca0) is unusable: The bound schema does not compile.
+(canonq:asset:{schema_asset_id}) is unusable: The bound schema does not compile.
 ```
 
 **It carries no pointer, so step 1 has nothing to read and no repair to the record clears it.** Every JSON asset bound to that schema is refused the same way until the platform is fixed. Confirm it in one call, by patching another ledger bound to the same schema and seeing the identical refusal, then **stop, write nothing, stamp nothing**, and report the schema asset id, the refusal verbatim, and that the ledger cannot be written until the platform's Technical Owner clears it. Never rebind the ledger to another schema asset or inline a copy; the binding is the Mission's, and changing it is a recorded act with its own authority.
@@ -678,7 +678,7 @@ The run summary is written for the Business Owner and the Technical Owner, in hu
 
 **On an unusable ledger schema:** "The ledger refused the record: the bound schema {binding} is unusable - {the refusal verbatim}. This is a platform fault, and no pointer was named. Every asset bound to that schema is refused. Nothing was written and nothing was stamped. It clears when the platform's Technical Owner clears it."
 
-**On an unresolvable ledger schema:** "The ledger schema `ledger-hybrid-v1.schema` (asset 6f1d3c75-c189-42e6-98f5-7a4ef7a23ca0) does not resolve in {instance} under this sign-in, so no ledger can be created bound to it. The repair is a grant on the collection that holds it, or a copy of the schema asset into a collection this Mission's readers reach. Nothing was written."
+**On an unresolvable ledger schema:** "`mc17 upload --ledger-schema` found no single document titled `ledger-hybrid-v1.schema` that numbers records in {instance} under this sign-in: {its output verbatim}. No ledger can be created, because CanonQ would number none of its records. Nothing was written. The instance's admin uploads `ledger-hybrid-v1.schema.json`, pins it in `QAPP_LEDGER_SCHEMAS`, and keeps it where the DevyonQ connection reads."
 
 ## The harness binding
 
@@ -687,6 +687,23 @@ Mission Definition v1.7, *The Orchestration Harness*: a rule a machine can check
 **That binding is one document for this family, and it is `TRACE.md`, which stands in the plugin's source repository at `core/TRACE.md` and in no installed package.** It carries every Definition rule these two skills enforce with the step that enforces it, every check these two skills run with the rule it enforces, and every rule the law states that these skills declare a judgment. TRACE.md in the source repository is written for a human reader and is kept current with the skills. A change to a check in this file that TRACE.md in the source repository does not carry is a defect in whichever of the two was not updated.
 
 **Every check has a case it must be seen to fail on.** For the checks that live in code, the cases are `core/harness/mc17.test.js` in the plugin's source repository, and `node mc17.mutations.js`, the drill at `core/harness/mc17.mutations.js` in the same repository and in no installed package, breaks each check, watches it go red, restores it and watches it go green, printing how many were proven. For the checks that live in this file, the cases live in `fixtures/failing-cases.md` beside it, one case per check, each stating the defect it plants and the check that must catch it. A check whose case has never been run proves nothing about the rule it claims to enforce.
+
+### Writing a ledger record
+
+**Write the record file with the file tool, and let `mc17 append` put each output into it.** Save each command's output in a file of its own, as `mc17 fields ip {asset id} > fields.txt`. In the record, give that output as an evidence entry naming the file, `{"command": "mc17 fields ip {asset id}", "outputFile": "fields.txt"}`, and name every such file in the append:
+
+```bash
+mc17 append {ledger_asset_id} --record record.json --evidence fields.txt,binding.txt --json
+```
+
+- **Why:** a script that reads a file Windows PowerShell 5.1 wrote, which is UTF-16, as UTF-8 puts NUL characters into the record, and the ledger keeps them. `mc17 append` reads each `--evidence` file in UTF-8 or UTF-16 and puts its text in word for word, and it refuses, before the send, a record that holds a NUL or the character U+FFFD.
+- **The time:** leave `at` out of the record; the command writes the time of the append.
+- **The number:** take the record's number from the field `n` of the `--json` answer, never from a pattern matched over the output.
+- **No script builds the record.** The record is one JSON file written with the file tool, its body a string with `\n` between its lines.
+
+**Read each `mc17` output whole.** A filter such as `Select-String -NotMatch` or `grep -v` over the output hides the lines written for you, and a `Changed:` line of `mc17 plain` is the line most often lost that way.
+
+**One `mc17` command per shell call.** Run the launcher with its command and flags and nothing else on the line: no `;`, `&&` or pipe joining it to another command, a change of folder, `Set-Location`, in a call of its own, and no variable holding the launcher's path. Where `Get-Command mc17` finds the launcher on the PATH, call it as `mc17`; otherwise call it by its full path, without quotes and without `&` where the path holds no space. A redirection of its output into a file, `> fields.txt`, belongs to the command. Copilot asks the person to approve each shell call it cannot match to one program, and a chained line, a launcher in a variable or a path behind `&` is such a call every time. Write every file with the file tool, never with `Out-File`, `Set-Content` or `Tee-Object`.
 
 ### Rules this skill cannot check, stated as judgments
 

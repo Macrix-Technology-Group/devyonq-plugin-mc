@@ -9,7 +9,7 @@
       "source": "./packages/claude-code",
       "description": "Mission Control v1.7: the creation and Manifest-verification skills, plus the harness they call. Coexists with the v1.6 plugin; a Mission pins one line for its lifetime.",
       "category": "methodology",
-      "version": "0.2.8"
+      "version": "0.2.9"
     }
   ]
 }

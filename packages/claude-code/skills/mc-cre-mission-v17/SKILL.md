@@ -93,7 +93,9 @@ The Mission Default Governance Process is **not** one of the pinned three. It is
 
 ### 0.2 Resolve, the Living path
 
-Search the CanonQ corpus (`mc17 read search --q "<text>"`, then a second search in other words if the first returns nothing) for the Mission Definition, the Mission Control Guide, and the Agent-Fleet Execution Profile.
+**Read the pin with one call: `mc17 pin`.** The DevyonQ harness ships the Mission Control Guide, the Mission Definition and the Agent-Fleet Execution Profile v1.7, and the Mission Default Governance Process, and `mc17 pin` reads all four from that copy by asset id. For each it prints the title, the asset id, the version line, the Status with the source it was read from, and the hash `mc17 hash` computes. These are the pin candidates. The command searches nothing and reaches no CanonQ, so no copy of a document in a tenant's own corpus answers in its place. `mc17 pin --json` prints the same reading as the Manifest's answer-set keys, which Step 6 merges into the answer set, so no runner copies a hash or an id by hand.
+
+Search the corpus with `mc17 read search --q "<text>"` only where `mc17 pin` refuses, or where the operator names a newer Living line than v1.7. The rules below judge the candidates either way.
 
 **What counts as a pin candidate.** A pin candidate is a document that IS the versioned document: its own title and its version line name the document and its version, and it stands as the whole document. A change proposal, an amendment, an update package or a patch written against a base version is no pin candidate, however precisely it targets v1.7. Record such a document as a rejected candidate with the reason `change proposal against v{base}`. **Another Mission's Manifest is no pin candidate either, and its snippet is not evidence.** A search for these documents answers today with the Manifests of earlier Missions, whose snippets print the pin asset ids, the content hashes, the read dates and the rejected candidates in full; that is each Mission's record of its own resolution and it is 0.4's forbidden source arriving first. **The snippet is already on your screen when you read the result, so the rule is about what you carry out of it, never about what you saw.** Carry no id, no hash, no read date and no rejected title from a snippet into this Mission's record. Every hash this step records is computed at 0.3 over bytes this run fetched, and a figure that arrives any other way is discarded even where it would have been right. This follows the reading recorded below under *A reading this skill records*: v1.7 ships an amendment as a superseding version, so a document written against a base version is a proposal for the next version and is never the pinned one.
 
@@ -463,7 +465,7 @@ Wait. For every other shape, Supersedes is written `N/A` and must stay empty.
 
 **`mc17 read collection` takes a collection id in `--id` and never a title.** A title passed as the id answers `{"count":0,"error":"Access denied to this database","documents":[]}`, which is a bad-identifier error wearing a rights error's clothes. It arrives in a run already warned about the `create-collection` and `upload` rights, so read it for what it is and abort nothing on it.
 
-**Harvest the candidates from what Step 0 already read.** The three pinned documents and the Governance Process were read at Step 0, and each carries its own `Domain` facet values. Take those values as the first candidates: a value standing on a corpus document stands in the vocabulary. Add the Mission's own subject words as further candidates. Put every candidate through one `mc17 read search` of its own, read under the exact test above, and offer the ones that answer. Where none answers, say so at the prompt, take the operator's answer as given, and carry it into the Step 11 report as a warning that the domain was written unvalidated.
+**Harvest the candidates from what Step 0 already read.** The three pinned documents and the Governance Process were read at Step 0, and each carries its own `Domain` facet values; `mc17 pin` prints them on its last lines. Take those values as the first candidates: a value standing on a corpus document stands in the vocabulary. Add the Mission's own subject words as further candidates. Put every candidate through one `mc17 read search` of its own, read under the exact test above, and offer the ones that answer. Where none answers, say so at the prompt, take the operator's answer as given, and carry it into the Step 11 report as a warning that the domain was written unvalidated.
 
 **Product Vision pre-scan, best effort.** Derive a product token from the Mission name and search the corpus for `PROD-{product}` and for `"{product} Product Vision"`. Candidates already carrying a matching `product:` Scope tag rank first. One strong candidate becomes the offered default. None found means no default. This never auto-writes a Product reference nobody confirmed, and it never blocks.
 
@@ -554,9 +556,15 @@ mc17 render manifest --answers answers.json --audit --out MANIFEST-{SCOPE}-001.m
 
 **Read the default list `--audit` writes to stderr.** A field standing on it carries a value no authority answered, 4k owes the operator a sight of it, and Step 11 reports it again.
 
-**The answer set is one JSON object whose keys are the template's own names.** Build it from the Step 4 answers, write it to a file beside the artifacts, and keep it: one file serves all four renders, Step 11 reads it, and a re-render after a corrected answer is one command. Two worked answer sets stand among the engine's test fixtures in the DevyonQ repository and in no installed package, and **each is a partial cover**, so where that repository is at hand, read the one whose shape is nearest this Mission and expect the renderer's refusals to name the rest. `seventeen-7.answers.json` is a Standard Mission that ships no code, runs fleets, extends no Product and merges nothing. `seventeen-13.answers.json` is a Standard Mission that ships no code, runs fleets as the first does, and **does** extend a Product and declare a merge bar, so it is the one that carries `products`, `advances`, `merges`, `gates` and `merge_bar_ruleset`. A key neither one exercises is found by rendering and reading the refusal, which names it.
+**Keep the work files in one folder the client takes:** a folder of the checkout, or `~/.mc17/tmp/{scope}` where the session runs outside a checkout. The answer set, the rendered documents, the proofs and the edits all stand there; `mc17` refuses a file anywhere else, a host's own session folder among them.
 
-A key the template names and the answer set omits stops the run and is named by name, so the shortest route to a complete answer set is a render, a read of the refusal, another render.
+**The answer set is one JSON object whose keys are the template's own names, and the program writes its shape.** Build it in three moves, write it to a file beside the artifacts, and keep it: one file serves all four renders, Step 11 reads it, and a re-render after a corrected answer is one command.
+
+1. **The shape:** `mc17 render manifest --skeleton --out answers.json` writes every key the template reads, each `null` until answered. Its `_guide` says, for each key, the step that answers it, whether a condition gates the read (`fleets` gates the runner's figures, for example), the fields of each list's items, and which keys the render derives or takes a declared default for. A derived or defaulted key stands in `_guide` alone and is left out of the keys to answer.
+2. **The pin:** copy every key `mc17 pin --json` printed at Step 0 over its `null`, the hashes and the read dates among them, as the program read them. Add the corpus line `mc17 version` prints.
+3. **The interview:** fill every other key from the Step 4 answers. A key that only a condition you answered `false` reads may stay `null`; the render never reads it.
+
+**A refusal names every key still missing at once**, each at the first line that reads it with the step that answers it, a key supplied as `null` among them. Fill them all and render again. A key behind a condition the answer set has not yet settled is named once that condition resolves, so a second refusal can follow; nothing is guessed. **The render fills the keys that follow from the others** where the answer set leaves them out or `null`: the date, the derived Mission ID and whether the chosen one deviates, the SPEC and Test Plan AO where the default AO is a person, the collapse of authorities read off the four names, and the pin state where all three pinned documents read Living. `--audit` lists each key it derived with its value. It derives no answer the operator owes: the collapse's control and its end condition, the shape, the modes and every choice of the interview stay the operator's.
 
 **The move on a refusal is always the same: read the violation the renderer named, fix the answer set, run it again.** **Never hand-write the document the renderer would not emit.** A body typed around a refusal carries the defect the refusal named, and nothing downstream looks for it a second time. Where the violation lies in the template and no answer settles it, the template is the engine's: name the violation and the template in the Step 11 report, and the repair lands in the engine with its failing case among the engine's tests; the repair then reaches every Mission on this line.
 
@@ -569,16 +577,18 @@ A key the template names and the answer set omits stops the run and is named by 
 5. **The AO string reads one way everywhere.** The gate compares the strings as text, and a second phrasing of one steward fails it.
 6. **The writing lint passes on the composed file**: `mc17 lintdoc -f MANIFEST-{SCOPE}-001.md`. Zero hits, so a fleet-run Mission does not ship a governed document that fails the instrument it names on its own face. A hit traces to the template, which the engine holds, and is repaired there, the way a refusal in the template is. **A runner repairs no hit in the rendered file**, because the next render writes the hit straight back.
 
-**How an artifact is created, in Steps 6 to 9.** `mc17 create` takes the rendered file off disk, so the runner reproduces none of it, and every content hash and every approval binding afterwards is computed over the file the renderer wrote. The creation is gated on the `upload` right, and the engine lints the body before it writes. It takes the title, the collection, the content type, the authority, the lifecycle, the scope tags and the domains as flags, and it prints the asset id:
+**How an artifact is created, in Steps 6 to 9.** `mc17 create` takes the rendered file off disk, so the runner reproduces none of it, and every content hash and every approval binding afterwards is computed over the file the renderer wrote. The creation is gated on the `upload` right, and the engine lints the body before it writes. It takes the title, the collection, the content type, the authority, the lifecycle, the scope tags and the domains as flags, and it prints the asset id.
+
+**The Manifest takes the plain-language pass before its create.** It carries the answers of the interview, the Summary among them, so `mc17 create` refuses it without the proof of the pass (`AC-24`). Run the skill `mc-plain-v17` over `MANIFEST-{SCOPE}-001.md`: it hands back the rewrite `MANIFEST-{SCOPE}-001.plain.md` and the proof `MANIFEST-{SCOPE}-001.proof.json`, and the create sends the rewrite with the proof. No ledger stands yet, so the call names none. The SPEC, the Test Plan and the register go out as scaffolds at Steps 7 to 9b and take the pass at their first fill.
 
 ```bash
-mc17 create --title MANIFEST-{SCOPE}-001 --collection {collection_id} --file MANIFEST-{SCOPE}-001.md --type MANIFEST --authority A1 --lifecycle draft --scope-tags {tags} --domains {domains}
+mc17 create --title MANIFEST-{SCOPE}-001 --collection {collection_id} --file MANIFEST-{SCOPE}-001.plain.md --plain MANIFEST-{SCOPE}-001.proof.json --type MANIFEST --authority A1 --lifecycle draft --scope-tags {tags} --domains {domains}
 ```
 
 Fill `--scope-tags` and `--domains` from 4i before the call, each a comma-separated list. **Then prove version 1, before any hash binds to it:**
 
 ```bash
-mc17 hash -f MANIFEST-{SCOPE}-001.md
+mc17 hash -f MANIFEST-{SCOPE}-001.plain.md
 mc17 hash {assetId}
 ```
 
@@ -591,13 +601,13 @@ Create the Manifest with these flags:
 - `--type`: `MANIFEST` · `--authority`: `A1` · `--lifecycle`: `draft` · `classifiedBy` is `human`, which the engine sets on every create
 - `--scope-tags`: the tags derived at 4i, `mission:{scope-lower}` included
 - `--domains`: the primary and secondary domains from 4i
-- `--file`: the rendered body
+- `--file`: the rewrite `mc-plain-v17` handed back, with `--plain` naming its proof
 
 **Why every value is named on the call.** `--collection` sets the target, which is why the Step 5 collection id is passed on every call of Steps 6 to 9. `--type` is free text, and `MANIFEST`, `SPEC`, `TP`, `SEC`, `DAT`, `OPS` and `CMP` are the Mission Control values this line writes. `mc17 create` defaults `--authority` to `A2` and `--lifecycle` to `draft`, and this skill sets both explicitly on every call, so the Manifest's `A1` never rests on a default.
 
 Record the returned asset id.
 
-**The platform canonicalizes scope tags into the facet layer, and the call reports success either way.** `canonScope` in `backend/src/services/facetFilter.ts` maps `initiative:mission-control` to `methodology:mission-control`, while `sourceProperties` keeps the string that was passed and the create response echoes the request, so the Manifest's Scope section and the asset's stored `facets.scopeTags` drift apart with nothing said. Run `mc17 check {assetId}` after the call. Where it reports drift, write the stored tags into the Manifest's Scope section at act 2 of the Step 10 link pass, and name the rewrite in the Step 11 report. One Scope written two ways fails a text gate the way one steward written two ways does.
+**The platform canonicalizes scope tags into the facet layer, and the call reports success either way.** `canonScope` in `backend/src/services/facetFilter.ts` maps `initiative:mission-control` to `methodology:mission-control`, while `sourceProperties` keeps the string that was passed and the create response echoes the request, so the Manifest's Scope section and the asset's stored `facets.scopeTags` drift apart with nothing said. Run `mc17 check {assetId}` after the call. Where it reports drift, hold the stored tags for the first declarative amend of the Manifest after `mc-vf-manifest-v17` has created the ledger, as Step 10 act 2 says, and name the drift in the Step 11 report. One Scope written two ways fails a text gate the way one steward written two ways does.
 
 **The five live-state headings are load-bearing and are written verbatim.** `mc-vf-manifest-v17` excludes those five parts of the Manifest from the binding by matching their headings as literal strings, so a reworded heading moves live state inside the binding and stales the chain on every bookkeeping write. That is a law on anyone editing the engine's Manifest template, which `mc17 render manifest` renders.
 
@@ -605,22 +615,28 @@ Record the returned asset id.
 
 ### Step 7 - Create the root SPEC
 
-Render it, then create it with `mc17 create` as Step 6 does, with `title` = `SPEC-{SCOPE}-001`, the Step 5 collection id, `contentType` `SPEC`, `authority` `A2`, `lifecycle` `draft`, `classifiedBy` `human`, the same scope tags and domains, and the rendered body. Prove version 1 with the two `hash` calls, and record the returned asset id.
+Render it to read it, then create it as a scaffold: `mc17 create` renders the SPEC itself from the same answer set and sends it under `--scaffold`, with `title` = `SPEC-{SCOPE}-001`, the Step 5 collection id, `contentType` `SPEC`, `authority` `A2`, `lifecycle` `draft`, the same scope tags and domains. Record the returned asset id; the create proves version 1 itself and prints the proof.
 
 ```bash
 mc17 render spec --answers answers.json --audit --out SPEC-{SCOPE}-001.md
+mc17 create --title SPEC-{SCOPE}-001 --collection {collection_id} --render spec --answers answers.json --scaffold --out SPEC-{SCOPE}-001.md --type SPEC --authority A2 --lifecycle draft --scope-tags {tags} --domains {domains}
 ```
+
+**Why a scaffold, and no plain-language pass here.** The SPEC holds no sentence an author wrote yet, only the template's text and `[TBD]`, so a rewrite has nothing to change and `mc17 plain` refuses a rewrite equal to its draft. `--scaffold` sends it with no proof and records that it went out as a scaffold. The first fill of the SPEC that moves its binding then takes the pass under `--jargon`, or names the person who wrote the text with `--written-by <name> --manifest {manifest_asset_id}`.
 
 The SPEC's keys are a subset of the Manifest's, so the one answer set serves it. **`ao_string` on this render is the SPEC's own AO**, which is the human AO wherever an AI-AO is the default, and it is written character for character the way the Manifest's tracked table carries it.
 
-**The SPEC is created with every substantive field at `[TBD]`, and that is its lawful created state.** The Move declaration, the Move type, the Capability Overview where the shape calls for one, the business process, the alternatives, the acceptance criteria and the stakeholders are the Business Owner's to decide. Step 11 names who owes each. A runner filling one has authored a Move no authority declared.
+**The SPEC is created with every substantive field at `[TBD]`, and that is its lawful created state.** The Move declaration, the Capability Overview where the shape calls for one, the business process, the alternatives, the acceptance criteria and the stakeholders are the Business Owner's to decide. Step 11 names who owes each. A runner filling one has authored a Move no authority declared.
+
+**The Move type is the one field the template may fill, and it is created as rendered.** Where the interview's answers settle it, the template writes it: a Standard Mission that produces no Published Language is a User Move by the Definition, so the SPEC reads `**User Move**`. Where they do not settle it, as on a Mission that produces a Published Language, the field reads `[TBD]`. Either is the lawful created state, and the runner changes neither: the Business Owner may change the Move type when filling the SPEC, as any other field.
 
 ### Step 8 - Create the TP stub
 
-Render it, then create it with `mc17 create` as Step 6 does, with `title` = `TP-{SCOPE}-001`, the Step 5 collection id, `contentType` `TP`, `authority` `A2`, `lifecycle` `draft`, `classifiedBy` `human`, the same scope tags and domains, and the rendered body. Prove version 1, and record the returned asset id.
+Render it to read it, then create it as a scaffold, as Step 7 creates the SPEC and for the same reason, with `title` = `TP-{SCOPE}-001`, the Step 5 collection id, `contentType` `TP`, `authority` `A2`, `lifecycle` `draft`, the same scope tags and domains. Record the returned asset id.
 
 ```bash
 mc17 render tp --answers answers.json --audit --out TP-{SCOPE}-001.md
+mc17 create --title TP-{SCOPE}-001 --collection {collection_id} --render tp --answers answers.json --scaffold --out TP-{SCOPE}-001.md --type TP --authority A2 --lifecycle draft --scope-tags {tags} --domains {domains}
 ```
 
 `ao_string` is the Test Plan's own AO, under the rule Step 7 states.
@@ -646,7 +662,7 @@ Every Mission starts with a register, so it never acquires one after an incident
 ```bash
 mc17 render rulings --answers rulings.answers.json --audit --out RULINGS-{SCOPE}-001.md
 # The register holds the template's text and the operator's words in fences, so mc17 create sends it as a scaffold with --scaffold; no ledger stands yet, so no record of the write lands.
-mc17 create --title RULINGS-{SCOPE}-001 --collection {collection_id} --render rulings --answers rulings.answers.json --scaffold --type RULINGS --authority A2 --lifecycle current --scope-tags {tags} --domains {domains}
+mc17 create --title RULINGS-{SCOPE}-001 --collection {collection_id} --render rulings --answers rulings.answers.json --scaffold --out RULINGS-{SCOPE}-001.md --type RULINGS --authority A2 --lifecycle current --scope-tags {tags} --domains {domains}
 # Where the register holds rows, its one plain-language pass runs now: the skill mc-plain-v17 over RULINGS-{SCOPE}-001.md, then mc17 plain, and the rewrite sent as the register's first amend.
 mc17 amend {register_asset_id} --edits rewrite.edits.json --class artifact --expect-binding any --jargon --plain RULINGS-{SCOPE}-001.proof.json
 ```
@@ -657,7 +673,7 @@ Answers: `{SCOPE, mission_name, ao_string, rows: [{n, words, given, implemented_
 
 ### Step 10 - Link pass
 
-CanonQ builds knowledge-graph edges from asset ids in content, and a bare doc-name mention builds none. The Manifest was composed before its spawned documents existed, so every Doc name cell of its tracked table carries the placeholder string `[asset id pending link pass]`, and every activated specialty stub carries that same string in its Referenced Artifacts. Two objects are therefore edited here, the Manifest's tracked table and every activated specialty stub's Referenced Artifacts, plus the Manifest's Scope section where Step 6's readback found the platform stored other tags than the ones passed. Now that every asset exists, those placeholders are replaced with the real ids.
+CanonQ builds knowledge-graph edges from asset ids in content, and a bare doc-name mention builds none. The Manifest was composed before its spawned documents existed, so every Doc name cell of its tracked table carries the placeholder string `[asset id pending link pass]`, and every activated specialty stub carries that same string in its Referenced Artifacts. Two objects are therefore edited here, the Manifest's tracked table and every activated specialty stub's Referenced Artifacts. The Manifest's Scope section, where Step 6's readback found the platform stored other tags than the ones passed, waits for the ledger, as act 2 says. Now that every asset exists, those placeholders are replaced with the real ids.
 
 **Read the stored body back and edit that text. Never retype the Manifest.** Composing the body from the runner's own memory of Step 6 means reproducing some 23,000 characters by hand, and one silent slip inside a declaration rewrites that declaration and moves the binding this step promises to leave alone. The runner's memory of what it wrote is a recollection. The stored body is the artifact, and a readback is the only thing that reaches it.
 
@@ -679,12 +695,12 @@ Do it in four acts.
 
 2. **Substitute mechanically.** In `body.md`, replace each occurrence of `[asset id pending link pass]` with the asset id belonging to that row, matched row by row on the Doc name the cell already carries. Write the result to `body_new.md` and leave `body.md` holding the pre-edit bytes. Write the same substitutions as the edits of the link pass, one entry of `link.edits.json` each, in the form `{"find": "...", "replace": "...", "count": 1}`: its `find` is the whole line as `body.md` carries it, so the anchor occurs once, and its `replace` is that line as `body_new.md` carries it. Touch nothing outside the cells and bullets this act names.
 
-   **In the same pass, correct the `## Scope` bullets where Step 6's readback found drift**, so one write carries both edits and the Manifest takes one version in place of two. The drift wears two shapes and each has its own edit.
+   **The `## Scope` bullets wait for the ledger.** The link pass sends live-state edits alone. A Scope bullet is declarative: it moves the binding, so `mc17 amend` asks for the Change Log row of the new version and the ledger the record of the write goes into, and no ledger stands until `mc-vf-manifest-v17` creates it. Where Step 6's readback found drift, `mc-vf-manifest-v17` records it as its field 10 says, and the first declarative amend of the Manifest after that run corrects the bullets as below, with its Change Log row, `--expect-binding moved`, `--manifest` and `--ledger`. Step 11 names the drift as owed. The drift wears two shapes and each has its own edit.
 
    - **A tag the platform rewrote.** It stands as exactly one bullet in the form Step 6 wrote it, and that bullet is replaced by the stored tag. `initiative:mission-control` stored as `methodology:mission-control` is this shape.
    - **A tag the platform added.** It stands as no bullet at all, because this Mission never declared it, so there is nothing to replace and a bullet for it is appended after the last one. Mission Seventeen-14 met this shape: both its declared tags stored unchanged and the store held a third, `methodology:mission-control`, which its Scope section named nowhere. An instruction written only for the rewrite leaves a runner with a stored tag and no lawful edit, and the intent of this act is that the Scope section carries the tags the store holds.
 
-   **The test is the stored set, and never the count.** After the edit, `mc17 check {assetId}` reports every stored tag `ok` and no drift; a tag the tool still calls drift is a tag this act missed. This half is a declarative edit and it is lawful here, because the Manifest carries no approval yet and it stales nothing; Step 11 names every tag it rewrote and every tag it added. Where the readback found no drift, this half does nothing.
+   **The test is the stored set, and never the count.** After that later edit, `mc17 check {assetId}` reports every stored tag `ok` and no drift; a tag the tool still calls drift is a tag the edit missed. Where the readback found no drift, nothing waits.
 
    Two checks close the act:
 
@@ -693,7 +709,7 @@ Do it in four acts.
    diff body.md body_new.md
    ```
 
-   `linkpass` must now report zero rows carrying the placeholder and the same row count as before. A row count that moved means the edit reached the table's structure. The diff must show the Doc name cells alone, plus the corrected Scope bullets where that half ran. That diff is the guard on the touch-nothing-else rule, and both files are named here so it proves what it claims.
+   `linkpass` must now report zero rows carrying the placeholder and the same row count as before. A row count that moved means the edit reached the table's structure. The diff must show the Doc name cells alone, and the register's line beside the table. That diff is the guard on the touch-nothing-else rule, and both files are named here so it proves what it claims.
 
 3. **Write, then prove the store holds it.** Send the edits of the link pass with `mc17 amend`, which reads them off disk and asks the runner to reproduce none of the body. The engine applies them to the stored body, versions the prior state, audits the write and re-ingests the asset. It needs `edit-own` on an owned asset or `classify-any`:
 
@@ -703,13 +719,13 @@ Do it in four acts.
    mc17 hash {manifest_asset_id}
    ```
 
-   The tracked table is live state, so the edits leave the binding where it was and the amend's default declaration holds. Where the Scope half of act 2 ran, the edits move the binding, and the call declares it with `--expect-binding moved`.
+   The tracked table is live state, so the edits leave the binding where it was and the amend's default declaration holds.
 
    **Two equal hashes are the pass.** A byte diff of the two files is the wrong test: the amend route drops a trailing newline the creation route keeps, so a raw diff failed on the first patch of every asset while both sides hashed identically. The trailing-newline law lives once, in `mc17`, and every comparison this skill makes runs through it. Unequal hashes mean the store holds something other than what was sent: stop, report it, and write nothing over it.
 
    The edits of `link.edits.json` are what is sent, and `r.json` is never sent.
 
-4. **Fill each specialty stub.** Where a stub's Referenced Artifacts entry carries the same placeholder, repeat acts 1 to 3 on that stub with its own asset id. Act 2's Scope half belongs to the Manifest alone; a stub carries no Scope section.
+4. **Fill each specialty stub.** Where a stub's Referenced Artifacts entry carries the same placeholder, repeat acts 1 to 3 on that stub with its own asset id. The Scope bullets belong to the Manifest alone; a stub carries no Scope section.
 
 **Check the edges, and do not check a total.** The check this step owes is one edge per spawned document: for each asset created at Steps 6 to 9, its asset id appears in a Doc name cell of the tracked table, and the id there equals the id the creating call returned. Confirm that row by row against the ids recorded at Step 5. That is the whole check, and it is the thing the link pass is for.
 
@@ -785,6 +801,8 @@ Documents created:
 
 Declared: shape {shape}; APR naming {scheme}; execution machinery {declared|not applicable, waves run by hand|not applicable};
 Advances {value}; Scope {tags}.
+{Where Step 6's readback found drift:} Scope drift owed: {each stored tag the Scope section lacks}, written at the
+first declarative amend of the Manifest after mc-vf-manifest-v17 creates the ledger.
 Defaults taken as offered, with no answer of the operator's own: {the render audit's list, or none}.
 
 Fields left [TBD] that block verification:

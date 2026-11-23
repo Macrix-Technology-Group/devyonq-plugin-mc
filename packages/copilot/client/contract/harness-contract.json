@@ -608,6 +608,10 @@
         }
       }
     },
+    "pin": {
+      "kind": "read",
+      "facts": []
+    },
     "mission": {
       "kind": "read",
       "forms": {
@@ -647,7 +651,8 @@
       "files": [
         "-f",
         "--file",
-        "--edits"
+        "--edits",
+        "--body"
       ],
       "paths": [
         "--out"
@@ -683,6 +688,9 @@
           "host.os"
         ]
       },
+      "lists": [
+        "--evidence"
+      ],
       "either": [
         "--manifest",
         "--runner-return",
